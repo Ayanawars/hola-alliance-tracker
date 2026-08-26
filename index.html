@@ -436,7 +436,7 @@ window.HOLaSurveyCompleted = new Set();
       if (!row) return;
 
       const name = row.querySelector(".name").textContent.trim();
-      memberProfiles[name] = {
+      const surveyProfile = {
         ...(memberProfiles[name] || {}),
         thp: String(raw.thp || (memberProfiles[name]?.thp || "")),
         troops: raw.t10 ? "T10" : "No T10",
@@ -449,6 +449,24 @@ window.HOLaSurveyCompleted = new Set();
           power: String(raw[`squad${rank}Power`] || "")
         }))
       };
+      memberProfiles[name] = surveyProfile;
+
+      // Firebase is the source of truth for players who completed the survey.
+      // Update the editable in-memory data too, otherwise old localStorage values
+      // can overwrite the latest squad powers when the profile card is opened.
+      const editable = (window.HOLaEditableMembers || []).find(m =>
+        normalizeName(m.name || m.id) === normalizeName(name)
+      );
+      if (editable) {
+        editable.flag = surveyProfile.flag || editable.flag || "";
+        editable.avatar = surveyProfile.avatar || editable.avatar || "";
+        editable.troops = surveyProfile.troops || editable.troops || "";
+        editable.profession = surveyProfile.profession || editable.profession || "";
+        editable.squads = surveyProfile.squads;
+        try {
+          localStorage.setItem('HOLA_ALLIANCE_TRACKER_EDITABLE_V1', JSON.stringify({members: window.HOLaEditableMembers}));
+        } catch (e) {}
+      }
 
       window.HOLaSurveyCompleted.add(normalizeName(name));
     });
@@ -477,10 +495,11 @@ document.getElementById('membersTab').addEventListener('click', e => {
     const profileInfo = memberProfiles[name] || {};
     const surveyDone = window.HOLaSurveyCompleted && window.HOLaSurveyCompleted.has(String(name).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,''));
     const surveyThp = surveyDone && profileInfo.thp ? profileInfo.thp : thp;
-    // Prefer saved user edits only when they contain a real value; otherwise keep the imported profile value.
-    const info = {...profileInfo, ...editableInfo};
+    // Firebase values take priority for members who completed the survey.
+    const info = surveyDone ? {...editableInfo, ...profileInfo} : {...profileInfo, ...editableInfo};
     ['flag','troops','profession','avatar'].forEach(k=>{if(!info[k] && profileInfo[k]) info[k]=profileInfo[k];});
-    if((!Array.isArray(editableInfo.squads) || !editableInfo.squads.some(s=>s && (s.type || s.power))) && profileInfo.squads) info.squads=profileInfo.squads;
+    if(surveyDone && profileInfo.squads) info.squads=profileInfo.squads;
+    else if((!Array.isArray(editableInfo.squads) || !editableInfo.squads.some(s=>s && (s.type || s.power))) && profileInfo.squads) info.squads=profileInfo.squads;
     if (!Object.keys(info).length) {
       memberProfileContent.innerHTML = `<div class="profile-header"><h2>${esc(name)}${surveyDone ? ' <span class="survey-complete-badge" title="Survey completed">Encuesta ✔️</span>' : ''}</h2><div class="profile-rank">${esc(rank)}</div></div>
       <div class="profile-grid">

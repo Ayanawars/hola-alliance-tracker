@@ -291,21 +291,32 @@
 
     btn.disabled=true; status.className=""; status.textContent=d.saving;
     try{
-      await setDoc(doc(db,"players",docId),{
+      const ref = doc(db,"players",docId);
+      const update = {
         name,
-        flag:document.getElementById("playerFlag").value,
-        avatar:avatarData,
-        thp:document.getElementById("thp").value.trim(),
-        t10:document.getElementById("t10").checked,
-        profession:document.getElementById("profession").value,
-        squad1Power:document.getElementById("s1power").value.trim(),
-        squad1Type:document.getElementById("s1type").value,
-        squad2Power:document.getElementById("s2power").value.trim(),
-        squad2Type:document.getElementById("s2type").value,
-        squad3Power:document.getElementById("s3power").value.trim(),
-        squad3Type:document.getElementById("s3type").value,
         updatedAt:serverTimestamp()
+      };
+
+      const fields = {
+        flag: document.getElementById("playerFlag").value,
+        avatar: avatarData,
+        thp: document.getElementById("thp").value.trim(),
+        profession: document.getElementById("profession").value,
+        squad1Power: document.getElementById("s1power").value.trim(),
+        squad1Type: document.getElementById("s1type").value,
+        squad2Power: document.getElementById("s2power").value.trim(),
+        squad2Type: document.getElementById("s2type").value,
+        squad3Power: document.getElementById("s3power").value.trim(),
+        squad3Type: document.getElementById("s3type").value
+      };
+
+      Object.entries(fields).forEach(([key,value]) => {
+        if (value !== "" && value != null) update[key] = value;
       });
+
+      if (document.getElementById("t10").checked) update.t10 = true;
+
+      await setDoc(ref, update, { merge:true });
       status.className="success"; status.textContent=d.saved;
     }catch(err){
       console.error(err);
