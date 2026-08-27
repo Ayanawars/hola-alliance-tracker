@@ -141,6 +141,7 @@ footer{text-align:center;color:#71809a;padding:18px;font-size:12px}@media(max-wi
 .survey-btn{display:block;padding:14px 18px;border-radius:12px;background:linear-gradient(135deg,#5b8cff,#9b5cff);color:#fff;text-decoration:none;font-weight:900;letter-spacing:.3px;border:1px solid #6f91ff}
 .survey-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
 
+.survey-row-check{display:inline-block;margin-left:6px;padding:2px 6px;border-radius:999px;font-size:.72em;line-height:1.2;white-space:nowrap;background:rgba(72,187,120,.16);color:#8ff0ae;border:1px solid rgba(72,187,120,.35);vertical-align:middle;font-weight:800}
 </style></head><body><div class="wrap"><header>
 <div class="hero-glow glow-one"></div><div class="hero-glow glow-two"></div>
 <div class="alliance-badge">⚔</div>
@@ -435,27 +436,36 @@ window.HOLaSurveyCompleted = new Set();
     const db = getFirestore(app);
     const snap = await getDocs(collection(db, "players"));
 
-    snap.forEach(docSnap => {
-      const raw = docSnap.data() || {};
-      const key = normalizeName(raw.name || docSnap.id);
+    // Keep a normalized copy of every Firebase profile. This avoids losing
+    // survey data when the member list is rebuilt or the displayed name has
+    // different capitalization/accents.
+    window.HOLaSurveyProfiles = window.HOLaSurveyProfiles || {};
+
+    const findProfileName = (key) => {
       const row = [...document.querySelectorAll("#membersTab .clickable-member")].find(r =>
         normalizeName(r.querySelector(".name")?.textContent || "") === key
       );
-      if (!row) return;
+      if (row) return row.querySelector(".name")?.textContent.trim() || "";
 
-      const name = row.querySelector(".name").textContent.trim();
+      const editable = window.HOLaEditableMembers;
+      if (Array.isArray(editable)) {
+        const member = editable.find(m => normalizeName(m.name || m.id || "") === key);
+        if (member) return member.name || "";
+      }
+      return "";
+    };
+
+    snap.forEach(docSnap => {
+      const raw = docSnap.data() || {};
+      const key = normalizeName(raw.name || docSnap.id);
+      if (!key) return;
+
+      const name = findProfileName(key) || String(raw.name || docSnap.id || "").trim();
       const firebaseThp = String(raw.thp || "").trim();
 
-      // Show the THP submitted in the survey directly in the Members tab.
-      if (firebaseThp) {
-        const thpCell = row.querySelector(".thp");
-        if (thpCell) thpCell.textContent = firebaseThp;
-      }
-
-      memberProfiles[name] = {
-        ...(memberProfiles[name] || {}),
-        thp: firebaseThp || String(memberProfiles[name]?.thp || ""),
-        troops: raw.t10 ? "T10" : "No T10",
+      const profile = {
+        thp: firebaseThp,
+        troops: raw.t10 ? "T10" : "",
         profession: raw.profession || "",
         flag: raw.flag || "",
         avatar: raw.avatar || "",
@@ -466,8 +476,64 @@ window.HOLaSurveyCompleted = new Set();
         }))
       };
 
-      window.HOLaSurveyCompleted.add(normalizeName(name));
+      // Store by normalized name as the source of truth.
+      window.HOLaSurveyProfiles[key] = {
+        ...(window.HOLaSurveyProfiles[key] || {}),
+        ...profile
+      };
+
+      // Also store under the visible member name for backwards compatibility.
+      if (name) {
+        memberProfiles[name] = {
+          ...(memberProfiles[name] || {}),
+          ...profile
+        };
+      }
+
+      // Update the currently visible Members row, if it already exists.
+      const row = [...document.querySelectorAll("#membersTab .clickable-member")].find(r =>
+        normalizeName(r.querySelector(".name")?.textContent || "") === key
+      );
+      if (row && firebaseThp) {
+        const thpCell = row.querySelector(".thp");
+        if (thpCell) thpCell.textContent = firebaseThp;
+      }
+
+      // Update editable member data too, so a later rebuild does not overwrite
+      // the Firebase values with the old local defaults.
+      const editable = window.HOLaEditableMembers;
+      if (Array.isArray(editable)) {
+        const member = editable.find(m => normalizeName(m.name || m.id || "") === key);
+        if (member) {
+          if (firebaseThp) member.thp = firebaseThp;
+          if (profile.flag) member.flag = profile.flag;
+          if (profile.avatar) member.avatar = profile.avatar;
+          if (profile.troops) member.troops = profile.troops;
+          if (profile.profession) member.profession = profile.profession;
+          if (profile.squads.some(s => s.type || s.power)) member.squads = profile.squads;
+        }
+      }
+
+      window.HOLaSurveyCompleted.add(key);
     });
+
+    // A rebuild may have happened while Firebase was loading. Apply the THP
+    // once more to the current rows after all profiles are in memory.
+    document.querySelectorAll("#membersTab .clickable-member").forEach(row => {
+      const rowName = row.querySelector(".name")?.textContent || "";
+      const profile = window.HOLaSurveyProfiles[normalizeName(rowName)];
+      if (profile?.thp) {
+        const thpCell = row.querySelector(".thp");
+        if (thpCell) thpCell.textContent = profile.thp;
+      }
+    });
+
+    try {
+      if (typeof window.HOLaRebuildMembers === "function") window.HOLaRebuildMembers();
+    } catch (e) {
+      console.warn("Could not refresh survey badges", e);
+    }
+    document.dispatchEvent(new CustomEvent("holaSurveyDataLoaded"));
     console.log("HOLa survey loaded:", window.HOLaSurveyCompleted.size);
   } catch (err) {
     console.warn("Could not load survey data", err);
@@ -490,7 +556,8 @@ document.getElementById('membersTab').addEventListener('click', e => {
     const thp = row.querySelector('.thp')?.textContent.trim() || '—';
     const hq = row.querySelector('.hq')?.textContent.trim() || '—';
     const editableInfo = (window.HOLaEditableMembers || []).find(m => m.name === name || m.id === row.dataset.member) || {};
-    const profileInfo = memberProfiles[name] || {};
+    const normalizedProfileKey = String(name || "").normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+    const profileInfo = memberProfiles[name] || (window.HOLaSurveyProfiles || {})[normalizedProfileKey] || {};
     const surveyDone = window.HOLaSurveyCompleted && window.HOLaSurveyCompleted.has(String(name).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,''));
     const surveyThp = surveyDone && profileInfo.thp ? profileInfo.thp : thp;
     // Prefer saved user edits only when they contain a real value; otherwise keep the imported profile value.
@@ -552,8 +619,13 @@ memberProfileModal.addEventListener('click', e => { if (e.target === memberProfi
  const original=JSON.parse(JSON.stringify(data));
  localStorage.setItem(KEY,JSON.stringify({members:data}));
  function persist(){localStorage.setItem(KEY,JSON.stringify({members:data}));}
- function rowHtml(m){return `<div class="member clickable-member" data-rank="${escHtml(m.rank)}" data-member="${escHtml(m.id)}"><span class="rank ${String(m.rank).toLowerCase()}">${escHtml(m.rank)}</span><span class="name">${escHtml(m.name)}</span><span class="thp">${escHtml(m.thp)}</span><span class="hq">HQ ${escHtml(m.hq)}</span></div>`;}
+ function rowHtml(m){
+    const memberKey = String(m.name||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+    const done = !!(window.HOLaSurveyCompleted && window.HOLaSurveyCompleted.has(memberKey));
+    return `<div class="member clickable-member" data-rank="${escHtml(m.rank)}" data-member="${escHtml(m.id)}"><span class="rank ${String(m.rank).toLowerCase()}">${escHtml(m.rank)}</span><span class="name">${escHtml(m.name)}${done ? ' <span class="survey-row-check" title="Survey completed">Encuesta ✔️</span>' : ''}</span><span class="thp">${escHtml(m.thp)}</span><span class="hq">HQ ${escHtml(m.hq)}</span></div>`;
+  }
  function rebuildMain(){const table=membersTab.querySelector('.table');const head=table.querySelector('.head').outerHTML;let html=head;const ranks=['R5','R4','R3','R2','R1'];ranks.forEach((r,i)=>{const list=data.filter(m=>m.rank===r).sort((a,b)=>a.name.localeCompare(b.name));if(!list.length)return;if(i>0){html+='<div class="rank-divider"></div><div class="repeat-head"><span>RANK</span><span>MEMBER</span><span>THP</span><span>HQ</span></div>';}html+=list.map(rowHtml).join('');});table.innerHTML=html;window.HOLaEditableMembers=data;updateHeader();rebuildSideTables();applyMemberFilters();}
+ window.HOLaRebuildMembers = rebuildMain;
  function updateHeader(){const count=data.length;document.querySelector('footer').textContent=`HOLa Alliance Tracker · ${count} members`;const stats=document.querySelector('.stats');if(stats){stats.innerHTML=`<div class="stat"><b>${count}</b><small>MEMBERS</small></div>${['R5','R4','R3','R2','R1'].map(r=>`<div class="stat"><b>${data.filter(m=>m.rank===r).length}</b><small>${r}</small></div>`).join('')}`;}}
  function rebuildSideTables(){
    const dtab=document.querySelector('.donation-table');if(dtab){dtab.innerHTML='<div class="donation-head"><span>MEMBER</span><span>DAILY</span><span>WEEKLY</span></div>'+data.map(m=>`<div class="donation-row" data-name="${escHtml(m.name.toLowerCase())}"><span>${escHtml(m.name)}</span><span>${escHtml(m.daily||'—')}</span><span>${escHtml(m.weekly||'—')}</span></div>`).join('');}
