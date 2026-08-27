@@ -162,18 +162,9 @@ body.hola-admin .vs-config.admin-only{display:grid!important}
 .member-rank-group.collapsed .member-rank-body{display:none}
 
 
-#forceLogoutBtn{
-  display:none!important;
-  margin-top:10px;
-  padding:11px 18px;
-  border:1px solid #ff7b7b;
-  border-radius:12px;
-  background:#24151a;
-  color:#fff;
-  font-weight:900;
-  cursor:pointer;
-}
-#forceLogoutBtn.show{display:inline-flex!important;align-items:center;gap:8px}
+/* Always-visible logout control when a Firebase user session exists */
+#logoutBtn{display:none;align-items:center;justify-content:center;margin-top:10px;padding:10px 16px;border:1px solid #e55;border-radius:10px;background:#2b1414;color:#fff;font-weight:800;cursor:pointer}
+#logoutBtn.is-visible{display:inline-flex}
 
 </style></head><body><div class="wrap"><header>
 <div class="hero-glow glow-one"></div><div class="hero-glow glow-two"></div>
@@ -185,7 +176,7 @@ body.hola-admin .vs-config.admin-only{display:grid!important}
   <button id="googleLoginBtn" class="auth-btn primary">🔐 Sign in with Google</button>
   <button id="googleLogoutBtn" class="auth-btn" style="display:none">Sign out</button>
   <div id="authStatus" class="auth-status">R1–R3 can view without signing in. R4–R5 sign in with Google for control access.</div>
-  <button id="forceLogoutBtn" type="button">🚪 LOG OUT</button>
+    <button id="logoutBtn" type="button">🚪 CERRAR SESIÓN</button>
 </div>
 <div class="stats"><div class="stat"><b>87</b><small>MEMBERS</small></div><div class="stat"><b>1</b><small>R5</small></div><div class="stat"><b>9</b><small>R4</small></div><div class="stat"><b>39</b><small>R3</small></div><div class="stat"><b>21</b><small>R2</small></div><div class="stat"><b>17</b><small>R1</small></div></div></header>
 <div class="tabs" role="tablist">
@@ -1287,46 +1278,39 @@ memberProfileModal.addEventListener('click', e => { if (e.target === memberProfi
 </script>
 
 
-<script type="module">
-(async()=>{
-  try{
-    const [{initializeApp,getApps},{getAuth,onAuthStateChanged,signOut}] = await Promise.all([
-      import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js"),
-      import("https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js")
-    ]);
-    const firebaseConfig={
-      apiKey:"AIzaSyDxipuHjcf0EI5aMjM7534asdtq03AlQzQ",
-      authDomain:"hola-alliance-tracker.firebaseapp.com",
-      projectId:"hola-alliance-tracker",
-      storageBucket:"hola-alliance-tracker.firebasestorage.app",
-      messagingSenderId:"843941636060",
-      appId:"1:843941636060:web:f8f059f72ccff0eaabd119"
-    };
-    const app=getApps().find(a=>a.options.projectId===firebaseConfig.projectId)||initializeApp(firebaseConfig);
-    const auth=getAuth(app);
-    const btn=document.getElementById("forceLogoutBtn");
-    const oldBtn=document.getElementById("googleLogoutBtn");
+<script type="module" id="forced-logout-module">
+import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js';
 
-    onAuthStateChanged(auth,user=>{
-      if(btn) btn.classList.toggle("show",!!user);
-      if(oldBtn) oldBtn.style.display=user?"inline-flex":"none";
-    });
+const cfg = {
+  apiKey:'AIzaSyDxipuHjcf0EI5aMjM7534asdtq03AlQzQ',
+  authDomain:'hola-alliance-tracker.firebaseapp.com',
+  projectId:'hola-alliance-tracker',
+  storageBucket:'hola-alliance-tracker.firebasestorage.app',
+  messagingSenderId:'843941636060',
+  appId:'1:843941636060:web:f8f059f72ccff0eaabd119'
+};
+const logoutApp = getApps().find(a => a.options.projectId === cfg.projectId) || initializeApp(cfg);
+const logoutAuth = getAuth(logoutApp);
+const logoutBtn = document.getElementById('logoutBtn');
 
-    btn?.addEventListener("click",async()=>{
-      btn.disabled=true;
-      btn.textContent="Logging out...";
-      try{
-        await signOut(auth);
-        location.reload();
-      }catch(e){
-        console.error(e);
-        btn.disabled=false;
-        btn.textContent="🚪 LOG OUT";
-        alert("Could not log out. Please try again.");
-      }
-    });
-  }catch(e){console.error("Logout setup failed",e);}
-})();
+onAuthStateChanged(logoutAuth, (user) => {
+  if (logoutBtn) logoutBtn.classList.toggle('is-visible', !!user);
+});
+
+logoutBtn?.addEventListener('click', async () => {
+  logoutBtn.disabled = true;
+  logoutBtn.textContent = 'Cerrando sesión…';
+  try {
+    await signOut(logoutAuth);
+    location.reload();
+  } catch (e) {
+    console.error('Logout failed', e);
+    logoutBtn.disabled = false;
+    logoutBtn.textContent = '🚪 CERRAR SESIÓN';
+    alert('No se pudo cerrar la sesión.');
+  }
+});
 </script>
 
 </body></html>
