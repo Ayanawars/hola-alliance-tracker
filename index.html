@@ -162,14 +162,14 @@ body.hola-admin .vs-config.admin-only{display:grid!important}
 <div class="auth-bar">
   <button id="googleLoginBtn" class="auth-btn primary">🔐 Sign in with Google</button>
   <button id="googleLogoutBtn" class="auth-btn" style="display:none">Sign out</button>
-  <div id="authStatus" class="auth-status">R1–R3 can view without signing in. R4–R5 sign in with Google for control access.</div>
+  <div id="authStatus" class="auth-status">R1–R3 can only view Members and the player survey. R4–R5 sign in with Google for full access.</div>
 </div>
 <div class="stats"><div class="stat"><b>87</b><small>MEMBERS</small></div><div class="stat"><b>1</b><small>R5</small></div><div class="stat"><b>9</b><small>R4</small></div><div class="stat"><b>39</b><small>R3</small></div><div class="stat"><b>21</b><small>R2</small></div><div class="stat"><b>17</b><small>R1</small></div></div></header>
 <div class="tabs" role="tablist">
   <button class="tab active" data-tab="members">👥 Members</button>
-  <button class="tab" data-tab="donations">🎁 Donations</button>
-  <button class="tab" data-tab="vs">⚔️ VS Points</button>
-  <button class="tab" data-tab="ds">🛡️ DS</button><button class="tab" data-tab="stats">📊 Statistics</button>
+  <button class="tab admin-only" data-tab="donations">🎁 Donations</button>
+  <button class="tab admin-only" data-tab="vs">⚔️ VS Points</button>
+  <button class="tab admin-only" data-tab="ds">🛡️ DS</button><button class="tab admin-only" data-tab="stats">📊 Statistics</button>
 </div>
 <div id="membersTab" class="tab-panel active"><div class="survey-link-wrap"><a id="surveyBtn" class="survey-btn" href="survey.html">📝 FILL IN PLAYER SURVEY</a></div>
 <div class="controls">
@@ -1115,7 +1115,7 @@ memberProfileModal.addEventListener('click', e => { if (e.target === memberProfi
     try {
       const [
         { initializeApp, getApps },
-        { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged },
+        { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged },
         { getFirestore, doc, getDoc, setDoc, serverTimestamp, collection, getDocs, query, where, limit }
       ] = await Promise.all([
         import('https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js'),
@@ -1137,14 +1137,41 @@ memberProfileModal.addEventListener('click', e => { if (e.target === memberProfi
       provider.setCustomParameters({prompt:'select_account'});
       fs={ db:getFirestore(app), doc, getDoc, setDoc, serverTimestamp, collection, getDocs, query, where, limit };
 
-      loginBtn.onclick=async()=>{
+      async function startGoogleLogin(){
+        // Firebase Google OAuth cannot reliably complete from Android's content:// viewer.
+        // Use redirect login when the tracker is served from a real web address.
+        const protocol = String(location.protocol || '');
+        if (protocol !== 'http:' && protocol !== 'https:') {
+          setStatus('⚠️ Google sign-in cannot finish from a downloaded content:// file. Open this tracker from Firebase Hosting or another HTTPS website.');
+          return;
+        }
+
+        loginBtn.disabled = true;
+        const originalLabel = loginBtn.textContent;
+        loginBtn.textContent = 'Signing in…';
+        setStatus('Opening Google sign-in…');
+
         try {
-          setStatus('Signing in with Google…');
-          await signInWithPopup(auth,provider);
+          // Redirect is more reliable on Android than a popup.
+          await signInWithRedirect(auth, provider);
         } catch(e) {
+          loginBtn.disabled = false;
+          loginBtn.textContent = originalLabel;
           setStatus('❌ Google sign-in failed: '+(e?.message || e));
         }
-      };
+      }
+
+      // Complete a previous redirect sign-in when the page returns.
+      try {
+        const redirectResult = await getRedirectResult(auth);
+        if (redirectResult?.user) {
+          setStatus('Checking your Google account…');
+        }
+      } catch(e) {
+        setStatus('❌ Google sign-in failed: '+(e?.message || e));
+      }
+
+      loginBtn.onclick=startGoogleLogin;
       logoutBtn.onclick=async()=>{ await signOut(auth); };
 
       onAuthStateChanged(auth, async user => {
@@ -1152,7 +1179,7 @@ memberProfileModal.addEventListener('click', e => { if (e.target === memberProfi
         if (!user) {
           loginBtn.style.display='';
           logoutBtn.style.display='none';
-          setStatus('R1–R3 can view without signing in. R4–R5 sign in with Google for control access.');
+          setStatus('R1–R3 can only view Members and the player survey. R4–R5 sign in with Google for full access.');
           return;
         }
 
