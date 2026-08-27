@@ -106,9 +106,12 @@ footer{text-align:center;color:#71809a;padding:18px;font-size:12px}@media(max-wi
 
 /* VS weekly tracker */
 .vs-dashboard{display:flex;flex-direction:column;gap:14px}
-.vs-toolbar{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;padding:18px;border:1px solid #26385a;border-radius:16px;background:linear-gradient(135deg,#121a2b,#16152b)}
+
+.vs-dashboard{display:flex;flex-direction:column;gap:14px}
+.vs-toolbar{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:18px;border:1px solid #26385a;border-radius:16px;background:linear-gradient(135deg,#121a2b,#16152b)}
 .vs-toolbar h2{margin:2px 0 4px;font-size:26px}.vs-kicker{font-size:11px;font-weight:900;letter-spacing:1.5px;color:#8fa8ff}.vs-week-label{color:#aebbd0;font-weight:700}
 .vs-toolbar-actions,.vs-import-actions{display:flex;gap:8px;flex-wrap:wrap}
+.vs-firebase-status{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:12px;color:#9fb1cc;font-weight:700}.vs-firebase-dot{width:9px;height:9px;border-radius:50%;background:#667085;box-shadow:0 0 0 3px rgba(102,112,133,.12)}.vs-firebase-status.connected .vs-firebase-dot{background:#4bd37b;box-shadow:0 0 0 3px rgba(75,211,123,.12)}.vs-firebase-status.error .vs-firebase-dot{background:#ff6b6b}
 .vs-config{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;padding:12px;border:1px solid #263047;border-radius:14px;background:#0f1521}
 .vs-config label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:800;color:#9fabc1}
 .vs-config input,.vs-config select,.vs-review input,.vs-review select,.vs-rank-filter{width:100%;background:#0a0f18;border:1px solid #33405a;color:#eef3ff;border-radius:9px;padding:10px;font:inherit}
@@ -118,9 +121,17 @@ footer{text-align:center;color:#71809a;padding:18px;font-size:12px}@media(max-wi
 .vs-review{border:1px solid #516ba7;border-radius:14px;background:#0e1420;overflow:hidden}.vs-review-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px;border-bottom:1px solid #29364c}.vs-review-head b,.vs-review-head span{display:block}.vs-review-head span{font-size:12px;color:#9da9bd;margin-top:3px}
 .vs-review-row{display:grid;grid-template-columns:1.3fr 1fr 1.2fr auto;gap:8px;padding:9px 14px;border-bottom:1px solid #202b3d;align-items:center}.vs-review-row:last-child{border-bottom:0}.vs-match{font-size:12px;color:#8fb6ff}.vs-remove{background:#28151a;color:#ff9aa4;border:1px solid #70313b;border-radius:8px;padding:8px;cursor:pointer}
 .vs-day-tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.vs-day-tabs button{border:1px solid #2e3a50;background:#121927;color:#b8c4d8;border-radius:9px;padding:10px 4px;font-weight:900;cursor:pointer}.vs-day-tabs button.active{background:#ff9f1a;color:#171008;border-color:#ffc15e}
+.vs-section-title{display:flex;justify-content:space-between;align-items:end;gap:10px}.vs-section-title h3{margin:0;font-size:17px}.vs-section-title span{font-size:12px;color:#8fa0ba}
 .vs-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.vs-summary-card{background:#101622;border:1px solid #28344a;border-radius:12px;padding:13px}.vs-summary-card span{display:block;font-size:10px;color:#91a0b8;font-weight:900;letter-spacing:.7px}.vs-summary-card b{display:block;margin-top:6px;font-size:17px}
-.vs-table-wrap{overflow:auto;border:1px solid #29354a;border-radius:14px}.vs-table-head,.vs-row{display:grid;grid-template-columns:46px minmax(150px,1.6fr) repeat(6,minmax(88px,.8fr)) minmax(110px,1fr);gap:0;min-width:900px}.vs-table-head{background:#171f2e;color:#aebbd0;font-size:11px;font-weight:900}.vs-table-head span{padding:11px 8px}.vs-row{border-top:1px solid #202a3b;align-items:center;background:#0e141f}.vs-row:hover{background:#121a27}.vs-row>span{padding:11px 8px}.vs-score{font-weight:800;color:#dfe9ff}.vs-total{color:#ffd36b;font-weight:900}.vs-empty{color:#65718a}.vs-rank-num{font-weight:900;text-align:center}
-@media(max-width:700px){.vs-toolbar,.vs-import-card,.vs-review-head{align-items:stretch;flex-direction:column}.vs-config{grid-template-columns:1fr}.vs-summary{grid-template-columns:1fr 1fr}.vs-day-tabs{grid-template-columns:repeat(3,1fr)}.vs-review-row{grid-template-columns:1fr}.vs-review-row .vs-match{display:none}}
+.vs-table-wrap{border:1px solid #29354a;border-radius:14px;overflow:hidden;background:#0e141f}
+.vs-table-head,.vs-row{display:grid;grid-template-columns:44px minmax(0,1fr) minmax(96px,120px) minmax(96px,120px);gap:0}
+.vs-table-head{background:#171f2e;color:#aebbd0;font-size:11px;font-weight:900}.vs-table-head span{padding:11px 10px}
+.vs-row{border-top:1px solid #202a3b;align-items:center;background:#0e141f}.vs-row:hover{background:#121a27}.vs-row>span,.vs-member-cell{padding:12px 10px}
+.vs-rank-num{font-weight:900;text-align:center}.vs-member-name{font-weight:900;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.vs-day-strip{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}.vs-day-chip{font-size:10px;color:#8391aa;background:#111b2a;border:1px solid #263750;border-radius:6px;padding:3px 5px}.vs-day-chip.active{border-color:#ffb74d;color:#ffd37c;background:#2a2112}.vs-day-chip.has-points{color:#dbe7ff}
+.vs-selected-score,.vs-total{font-weight:900;text-align:right}.vs-selected-score{color:#dfe9ff}.vs-total{color:#ffd36b}.vs-empty{color:#65718a}
+.vs-table-empty{padding:30px;text-align:center;color:#8190a9}
+@media(max-width:700px){.vs-toolbar,.vs-import-card,.vs-review-head{align-items:stretch;flex-direction:column}.vs-config{grid-template-columns:1fr}.vs-summary{grid-template-columns:1fr 1fr}.vs-day-tabs{grid-template-columns:repeat(3,1fr)}.vs-review-row{grid-template-columns:1fr}.vs-review-row .vs-match{display:none}.vs-table-head,.vs-row{grid-template-columns:36px minmax(0,1fr) 110px}.vs-table-head span:nth-child(3),.vs-row .vs-selected-score{display:none}.vs-table-head span:nth-child(4),.vs-row .vs-total{display:block}.vs-table-head span{padding:10px 7px}.vs-row>span,.vs-member-cell{padding:10px 7px}.vs-day-strip{gap:3px}.vs-day-chip{font-size:9px;padding:2px 4px}}
+
 
 
 .survey-complete-badge{display:inline-block;margin-left:7px;padding:2px 7px;border-radius:999px;font-size:.55em;vertical-align:middle;background:rgba(69,190,110,.18);border:1px solid rgba(120,230,150,.55)}
@@ -174,17 +185,19 @@ footer{text-align:center;color:#71809a;padding:18px;font-size:12px}@media(max-wi
         <div class="vs-kicker">WEEKLY TRACKER</div>
         <h2>⚔️ VS Points</h2>
         <div id="vsWeekLabel" class="vs-week-label"></div>
+        <div id="vsFirebaseStatus" class="vs-firebase-status">
+          <span class="vs-firebase-dot"></span><span id="vsFirebaseText">Firebase: loading…</span>
+        </div>
       </div>
       <div class="vs-toolbar-actions">
+        <button id="vsRefreshFirebase" class="vs-btn secondary">↻ Refresh</button>
         <button id="vsPrevWeek" class="vs-btn secondary">← Week</button>
         <button id="vsNextWeek" class="vs-btn secondary">Week →</button>
       </div>
     </div>
 
     <div class="vs-config">
-      <label>Week starts
-        <input id="vsWeekStart" type="date">
-      </label>
+      <label>Week starts<input id="vsWeekStart" type="date"></label>
       <label>Week type
         <select id="vsWeekType">
           <option value="PUSH">🔥 PUSH WEEK</option>
@@ -194,10 +207,24 @@ footer{text-align:center;color:#71809a;padding:18px;font-size:12px}@media(max-wi
       <button id="vsSaveWeek" class="vs-btn">Save week</button>
     </div>
 
+    <div class="vs-summary">
+      <div class="vs-summary-card"><span>WEEK TYPE</span><b id="vsSummaryType">🔥 PUSH</b></div>
+      <div class="vs-summary-card"><span>WEEK TOTAL</span><b id="vsSummaryTotal">0</b></div>
+      <div class="vs-summary-card"><span id="vsSelectedDayLabel">SELECTED DAY</span><b id="vsSummaryDayTotal">0</b></div>
+      <div class="vs-summary-card"><span>ACTIVE MEMBERS</span><b id="vsSummaryActive">0</b></div>
+    </div>
+
+    <div class="vs-section-title"><h3>Choose day</h3><span>Import and view points for each day</span></div>
+    <div class="vs-day-tabs" id="vsDayTabs">
+      <button data-day="Monday">Monday</button><button data-day="Tuesday">Tuesday</button>
+      <button data-day="Wednesday">Wednesday</button><button data-day="Thursday">Thursday</button>
+      <button data-day="Friday">Friday</button><button data-day="Saturday">Saturday</button>
+    </div>
+
     <div class="vs-import-card">
       <div>
         <b>📷 Import VS ranking screenshot</b>
-        <span>Upload one or several screenshots like the Last War ranking. OCR will read names and points, then you can review before saving.</span>
+        <span>OCR reads player names and points. Review the results before saving them to Firebase.</span>
       </div>
       <div class="vs-import-actions">
         <input id="vsImageInput" type="file" accept="image/*" multiple hidden>
@@ -210,43 +237,24 @@ footer{text-align:center;color:#71809a;padding:18px;font-size:12px}@media(max-wi
     <div id="vsReview" class="vs-review" style="display:none">
       <div class="vs-review-head">
         <div><b>Review imported results</b><span>Correct any name or score before confirming.</span></div>
-        <div>
-          <button id="vsConfirmImport" class="vs-btn">✓ Confirm import</button>
-          <button id="vsCancelImport" class="vs-btn secondary">Cancel</button>
-        </div>
+        <div><button id="vsConfirmImport" class="vs-btn">✓ Confirm import</button><button id="vsCancelImport" class="vs-btn secondary">Cancel</button></div>
       </div>
       <div id="vsReviewRows"></div>
     </div>
 
-    <div class="vs-day-tabs" id="vsDayTabs">
-      <button data-day="Monday">Monday</button>
-      <button data-day="Tuesday">Tuesday</button>
-      <button data-day="Wednesday">Wednesday</button>
-      <button data-day="Thursday">Thursday</button>
-      <button data-day="Friday">Friday</button>
-      <button data-day="Saturday">Saturday</button>
-    </div>
-
+    <div class="vs-section-title"><h3>VS leaderboard</h3><span id="vsLeaderboardNote">Weekly ranking</span></div>
     <div class="panel-controls">
-      <div class="search-wrap"><span class="search-icon">⌕</span>
-        <input id="vsSearch" type="search" placeholder="Search member..." autocomplete="off">
-      </div>
+      <div class="search-wrap"><span class="search-icon">⌕</span><input id="vsSearch" type="search" placeholder="Search member..." autocomplete="off"></div>
       <select id="vsRankFilter" aria-label="Filter VS ranking">
-        <option value="all">All members</option>
+        <option value="week">Weekly ranking</option>
+        <option value="day">Selected day ranking</option>
         <option value="active">With points</option>
       </select>
     </div>
 
-    <div class="vs-summary">
-      <div class="vs-summary-card"><span>WEEK TYPE</span><b id="vsSummaryType">🔥 PUSH</b></div>
-      <div class="vs-summary-card"><span>ALLIANCE TOTAL</span><b id="vsSummaryTotal">0</b></div>
-      <div class="vs-summary-card"><span>ACTIVE MEMBERS</span><b id="vsSummaryActive">0</b></div>
-      <div class="vs-summary-card"><span>TOP MEMBER</span><b id="vsSummaryTop">—</b></div>
-    </div>
-
     <div class="vs-table-wrap">
       <div class="vs-table-head">
-        <span>#</span><span>MEMBER</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>TOTAL</span>
+        <span>#</span><span>MEMBER</span><span id="vsDayColumnHead">DAY</span><span>WEEK TOTAL</span>
       </div>
       <div id="vsRows"></div>
     </div>
@@ -436,9 +444,17 @@ window.HOLaSurveyCompleted = new Set();
       if (!row) return;
 
       const name = row.querySelector(".name").textContent.trim();
-      const surveyProfile = {
+      const firebaseThp = String(raw.thp || "").trim();
+
+      // Show the THP submitted in the survey directly in the Members tab.
+      if (firebaseThp) {
+        const thpCell = row.querySelector(".thp");
+        if (thpCell) thpCell.textContent = firebaseThp;
+      }
+
+      memberProfiles[name] = {
         ...(memberProfiles[name] || {}),
-        thp: String(raw.thp || (memberProfiles[name]?.thp || "")),
+        thp: firebaseThp || String(memberProfiles[name]?.thp || ""),
         troops: raw.t10 ? "T10" : "No T10",
         profession: raw.profession || "",
         flag: raw.flag || "",
@@ -449,24 +465,6 @@ window.HOLaSurveyCompleted = new Set();
           power: String(raw[`squad${rank}Power`] || "")
         }))
       };
-      memberProfiles[name] = surveyProfile;
-
-      // Firebase is the source of truth for players who completed the survey.
-      // Update the editable in-memory data too, otherwise old localStorage values
-      // can overwrite the latest squad powers when the profile card is opened.
-      const editable = (window.HOLaEditableMembers || []).find(m =>
-        normalizeName(m.name || m.id) === normalizeName(name)
-      );
-      if (editable) {
-        editable.flag = surveyProfile.flag || editable.flag || "";
-        editable.avatar = surveyProfile.avatar || editable.avatar || "";
-        editable.troops = surveyProfile.troops || editable.troops || "";
-        editable.profession = surveyProfile.profession || editable.profession || "";
-        editable.squads = surveyProfile.squads;
-        try {
-          localStorage.setItem('HOLA_ALLIANCE_TRACKER_EDITABLE_V1', JSON.stringify({members: window.HOLaEditableMembers}));
-        } catch (e) {}
-      }
 
       window.HOLaSurveyCompleted.add(normalizeName(name));
     });
@@ -495,11 +493,10 @@ document.getElementById('membersTab').addEventListener('click', e => {
     const profileInfo = memberProfiles[name] || {};
     const surveyDone = window.HOLaSurveyCompleted && window.HOLaSurveyCompleted.has(String(name).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,''));
     const surveyThp = surveyDone && profileInfo.thp ? profileInfo.thp : thp;
-    // Firebase values take priority for members who completed the survey.
-    const info = surveyDone ? {...editableInfo, ...profileInfo} : {...profileInfo, ...editableInfo};
+    // Prefer saved user edits only when they contain a real value; otherwise keep the imported profile value.
+    const info = {...profileInfo, ...editableInfo};
     ['flag','troops','profession','avatar'].forEach(k=>{if(!info[k] && profileInfo[k]) info[k]=profileInfo[k];});
-    if(surveyDone && profileInfo.squads) info.squads=profileInfo.squads;
-    else if((!Array.isArray(editableInfo.squads) || !editableInfo.squads.some(s=>s && (s.type || s.power))) && profileInfo.squads) info.squads=profileInfo.squads;
+    if((!Array.isArray(editableInfo.squads) || !editableInfo.squads.some(s=>s && (s.type || s.power))) && profileInfo.squads) info.squads=profileInfo.squads;
     if (!Object.keys(info).length) {
       memberProfileContent.innerHTML = `<div class="profile-header"><h2>${esc(name)}${surveyDone ? ' <span class="survey-complete-badge" title="Survey completed">Encuesta ✔️</span>' : ''}</h2><div class="profile-rank">${esc(rank)}</div></div>
       <div class="profile-grid">
@@ -600,6 +597,97 @@ memberProfileModal.addEventListener('click', e => { if (e.target === memberProfi
   function save(){localStorage.setItem(VSKEY,JSON.stringify(vsData))}
   function memberNames(){return (typeof data!=='undefined'&&Array.isArray(data)?data:[]).map(m=>m.name)}
   function normalize(s){return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'')}
+
+  function setFirebaseUi(state,textValue){
+    const box=document.getElementById('vsFirebaseStatus');
+    const label=document.getElementById('vsFirebaseText');
+    if(box){
+      box.classList.remove('connected','error');
+      if(state==='connected')box.classList.add('connected');
+      if(state==='error')box.classList.add('error');
+    }
+    if(label)label.textContent=textValue;
+  }
+
+  // ===== FIREBASE SYNC FOR VS POINTS =====
+  // Documents are stored in the Firestore collection: vsPoints
+  // One document per week + day + member, so importing the same player again updates that score.
+  let vsFirebasePromise=null;
+  async function getVsFirebase(){
+    if(!vsFirebasePromise){
+      vsFirebasePromise=(async()=>{
+        const [{ initializeApp, getApps }, { getFirestore, collection, doc, setDoc, getDocs, serverTimestamp }] = await Promise.all([
+          import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js"),
+          import("https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js")
+        ]);
+        const firebaseConfig={
+          apiKey:"AIzaSyDxipuHjcf0EI5aMjM7534asdtq03AlQzQ",
+          authDomain:"hola-alliance-tracker.firebaseapp.com",
+          projectId:"hola-alliance-tracker",
+          storageBucket:"hola-alliance-tracker.firebasestorage.app",
+          messagingSenderId:"843941636060",
+          appId:"1:843941636060:web:f8f059f72ccff0eaabd119"
+        };
+        const app=getApps().find(a=>a.options.projectId===firebaseConfig.projectId)||initializeApp(firebaseConfig);
+        return {db:getFirestore(app),collection,doc,setDoc,getDocs,serverTimestamp};
+      })();
+    }
+    return vsFirebasePromise;
+  }
+
+  function vsDocId(weekStart,day,name){
+    return `vs_${weekStart}_${String(day).toLowerCase()}_${normalize(name)}`;
+  }
+
+  async function saveVsEntriesToFirebase(entries){
+    if(!entries.length)return;
+    const {db,doc,setDoc,serverTimestamp}=await getVsFirebase();
+    const weekStart=currentKey();
+    const week=currentWeek();
+    await Promise.all(entries.map(({name,points})=>setDoc(
+      doc(db,'vsPoints',vsDocId(weekStart,selectedDay,name)),
+      {
+        weekStart,
+        day:selectedDay,
+        weekType:week.type||'PUSH',
+        member:name,
+        memberKey:normalize(name),
+        points:Number(points)||0,
+        updatedAt:serverTimestamp()
+      },
+      {merge:true}
+    )));
+  }
+
+  async function loadVsPointsFromFirebase(){
+    try{
+      setFirebaseUi('loading','Firebase: loading data…');
+      const {db,collection,getDocs}=await getVsFirebase();
+      const snap=await getDocs(collection(db,'vsPoints'));
+      let loaded=0;
+      snap.forEach(docSnap=>{
+        const raw=docSnap.data()||{};
+        const weekStart=String(raw.weekStart||'').trim();
+        const day=String(raw.day||'').trim();
+        const points=Number(raw.points)||0;
+        if(!weekStart||!DAYS.includes(day)||points<=0)return;
+        const member=memberNames().find(n=>normalize(n)===normalize(raw.member||raw.memberKey||''));
+        if(!member)return;
+        if(!vsData.weeks[weekStart])vsData.weeks[weekStart]={type:raw.weekType||'PUSH',scores:{}};
+        if(raw.weekType)vsData.weeks[weekStart].type=raw.weekType;
+        vsData.weeks[weekStart].scores[member]??={};
+        vsData.weeks[weekStart].scores[member][day]=points;
+        loaded++;
+      });
+      save();
+      renderVS();
+      setFirebaseUi('connected',`Firebase: synced • ${loaded} score(s) loaded`);
+      if(loaded) setStatus(`Loaded ${loaded} VS score(s) from Firebase ✓`);
+    }catch(err){
+      console.warn('Could not load VS points from Firebase',err);
+      setFirebaseUi('error','Firebase: sync failed');
+    }
+  }
   function editDistance(a,b){
     const m=a.length,n=b.length; const dp=Array.from({length:m+1},()=>Array(n+1).fill(0));
     for(let i=0;i<=m;i++)dp[i][0]=i; for(let j=0;j<=n;j++)dp[0][j]=j;
@@ -633,18 +721,70 @@ memberProfileModal.addEventListener('click', e => { if (e.target === memberProfi
     const d=new Date(key+'T12:00:00');
     document.getElementById('vsWeekLabel').textContent='Week of '+d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
     document.querySelectorAll('#vsDayTabs button').forEach(b=>b.classList.toggle('active',b.dataset.day===selectedDay));
+
     const q=(document.getElementById('vsSearch').value||'').trim().toLowerCase();
     const mode=document.getElementById('vsRankFilter').value;
     const rows=memberNames().map(name=>{
-      const s=week.scores[name]||{}; const total=DAYS.reduce((a,d)=>a+(Number(s[d])||0),0); return {name,s,total};
-    }).filter(x=>!q||x.name.toLowerCase().includes(q)).filter(x=>mode!=='active'||x.total>0).sort((a,b)=>b.total-a.total||a.name.localeCompare(b.name));
-    const allianceTotal=memberNames().reduce((sum,n)=>sum+DAYS.reduce((a,d)=>a+(Number((week.scores[n]||{})[d])||0),0),0);
-    const active=memberNames().filter(n=>DAYS.some(d=>Number((week.scores[n]||{})[d])>0)).length;
+      const s=week.scores[name]||{};
+      const total=DAYS.reduce((a,day)=>a+(Number(s[day])||0),0);
+      const selected=Number(s[selectedDay])||0;
+      return {name,s,total,selected};
+    }).filter(x=>!q||x.name.toLowerCase().includes(q));
+
+    if(mode==='day') rows.sort((a,b)=>b.selected-a.selected||b.total-a.total||a.name.localeCompare(b.name));
+    else rows.sort((a,b)=>b.total-a.total||a.name.localeCompare(b.name));
+
+    const visibleRows=mode==='active'?rows.filter(x=>x.total>0):rows;
+
+    // IMPORTANT: calculate the summary from the rows actually built for this week.
+    // This adds Monday + Tuesday + Wednesday + Thursday + Friday + Saturday
+    // for every member, including any member that has VS data from Firebase.
+    const allWeekRows=memberNames().map(name=>{
+      const scores=week.scores[name]||{};
+      return {
+        total:DAYS.reduce((sum,day)=>sum+(Number(scores[day])||0),0),
+        selected:Number(scores[selectedDay])||0
+      };
+    });
+
+    const knownMemberKeys=new Set(memberNames().map(normalize));
+    const extraFirebaseRows=Object.entries(week.scores||{})
+      .filter(([name])=>!knownMemberKeys.has(normalize(name)))
+      .map(([,scores])=>({
+        total:DAYS.reduce((sum,day)=>sum+(Number(scores?.[day])||0),0),
+        selected:Number(scores?.[selectedDay])||0
+      }));
+
+    const summaryRows=[...allWeekRows,...extraFirebaseRows];
+    const allianceTotal=summaryRows.reduce((sum,row)=>sum+row.total,0);
+    const dayTotal=summaryRows.reduce((sum,row)=>sum+row.selected,0);
+    const active=summaryRows.filter(row=>row.total>0).length;
+
     document.getElementById('vsSummaryType').textContent=week.type==='SAVING'?'🐢 SAVING':'🔥 PUSH';
     document.getElementById('vsSummaryTotal').textContent=fmt(allianceTotal);
+    document.getElementById('vsSummaryDayTotal').textContent=fmt(dayTotal);
+    document.getElementById('vsSelectedDayLabel').textContent=selectedDay.toUpperCase()+' TOTAL';
     document.getElementById('vsSummaryActive').textContent=active;
-    document.getElementById('vsSummaryTop').textContent=rows.find(x=>x.total>0)?.name||'—';
-    document.getElementById('vsRows').innerHTML=rows.map((r,i)=>`<div class="vs-row" data-name="${escVS(r.name.toLowerCase())}"><span class="vs-rank-num">${i+1}</span><span><b>${escVS(r.name)}</b></span>${DAYS.map(day=>`<span class="vs-score ${r.s[day]?'':'vs-empty'}">${r.s[day]?fmt(r.s[day]):'—'}</span>`).join('')}<span class="vs-total">${r.total?fmt(r.total):'—'}</span></div>`).join('');
+    document.getElementById('vsDayColumnHead').textContent=selectedDay.slice(0,3).toUpperCase();
+    document.getElementById('vsLeaderboardNote').textContent=mode==='day' ? `${selectedDay} ranking` : mode==='active' ? 'Members with points' : 'Weekly ranking';
+
+    const target=document.getElementById('vsRows');
+    if(!visibleRows.length){
+      target.innerHTML='<div class="vs-table-empty">No VS data yet.</div>';
+    }else{
+      target.innerHTML=visibleRows.map((r,i)=>{
+        const chips=DAYS.map(day=>{
+          const value=Number(r.s[day])||0;
+          return `<span class="vs-day-chip ${day===selectedDay?'active':''} ${value?'has-points':''}">${day.slice(0,3)} ${value?fmt(value):'—'}</span>`;
+        }).join('');
+        return `<div class="vs-row" data-name="${escVS(r.name.toLowerCase())}">
+          <span class="vs-rank-num">${i+1}</span>
+          <div class="vs-member-cell"><div class="vs-member-name">${escVS(r.name)}</div><div class="vs-day-strip">${chips}</div></div>
+          <span class="vs-selected-score ${r.selected?'':'vs-empty'}">${r.selected?fmt(r.selected):'—'}</span>
+          <span class="vs-total">${r.total?fmt(r.total):'—'}</span>
+        </div>`;
+      }).join('');
+    }
     save();
   }
   function setStatus(msg){const el=document.getElementById('vsOcrStatus');el.textContent=msg;el.classList.add('show')}
@@ -665,9 +805,44 @@ memberProfileModal.addEventListener('click', e => { if (e.target === memberProfi
   function getOcrApiKey(){
     return localStorage.getItem(OCRSPACE_KEY_STORAGE)||OCRSPACE_DEFAULT_KEY;
   }
+  async function cropVsRankingForOcr(file){
+    try{
+      const bitmap=await createImageBitmap(file);
+
+      /*
+        OCR should ONLY see the actual player rows:
+        - ignore the upper tabs/days (Fri., Sat., etc.)
+        - ignore the Ranking / Commander / Points header
+        - ignore the far-left ranking numbers (1, 2, 3, 43, ...)
+        Keep only the member name + score area.
+      */
+      const cropLeft=Math.round(bitmap.width*0.24);
+      const cropTop=Math.round(bitmap.height*0.22);
+      const cropWidth=bitmap.width-cropLeft;
+      const cropHeight=bitmap.height-cropTop;
+
+      const canvas=document.createElement('canvas');
+      canvas.width=cropWidth;
+      canvas.height=cropHeight;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(
+        bitmap,
+        cropLeft,cropTop,cropWidth,cropHeight,
+        0,0,cropWidth,cropHeight
+      );
+
+      bitmap.close&&bitmap.close();
+      const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.95));
+      return blob||file;
+    }catch(e){
+      return file;
+    }
+  }
+
   async function runExternalOcr(file){
+    const ocrFile=await cropVsRankingForOcr(file);
     const fd=new FormData();
-    fd.append('file',file,file.name||'ranking.jpg');
+    fd.append('file',ocrFile,(file.name||'ranking.jpg').replace(/\.(png|webp|gif)$/i,'.jpg'));
     fd.append('language','eng');
     fd.append('isOverlayRequired','false');
     fd.append('isTable','true');
@@ -715,9 +890,8 @@ memberProfileModal.addEventListener('click', e => { if (e.target === memberProfi
   }
 
   function parseExternalOcrText(text){
-    // OCR.space may return one row per line OR the name and points on separate lines.
-    // Do not use rank/medal numbers at all. Build two ordered streams: alliance names and VS scores,
-    // then pair them in their natural top-to-bottom order.
+    // The far-left ranking column is cropped before OCR.
+    // Match every player to a score on the same or nearest OCR line.
     const lines=String(text||'').replace(/\r/g,'').split('\n').map(x=>x.trim()).filter(Boolean);
     const nameRows=[];
     const scoreRows=[];
@@ -726,47 +900,46 @@ memberProfileModal.addEventListener('click', e => { if (e.target === memberProfi
       const score=extractScoreFromLine(line);
       if(score) scoreRows.push({i,points:score.digits,line});
 
-      // Remove long numeric scores and common ranking/alliance text before matching a member.
       const nameOnly=line
         .replace(/\d[\d,.\s]{4,}/g,' ')
-        .replace(/^\s*\d{1,3}\s*[.)\-:]?\s*/,' ')
         .replace(/\[[^\]]*\]/g,' ')
         .replace(/\b(?:heroes?|of|last|area|hola|ranking|rank|commander|points?)\b/ig,' ')
         .replace(/[^\p{L}\p{N}]+/gu,' ')
         .trim();
       const hit=bestMemberFromText(nameOnly);
       if(hit.score>=0.62){
-        nameRows.push({i,detected:hit.detected||nameOnly,member:hit.name,confidence:hit.confidence,line});
+        nameRows.push({i,detected:hit.detected||nameOnly,member:hit.name,confidence:hit.confidence});
       }
     });
 
-    // First keep rows where OCR found name and score together.
     const usedScores=new Set();
-    const usedNames=new Set();
     const results=[];
-    lines.forEach((line,i)=>{
-      const score=extractScoreFromLine(line);
-      if(!score) return;
-      const nameOnly=line.replace(score.raw,' ');
-      const hit=bestMemberFromText(nameOnly);
-      if(hit.score>=0.62){
-        results.push({detected:hit.detected||nameOnly,points:score.digits,member:hit.name,confidence:hit.confidence});
-        usedScores.add(i);
-        const n=nameRows.findIndex(x=>x.i===i&&x.member===hit.name);
-        if(n>=0) usedNames.add(n);
+
+    nameRows.forEach(n=>{
+      let candidates=scoreRows.filter(sc=>!usedScores.has(sc.i)&&sc.i===n.i);
+      if(!candidates.length){
+        candidates=scoreRows.filter(sc=>!usedScores.has(sc.i)&&sc.i>n.i&&sc.i<=n.i+3);
       }
+      if(!candidates.length){
+        candidates=scoreRows.filter(sc=>!usedScores.has(sc.i)&&sc.i<n.i&&sc.i>=n.i-1);
+      }
+      if(!candidates.length) return;
+
+      candidates.sort((a,b)=>{
+        const da=Math.abs(a.i-n.i), db=Math.abs(b.i-n.i);
+        return da-db || a.i-b.i;
+      });
+
+      const sc=candidates[0];
+      usedScores.add(sc.i);
+      results.push({
+        detected:n.detected,
+        points:sc.points,
+        member:n.member,
+        confidence:n.confidence
+      });
     });
 
-    // Pair remaining names and scores in reading order. This is the normal OCR output for the game screenshot.
-    const remainingNames=nameRows.filter((_,idx)=>!usedNames.has(idx));
-    const remainingScores=scoreRows.filter(x=>!usedScores.has(x.i));
-    const pairCount=Math.min(remainingNames.length,remainingScores.length);
-    for(let i=0;i<pairCount;i++){
-      const n=remainingNames[i], sc=remainingScores[i];
-      results.push({detected:n.detected,points:sc.points,member:n.member,confidence:n.confidence});
-    }
-
-    // Deduplicate by member, keeping the largest score. Ranking will be calculated later by the tracker.
     const byMember=new Map();
     results.forEach(r=>{
       const old=byMember.get(r.member);
@@ -801,23 +974,56 @@ memberProfileModal.addEventListener('click', e => { if (e.target === memberProfi
   document.getElementById('vsImageInput').onchange=e=>importFiles([...e.target.files]);
   document.getElementById('vsManualBtn').onclick=()=>{reviewItems.push({rank:'',detected:'',points:0,member:'',confidence:'manual'});showReview();setStatus('Add the member and points, then confirm import.')};
   document.getElementById('vsCancelImport').onclick=()=>{reviewItems=[];document.getElementById('vsReview').style.display='none';clearStatus()};
-  document.getElementById('vsConfirmImport').onclick=()=>{
+  document.getElementById('vsConfirmImport').onclick=async()=>{
     const week=currentWeek();
-    let added=0;
-    reviewItems.forEach(r=>{if(r.member&&Number(r.points)>0){week.scores[r.member]??={};week.scores[r.member][selectedDay]=Number(r.points);added++}});
-    reviewItems=[];document.getElementById('vsReview').style.display='none';setStatus(`${added} score(s) saved for ${selectedDay}.`);save();renderVS();
+    const entries=[];
+    reviewItems.forEach(r=>{
+      if(r.member&&Number(r.points)>0){
+        const points=Number(r.points);
+        week.scores[r.member]??={};
+        week.scores[r.member][selectedDay]=points;
+        entries.push({name:r.member,points});
+      }
+    });
+    reviewItems=[];
+    document.getElementById('vsReview').style.display='none';
+    save();
+    renderVS();
+    setStatus(`${entries.length} score(s) saved locally. Syncing with Firebase…`);
+    try{
+      await saveVsEntriesToFirebase(entries);
+      setStatus(`${entries.length} score(s) saved to Firebase ✓`);
+      setFirebaseUi('connected','Firebase: synced just now');
+    }catch(err){
+      console.error('Could not save VS points to Firebase',err);
+      setStatus(`${entries.length} score(s) saved locally, but Firebase sync failed.`);
+    }
   };
-  document.getElementById('vsSaveWeek').onclick=()=>{currentWeek().type=document.getElementById('vsWeekType').value;save();renderVS();setStatus('Week settings saved ✓')};
-  document.getElementById('vsWeekStart').onchange=()=>setWeek(document.getElementById('vsWeekStart').value);
+  document.getElementById('vsSaveWeek').onclick=async()=>{
+    currentWeek().type=document.getElementById('vsWeekType').value;
+    save();renderVS();
+    const week=currentWeek();
+    const entries=[];
+    Object.entries(week.scores||{}).forEach(([name,days])=>{
+      const points=Number(days[selectedDay])||0;
+      if(points>0)entries.push({name,points});
+    });
+    try{await saveVsEntriesToFirebase(entries);setStatus('Week settings saved to Firebase ✓')}
+    catch(err){setStatus('Week settings saved locally, but Firebase sync failed.')}
+  };
+  document.getElementById('vsWeekStart').onchange=async()=>{setWeek(document.getElementById('vsWeekStart').value);await loadVsPointsFromFirebase()};
   document.getElementById('vsWeekType').onchange=()=>{currentWeek().type=document.getElementById('vsWeekType').value;save();renderVS()};
-  document.getElementById('vsPrevWeek').onclick=()=>{const d=new Date(currentKey()+'T12:00:00');d.setDate(d.getDate()-7);setWeek(mondayKey(d))};
-  document.getElementById('vsNextWeek').onclick=()=>{const d=new Date(currentKey()+'T12:00:00');d.setDate(d.getDate()+7);setWeek(mondayKey(d))};
+  document.getElementById('vsPrevWeek').onclick=async()=>{const d=new Date(currentKey()+'T12:00:00');d.setDate(d.getDate()-7);setWeek(mondayKey(d));await loadVsPointsFromFirebase()};
+  document.getElementById('vsNextWeek').onclick=async()=>{const d=new Date(currentKey()+'T12:00:00');d.setDate(d.getDate()+7);setWeek(mondayKey(d));await loadVsPointsFromFirebase()};
+  document.getElementById('vsRefreshFirebase').onclick=()=>loadVsPointsFromFirebase();
   document.querySelectorAll('#vsDayTabs button').forEach(b=>b.onclick=()=>{selectedDay=b.dataset.day;renderVS()});
   document.getElementById('vsSearch').oninput=renderVS;
   document.getElementById('vsRankFilter').onchange=renderVS;
   setWeek(mondayKey());
   // The current week is a PUSH WEEK by alliance decision.
   currentWeek().type='PUSH'; save(); renderVS();
+  // Load any VS scores already saved in Firestore and merge them with this device's local cache.
+  loadVsPointsFromFirebase();
 })();
 
 })();
