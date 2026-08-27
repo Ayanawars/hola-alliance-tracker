@@ -149,6 +149,11 @@ footer{text-align:center;color:#71809a;padding:18px;font-size:12px}@media(max-wi
 .member-rank-chevron{transition:transform .2s ease}.member-rank-group.collapsed .member-rank-chevron{transform:rotate(-90deg)}
 .member-rank-group.collapsed .member-rank-body{display:none}
 
+
+/* Logout button */
+#logoutBtn{display:none;margin-left:10px}
+.auth-actions{display:flex;align-items:center;justify-content:flex-end;margin:8px 0}
+
 </style></head><body><div class="wrap"><header>
 <div class="hero-glow glow-one"></div><div class="hero-glow glow-two"></div>
 <div class="alliance-badge">⚔</div>
@@ -156,6 +161,7 @@ footer{text-align:center;color:#71809a;padding:18px;font-size:12px}@media(max-wi
 <div class="alliance-tag">ALLIANCE MEMBER TRACKER</div>
 <div class="sub">Rank · Total Hero Power · Headquarters Level</div><div class="manage-bar"><button id="manageDataBtn" class="manage-btn">⚙️ Manage / Edit data</button></div>
 <div class="stats"><div class="stat"><b>87</b><small>MEMBERS</small></div><div class="stat"><b>1</b><small>R5</small></div><div class="stat"><b>9</b><small>R4</small></div><div class="stat"><b>39</b><small>R3</small></div><div class="stat"><b>21</b><small>R2</small></div><div class="stat"><b>17</b><small>R1</small></div></div></header>
+<div class="auth-actions"><button id="logoutBtn" class="btn-ghost" type="button">🚪 Logout</button></div>
 <div class="tabs" role="tablist">
   <button class="tab active" data-tab="members">👥 Members</button>
   <button class="tab" data-tab="donations">🎁 Donations</button>
@@ -1078,4 +1084,45 @@ memberProfileModal.addEventListener('click', e => { if (e.target === memberProfi
 
 })();
 </script>
+
+<script type="module">
+(async()=>{
+  try{
+    const [{initializeApp,getApps},{getAuth,onAuthStateChanged,signOut}] = await Promise.all([
+      import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js")
+    ]);
+    const firebaseConfig={
+      apiKey:"AIzaSyDxipuHjcf0EI5aMjM7534asdtq03AlQzQ",
+      authDomain:"hola-alliance-tracker.firebaseapp.com",
+      projectId:"hola-alliance-tracker",
+      storageBucket:"hola-alliance-tracker.firebasestorage.app",
+      messagingSenderId:"843941636060",
+      appId:"1:843941636060:web:f8f059f72ccff0eaabd119"
+    };
+    const app=getApps().find(a=>a.options.projectId===firebaseConfig.projectId)||initializeApp(firebaseConfig);
+    const auth=getAuth(app);
+    const btn=document.getElementById('logoutBtn');
+
+    onAuthStateChanged(auth,user=>{
+      if(btn) btn.style.display=user?'inline-flex':'none';
+    });
+
+    btn?.addEventListener('click',async()=>{
+      btn.disabled=true;
+      btn.textContent='Logging out...';
+      try{
+        await signOut(auth);
+        location.reload();
+      }catch(e){
+        console.error('Logout error:',e);
+        btn.disabled=false;
+        btn.textContent='🚪 Logout';
+        alert('Could not log out. Please try again.');
+      }
+    });
+  }catch(e){ console.error('Auth logout setup error:',e); }
+})();
+</script>
+
 </body></html>
