@@ -43,6 +43,13 @@
     .check-row input{width:20px;height:20px;accent-color:var(--accent)}
     .squad-card{background:var(--card2);border:1px solid var(--line);border-radius:18px;padding:16px}
     .squad-title{font-weight:850;margin:0 0 13px}
+    .ocr-box{margin-top:14px;padding:12px;border:1px dashed var(--line);border-radius:14px;background:#0b1627}
+    .ocr-box input[type="file"]{padding:10px}
+    .ocr-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .ocr-btn{border:0;background:linear-gradient(135deg,#7b6cff,#66b8ff);color:#07111f;font-weight:900;padding:11px 14px;border-radius:11px;cursor:pointer}
+    .ocr-btn:disabled{opacity:.6;cursor:wait}
+    .ocr-status{font-size:.9rem;color:var(--muted);min-height:1.2em}
+    .ocr-preview{display:none;margin-top:10px;width:100%;max-height:210px;object-fit:contain;border-radius:10px;border:1px solid var(--line);background:#06101d}
     .actions{display:flex;gap:12px;align-items:center;margin-top:24px}
     button.submit{
       border:0;background:linear-gradient(135deg,#4eaaff,#86d6ff);color:#06101d;font-weight:900;
@@ -56,13 +63,81 @@
     .modal-box{width:min(470px,100%);background:#101d31;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 20px 80px rgba(0,0,0,.5)}
     .modal-box h2{margin-top:0}.modal-box p{color:var(--muted);line-height:1.55}
     .close{background:transparent;color:var(--text);border:1px solid var(--line);padding:10px 14px;border-radius:10px;cursor:pointer;font:inherit}
+
+    /* Welcome screen */
+    .welcome-screen{position:fixed;inset:0;z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:18px;background:var(--bg);overflow:auto}
+    .welcome-inner{width:min(920px,100%);padding:10px 0 30px;text-align:center}
+    .welcome-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:clamp(22px,5vw,42px);box-shadow:0 18px 70px rgba(0,0,0,.42);text-align:left}
+    .welcome-card h1{margin:0 0 10px;text-align:center;font-size:clamp(1.8rem,6vw,2.7rem)}
+    .welcome-lead{margin:0 auto 24px;max-width:760px;text-align:center;color:var(--muted);font-size:1.05rem;line-height:1.6}
+    .welcome-language{display:flex;justify-content:flex-end;margin-bottom:18px}
+    .welcome-language select{max-width:260px}
+    .welcome-item{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0}
+    .welcome-item h2{margin:0 0 7px;font-size:1.1rem}
+    .welcome-item p{margin:0;color:var(--muted);line-height:1.6}
+    .welcome-steps{margin:10px 0 0;padding-left:24px;color:var(--muted);line-height:1.8}
+    .welcome-note{margin-top:20px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(102,184,255,.08);color:var(--text);line-height:1.55}
+    .welcome-actions{display:flex;justify-content:center;margin-top:18px}
+    .start-survey{border:0;background:linear-gradient(135deg,#f4c44b,#ffdf72);color:#07111f;font-weight:1000;padding:17px 34px;border-radius:15px;font-size:clamp(1rem,4vw,1.25rem);cursor:pointer;box-shadow:0 10px 30px rgba(255,202,76,.2)}
+    .start-survey:active{transform:translateY(1px)}
+    body.welcome-open{overflow:hidden}
+    body.survey-hidden .wrap{visibility:hidden}
+    @media(max-width:680px){.welcome-screen{padding:8px}.welcome-inner{padding-top:4px}.welcome-card{border-radius:14px}.welcome-actions{margin-top:12px}.start-survey{width:100%;padding:15px 20px}}
     @media(max-width:680px){
       header{flex-direction:column}.lang-select{width:100%}.grid{grid-template-columns:1fr}
       .full{grid-column:auto}.wrap{width:min(100% - 20px,900px);padding-top:16px}form{padding:16px;border-radius:18px}
     }
   </style>
 </head>
-<body>
+<body class="welcome-open survey-hidden">
+  <div class="welcome-screen" id="welcomeScreen" aria-label="Survey preparation">
+    <div class="welcome-inner">
+      <section class="welcome-card">
+        <div class="welcome-language">
+          <select id="welcomeLanguage" aria-label="Language">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="ro">Română</option>
+            <option value="fr">Français</option>
+            <option value="it">Italiano</option>
+            <option value="de">Deutsch</option>
+            <option value="uk">Українська</option>
+          </select>
+        </div>
+
+        <h1 data-i18n="welcomeTitle">BEFORE YOU START</h1>
+        <p class="welcome-lead" data-i18n="welcomeLead">Please have everything ready before starting the survey.</p>
+
+        <div class="welcome-item">
+          <h2>📸 <span data-i18n="welcomeSquadsTitle">Screenshots of your 3 Squads</span></h2>
+          <p data-i18n="welcomeSquadsText">Have screenshots of your three squads ready. You will need them to check the squad power and squad type.</p>
+        </div>
+
+        <div class="welcome-item">
+          <h2>🖼️ <span data-i18n="welcomeAvatarTitle">An Avatar Image</span></h2>
+          <p data-i18n="welcomeAvatarText">Have an image ready if you want to upload an avatar to your player card.</p>
+        </div>
+
+        <div class="welcome-item">
+          <h2>🔥 <span data-i18n="welcomeThpTitle">A Screenshot of Your THP</span></h2>
+          <p data-i18n="welcomeThpText">You will need a screenshot of your Total Hero Power (THP).</p>
+        </div>
+
+        <div class="welcome-item">
+          <h2>🔎 <span data-i18n="welcomeFindTitle">Where to find your THP</span></h2>
+          <ol class="welcome-steps">
+            <li data-i18n="welcomeStep1">Tap your profile picture in the top-left corner.</li>
+            <li data-i18n="welcomeStep2">Tap Rankings.</li>
+            <li data-i18n="welcomeStep3">Select Total Hero Power.</li>
+          </ol>
+        </div>
+
+        <div class="welcome-note" data-i18n="welcomeOptional">ℹ️ All fields are optional. You can update your information later without deleting the data you do not change.</div>
+      </section>
+      <div class="welcome-actions"><button type="button" class="start-survey" id="startSurveyBtn" data-i18n="startSurvey">I'M READY – START SURVEY</button></div>
+    </div>
+  </div>
+
   <main class="wrap">
     <header>
       <div>
@@ -90,7 +165,7 @@
 
         <div class="field">
   <label>🏳️ Country / Flag</label>
-  <select id="playerFlag" required>
+  <select id="playerFlag">
     <option value="">Select your flag</option>
     <option value="🇪🇸">🇪🇸 Spain</option><option value="🇺🇦">🇺🇦 Ukraine</option>
     <option value="🇬🇧">🇬🇧 United Kingdom</option><option value="🇺🇸">🇺🇸 United States</option>
@@ -121,7 +196,7 @@
           <label for="thp"><span data-i18n="thp">THP (Total Hero Power)</span>
             <button type="button" class="help" id="thpHelp" aria-label="THP help">?</button>
           </label>
-          <input id="thp" required inputmode="decimal" data-placeholder="powerPlaceholder" placeholder="Example: 250M">
+          <input id="thp" inputmode="decimal" data-placeholder="powerPlaceholder" placeholder="Example: 250M">
         </div>
 
         <div class="field">
@@ -134,7 +209,7 @@
 
         <div class="field full">
           <label for="profession" data-i18n="profession">Profession</label>
-          <select id="profession" required>
+          <select id="profession">
             <option value="" data-i18n="selectProfession">Select your profession</option>
             <option value="Engineer" data-i18n="engineer">Engineer</option>
             <option value="Warlord" data-i18n="warlord">Warlord</option>
@@ -146,9 +221,9 @@
       <div class="grid">
         <div class="squad-card">
           <p class="squad-title" data-i18n="squad1">Squad 1</p>
-          <div class="field"><label for="s1power" data-i18n="power">Power</label><input id="s1power" required inputmode="decimal" data-placeholder="powerPlaceholder" placeholder="Example: 120M"></div>
+          <div class="field"><label for="s1power" data-i18n="power">Power</label><input id="s1power" inputmode="decimal" data-placeholder="powerPlaceholder" placeholder="Example: 120M"></div>
           <div class="field" style="margin-top:12px"><label for="s1type" data-i18n="squadType">Squad Type</label>
-            <select id="s1type" required>
+            <select id="s1type">
               <option value="" data-i18n="selectType">Select type</option>
               <option value="Tank" data-i18n="tank">Tank</option>
               <option value="Aircraft" data-i18n="aircraft">Aircraft</option>
@@ -156,26 +231,38 @@
               <option value="Mixed" data-i18n="mixed">Mixed</option>
             </select>
           </div>
+          <div class="ocr-box">
+            <label for="s1image" data-i18n="squadImage">Or upload a squad screenshot to detect the power automatically (optional)</label>
+            <input id="s1image" type="file" accept="image/*">
+            <div class="ocr-actions"><button type="button" class="ocr-btn" data-ocr-squad="1" data-i18n="scanPower">Scan power with OCR</button><span class="ocr-status" id="s1ocrstatus"></span></div>
+            <img class="ocr-preview" id="s1preview" alt="Squad screenshot preview">
+          </div>
         </div>
         <div class="squad-card">
           <p class="squad-title" data-i18n="squad2">Squad 2</p>
-          <div class="field"><label for="s2power" data-i18n="power">Power</label><input id="s2power" required inputmode="decimal" data-placeholder="powerPlaceholder" placeholder="Example: 110M"></div>
+          <div class="field"><label for="s2power" data-i18n="power">Power</label><input id="s2power" inputmode="decimal" data-placeholder="powerPlaceholder" placeholder="Example: 110M"></div>
           <div class="field" style="margin-top:12px"><label for="s2type" data-i18n="squadType">Squad Type</label>
-            <select id="s2type" required>
+            <select id="s2type">
               <option value="" data-i18n="selectType">Select type</option>
               <option value="Tank" data-i18n="tank">Tank</option>
               <option value="Aircraft" data-i18n="aircraft">Aircraft</option>
               <option value="Missile" data-i18n="missile">Missile</option>
               <option value="Mixed" data-i18n="mixed">Mixed</option>
             </select>
+          </div>
+          <div class="ocr-box">
+            <label for="s2image" data-i18n="squadImage">Or upload a squad screenshot to detect the power automatically (optional)</label>
+            <input id="s2image" type="file" accept="image/*">
+            <div class="ocr-actions"><button type="button" class="ocr-btn" data-ocr-squad="2" data-i18n="scanPower">Scan power with OCR</button><span class="ocr-status" id="s2ocrstatus"></span></div>
+            <img class="ocr-preview" id="s2preview" alt="Squad screenshot preview">
           </div>
         </div>
         <div class="squad-card full">
           <p class="squad-title" data-i18n="squad3">Squad 3</p>
           <div class="grid">
-            <div class="field"><label for="s3power" data-i18n="power">Power</label><input id="s3power" required inputmode="decimal" data-placeholder="powerPlaceholder" placeholder="Example: 100M"></div>
+            <div class="field"><label for="s3power" data-i18n="power">Power</label><input id="s3power" inputmode="decimal" data-placeholder="powerPlaceholder" placeholder="Example: 100M"></div>
             <div class="field"><label for="s3type" data-i18n="squadType">Squad Type</label>
-              <select id="s3type" required>
+              <select id="s3type">
                 <option value="" data-i18n="selectType">Select type</option>
                 <option value="Tank" data-i18n="tank">Tank</option>
                 <option value="Aircraft" data-i18n="aircraft">Aircraft</option>
@@ -183,6 +270,12 @@
                 <option value="Mixed" data-i18n="mixed">Mixed</option>
               </select>
             </div>
+          </div>
+          <div class="ocr-box">
+            <label for="s3image" data-i18n="squadImage">Or upload a squad screenshot to detect the power automatically (optional)</label>
+            <input id="s3image" type="file" accept="image/*">
+            <div class="ocr-actions"><button type="button" class="ocr-btn" data-ocr-squad="3" data-i18n="scanPower">Scan power with OCR</button><span class="ocr-status" id="s3ocrstatus"></span></div>
+            <img class="ocr-preview" id="s3preview" alt="Squad screenshot preview">
           </div>
         </div>
       </div>
@@ -219,19 +312,28 @@
   const db = getFirestore(app);
 
   const T = {
-    en:{title:"Alliance Player Survey",subtitle:"Fill in your current game information. You can submit again later to update your data.",name:"In-Game Name",namePlaceholder:"Enter your exact in-game name",thp:"THP (Total Hero Power)",t10:"T10 Unlocked",yes:"Yes",profession:"Profession",selectProfession:"Select your profession",engineer:"Engineer",warlord:"Warlord",squads:"Squads",squad1:"Squad 1",squad2:"Squad 2",squad3:"Squad 3",power:"Power",powerPlaceholder:"Example: 120M",squadType:"Squad Type",selectType:"Select type",tank:"Tank",aircraft:"Aircraft",missile:"Missile",mixed:"Mixed",submit:"Save / Update",saving:"Saving...",saved:"Saved successfully!",error:"Something went wrong. Please try again.",thpHelpTitle:"Where to find THP",thpHelpText:"Open your profile in the game. Go to the Rankings section. Look for the Total Hero Power ranking/category to see your actual value.",close:"Close"},
-    es:{title:"Encuesta de Jugadores de la Alianza",subtitle:"Rellena tu información actual del juego. Puedes enviarla de nuevo más adelante para actualizar tus datos.",name:"Nombre en el juego",namePlaceholder:"Introduce tu nombre exacto del juego",thp:"THP (Poder total de héroes)",t10:"T10 desbloqueado",yes:"Sí",profession:"Profesión",selectProfession:"Selecciona tu profesión",engineer:"Ingeniero",warlord:"Señor de guerra",squads:"Escuadrones",squad1:"Escuadrón 1",squad2:"Escuadrón 2",squad3:"Escuadrón 3",power:"Poder",powerPlaceholder:"Ejemplo: 120M",squadType:"Tipo de escuadrón",selectType:"Selecciona el tipo",tank:"Tanque",aircraft:"Aeronave",missile:"Misiles",mixed:"Mixto",submit:"Guardar / Actualizar",saving:"Guardando...",saved:"¡Guardado correctamente!",error:"Algo salió mal. Inténtalo de nuevo.",thpHelpTitle:"Dónde encontrar el THP",thpHelpText:"Abre tu perfil en el juego. Entra en la sección de clasificaciones o rankings. Busca la tabla o categoría de poder total de héroe para ver tu cifra real.",close:"Cerrar"},
-    ro:{title:"Chestionar jucători alianță",subtitle:"Completează informațiile actuale din joc. Poți trimite din nou mai târziu pentru a-ți actualiza datele.",name:"Nume în joc",namePlaceholder:"Introdu numele exact din joc",thp:"THP (Puterea totală a eroilor)",t10:"T10 deblocat",yes:"Da",profession:"Profesie",selectProfession:"Selectează profesia",engineer:"Inginer",warlord:"Lord al războiului",squads:"Echipe",squad1:"Echipa 1",squad2:"Echipa 2",squad3:"Echipa 3",power:"Putere",powerPlaceholder:"Exemplu: 120M",squadType:"Tipul echipei",selectType:"Selectează tipul",tank:"Tanc",aircraft:"Aviație",missile:"Rachetă",mixed:"Mixt",submit:"Salvează / Actualizează",saving:"Se salvează...",saved:"Salvat cu succes!",error:"A apărut o eroare. Încearcă din nou.",thpHelpTitle:"Unde găsești THP",thpHelpText:"Deschide profilul din joc. Intră în secțiunea Clasamente. Caută categoria Puterea totală a eroilor pentru a vedea valoarea reală.",close:"Închide"},
-    fr:{title:"Questionnaire des joueurs de l'alliance",subtitle:"Indique tes informations actuelles du jeu. Tu peux envoyer à nouveau plus tard pour mettre à jour tes données.",name:"Nom en jeu",namePlaceholder:"Saisis ton nom exact en jeu",thp:"THP (Puissance totale des héros)",t10:"T10 débloqué",yes:"Oui",profession:"Profession",selectProfession:"Sélectionne ta profession",engineer:"Ingénieur",warlord:"Seigneur de guerre",squads:"Escouades",squad1:"Escouade 1",squad2:"Escouade 2",squad3:"Escouade 3",power:"Puissance",powerPlaceholder:"Exemple : 120M",squadType:"Type d'escouade",selectType:"Sélectionne le type",tank:"Char",aircraft:"Aérien",missile:"Missile",mixed:"Mixte",submit:"Enregistrer / Mettre à jour",saving:"Enregistrement...",saved:"Enregistré avec succès !",error:"Une erreur s'est produite. Réessaie.",thpHelpTitle:"Où trouver le THP",thpHelpText:"Ouvre ton profil dans le jeu. Va dans la section Classements. Cherche la catégorie Puissance totale des héros pour voir ta valeur réelle.",close:"Fermer"},
-    it:{title:"Questionario giocatori dell'alleanza",subtitle:"Inserisci le tue informazioni attuali di gioco. Puoi inviarle di nuovo più tardi per aggiornare i dati.",name:"Nome in gioco",namePlaceholder:"Inserisci il tuo nome esatto in gioco",thp:"THP (Potenza totale eroi)",t10:"T10 sbloccato",yes:"Sì",profession:"Professione",selectProfession:"Seleziona la tua professione",engineer:"Ingegnere",warlord:"Signore della guerra",squads:"Squadre",squad1:"Squadra 1",squad2:"Squadra 2",squad3:"Squadra 3",power:"Potenza",powerPlaceholder:"Esempio: 120M",squadType:"Tipo di squadra",selectType:"Seleziona il tipo",tank:"Carro armato",aircraft:"Aereo",missile:"Missile",mixed:"Misto",submit:"Salva / Aggiorna",saving:"Salvataggio...",saved:"Salvato con successo!",error:"Qualcosa è andato storto. Riprova.",thpHelpTitle:"Dove trovare il THP",thpHelpText:"Apri il tuo profilo nel gioco. Vai alla sezione Classifiche. Cerca la categoria Potenza totale degli eroi per vedere il valore reale.",close:"Chiudi"},
-    de:{title:"Spielerumfrage der Allianz",subtitle:"Trage deine aktuellen Spieldaten ein. Du kannst sie später erneut senden, um deine Daten zu aktualisieren.",name:"Name im Spiel",namePlaceholder:"Gib deinen genauen Namen im Spiel ein",thp:"THP (Gesamte Heldenstärke)",t10:"T10 freigeschaltet",yes:"Ja",profession:"Beruf",selectProfession:"Wähle deinen Beruf",engineer:"Ingenieur",warlord:"Kriegsherr",squads:"Trupps",squad1:"Trupp 1",squad2:"Trupp 2",squad3:"Trupp 3",power:"Stärke",powerPlaceholder:"Beispiel: 120M",squadType:"Trupp-Typ",selectType:"Typ auswählen",tank:"Panzer",aircraft:"Flugzeug",missile:"Rakete",mixed:"Gemischt",submit:"Speichern / Aktualisieren",saving:"Speichern...",saved:"Erfolgreich gespeichert!",error:"Etwas ist schiefgelaufen. Bitte versuche es erneut.",thpHelpTitle:"Wo du THP findest",thpHelpText:"Öffne dein Profil im Spiel. Gehe zum Bereich Ranglisten. Suche nach der Kategorie Gesamte Heldenstärke, um deinen tatsächlichen Wert zu sehen.",close:"Schließen"},
-    uk:{title:"Опитування гравців альянсу",subtitle:"Заповніть актуальну інформацію про ваш акаунт у грі. Ви можете надіслати форму повторно пізніше, щоб оновити свої дані.",name:"Ім’я в грі",namePlaceholder:"Введіть точне ім’я з гри",thp:"THP (Загальна сила героїв)",t10:"T10 відкрито",yes:"Так",profession:"Професія",selectProfession:"Оберіть професію",engineer:"Інженер",warlord:"Володар війни",squads:"Загони",squad1:"Загін 1",squad2:"Загін 2",squad3:"Загін 3",power:"Сила",powerPlaceholder:"Приклад: 120M",squadType:"Тип загону",selectType:"Оберіть тип",tank:"Танк",aircraft:"Авіація",missile:"Ракети",mixed:"Змішаний",submit:"Зберегти / Оновити",saving:"Збереження...",saved:"Успішно збережено!",error:"Щось пішло не так. Спробуйте ще раз.",thpHelpTitle:"Де знайти THP",thpHelpText:"Відкрийте свій профіль у грі. Перейдіть до розділу рейтингів. Знайдіть таблицю або категорію загальної сили героїв, щоб побачити своє фактичне значення.",close:"Закрити"}
+    en:{title:"Alliance Player Survey",subtitle:"Fill in your current game information. You can submit again later to update your data.",name:"In-Game Name",namePlaceholder:"Enter your exact in-game name",thp:"THP (Total Hero Power)",t10:"T10 Unlocked",yes:"Yes",profession:"Profession",selectProfession:"Select your profession",engineer:"Engineer",warlord:"Warlord",squads:"Squads",squad1:"Squad 1",squad2:"Squad 2",squad3:"Squad 3",power:"Power",powerPlaceholder:"Example: 120M",squadType:"Squad Type",selectType:"Select type",tank:"Tank",aircraft:"Aircraft",missile:"Missile",mixed:"Mixed",submit:"Save / Update",saving:"Saving...",saved:"Saved successfully!",error:"Something went wrong. Please try again.",thpHelpTitle:"Where to find THP",thpHelpText:"Open your profile in the game. Go to the Rankings section. Look for the Total Hero Power ranking/category to see your actual value.",close:"Close",welcomeTitle:"BEFORE YOU START",welcomeLead:"Please have everything ready before starting the survey.",welcomeSquadsTitle:"Your 3 Squads – Type or Upload",welcomeSquadsText:"You can type the power of each squad manually, or upload a screenshot and the OCR will automatically detect the power. Keep your screenshots ready if you want to use automatic detection.",squadImage:"Or upload a squad screenshot to detect the power automatically (optional)",scanPower:"Detect power automatically",ocrWorking:"Scanning screenshot...",ocrFound:"Power detected: ",ocrNotFound:"Power not detected. Try a clearer screenshot.",ocrImageFirst:"Upload a screenshot first.",welcomeAvatarTitle:"An Avatar Image",welcomeAvatarText:"Have an image ready if you want to upload an avatar to your player card.",welcomeThpTitle:"A Screenshot of Your THP",welcomeThpText:"You will need a screenshot of your Total Hero Power (THP).",welcomeFindTitle:"Where to find your THP",welcomeStep1:"Tap your profile picture in the top-left corner.",welcomeStep2:"Tap Rankings.",welcomeStep3:"Select Total Hero Power.",welcomeOptional:"ℹ️ All fields are optional. You can update your information later without deleting the data you do not change.",startSurvey:"I’M READY – START SURVEY"},
+    es:{title:"Encuesta de Jugadores de la Alianza",subtitle:"Rellena tu información actual del juego. Puedes enviarla de nuevo más adelante para actualizar tus datos.",name:"Nombre en el juego",namePlaceholder:"Introduce tu nombre exacto del juego",thp:"THP (Poder total de héroes)",t10:"T10 desbloqueado",yes:"Sí",profession:"Profesión",selectProfession:"Selecciona tu profesión",engineer:"Ingeniero",warlord:"Señor de guerra",squads:"Escuadrones",squad1:"Escuadrón 1",squad2:"Escuadrón 2",squad3:"Escuadrón 3",power:"Poder",powerPlaceholder:"Ejemplo: 120M",squadType:"Tipo de escuadrón",selectType:"Selecciona el tipo",tank:"Tanque",aircraft:"Aeronave",missile:"Misiles",mixed:"Mixto",submit:"Guardar / Actualizar",saving:"Guardando...",saved:"¡Guardado correctamente!",error:"Algo salió mal. Inténtalo de nuevo.",thpHelpTitle:"Dónde encontrar el THP",thpHelpText:"Abre tu perfil en el juego. Entra en la sección de clasificaciones o rankings. Busca la tabla o categoría de poder total de héroe para ver tu cifra real.",close:"Cerrar",welcomeTitle:"ANTES DE EMPEZAR",welcomeLead:"Ten todo preparado antes de empezar la encuesta.",welcomeSquadsTitle:"Tus 3 Escuadrones – Escribe o Sube",welcomeSquadsText:"Puedes escribir el poder de cada escuadrón manualmente o subir una captura y el OCR detectará el poder automáticamente. Ten las capturas preparadas si quieres usar la detección automática.",squadImage:"O sube una captura del escuadrón para detectar el poder automáticamente (opcional)",scanPower:"Detectar poder automáticamente",ocrWorking:"Analizando captura...",ocrFound:"Poder detectado: ",ocrNotFound:"No se detectó el poder. Prueba con una captura más clara.",ocrImageFirst:"Primero sube una captura.",welcomeAvatarTitle:"Una Imagen de Avatar",welcomeAvatarText:"Ten preparada una imagen si quieres subir un avatar a tu tarjeta de jugador.",welcomeThpTitle:"Una Captura de tu THP",welcomeThpText:"Necesitarás una captura de tu Poder Total de Héroes (THP).",welcomeFindTitle:"Dónde encontrar tu THP",welcomeStep1:"Pulsa tu foto de perfil en la esquina superior izquierda.",welcomeStep2:"Pulsa Rankings o Clasificaciones.",welcomeStep3:"Selecciona Total Hero Power.",welcomeOptional:"ℹ️ Todos los campos son opcionales. Puedes actualizar tu información más adelante sin borrar los datos que no cambies.",startSurvey:"ESTOY LISTO – EMPEZAR ENCUESTA"},
+    ro:{title:"Chestionar jucători alianță",subtitle:"Completează informațiile actuale din joc. Poți trimite din nou mai târziu pentru a-ți actualiza datele.",name:"Nume în joc",namePlaceholder:"Introdu numele exact din joc",thp:"THP (Puterea totală a eroilor)",t10:"T10 deblocat",yes:"Da",profession:"Profesie",selectProfession:"Selectează profesia",engineer:"Inginer",warlord:"Lord al războiului",squads:"Echipe",squad1:"Echipa 1",squad2:"Echipa 2",squad3:"Echipa 3",power:"Putere",powerPlaceholder:"Exemplu: 120M",squadType:"Tipul echipei",selectType:"Selectează tipul",tank:"Tanc",aircraft:"Aviație",missile:"Rachetă",mixed:"Mixt",submit:"Salvează / Actualizează",saving:"Se salvează...",saved:"Salvat cu succes!",error:"A apărut o eroare. Încearcă din nou.",thpHelpTitle:"Unde găsești THP",thpHelpText:"Deschide profilul din joc. Intră în secțiunea Clasamente. Caută categoria Puterea totală a eroilor pentru a vedea valoarea reală.",close:"Închide",welcomeTitle:"ÎNAINTE SĂ ÎNCEPI",welcomeLead:"Pregătește totul înainte de a începe chestionarul.",welcomeSquadsTitle:"Cele 3 echipe – Scrie sau încarcă",welcomeSquadsText:"Poți introduce manual puterea fiecărei echipe sau poți încărca o captură, iar OCR-ul va detecta automat puterea. Pregătește capturile dacă vrei să folosești detectarea automată.",squadImage:"Sau încarcă o captură pentru detectarea automată a puterii (opțional)",scanPower:"Detectează automat puterea",ocrWorking:"Se analizează captura...",ocrFound:"Putere detectată: ",ocrNotFound:"Puterea nu a fost detectată. Încearcă o captură mai clară.",ocrImageFirst:"Încarcă mai întâi o captură.",welcomeAvatarTitle:"O imagine de avatar",welcomeAvatarText:"Pregătește o imagine dacă vrei să încarci un avatar pe cardul tău de jucător.",welcomeThpTitle:"O captură de ecran cu THP-ul tău",welcomeThpText:"Vei avea nevoie de o captură de ecran cu Puterea totală a eroilor (THP).",welcomeFindTitle:"Unde găsești THP-ul",welcomeStep1:"Apasă pe poza ta de profil din colțul din stânga sus.",welcomeStep2:"Apasă pe Clasamente.",welcomeStep3:"Selectează Total Hero Power.",welcomeOptional:"ℹ️ Toate câmpurile sunt opționale. Îți poți actualiza informațiile mai târziu fără să ștergi datele pe care nu le modifici.",startSurvey:"SUNT GATA – ÎNCEPE CHESTIONARUL"},
+    fr:{title:"Questionnaire des joueurs de l'alliance",subtitle:"Indique tes informations actuelles du jeu. Tu peux envoyer à nouveau plus tard pour mettre à jour tes données.",name:"Nom en jeu",namePlaceholder:"Saisis ton nom exact en jeu",thp:"THP (Puissance totale des héros)",t10:"T10 débloqué",yes:"Oui",profession:"Profession",selectProfession:"Sélectionne ta profession",engineer:"Ingénieur",warlord:"Seigneur de guerre",squads:"Escouades",squad1:"Escouade 1",squad2:"Escouade 2",squad3:"Escouade 3",power:"Puissance",powerPlaceholder:"Exemple : 120M",squadType:"Type d'escouade",selectType:"Sélectionne le type",tank:"Char",aircraft:"Aérien",missile:"Missile",mixed:"Mixte",submit:"Enregistrer / Mettre à jour",saving:"Enregistrement...",saved:"Enregistré avec succès !",error:"Une erreur s'est produite. Réessaie.",thpHelpTitle:"Où trouver le THP",thpHelpText:"Ouvre ton profil dans le jeu. Va dans la section Classements. Cherche la catégorie Puissance totale des héros pour voir ta valeur réelle.",close:"Fermer",welcomeTitle:"AVANT DE COMMENCER",welcomeLead:"Prépare tout avant de commencer le questionnaire.",welcomeSquadsTitle:"Tes 3 escouades – Écris ou importe",welcomeSquadsText:"Tu peux saisir manuellement la puissance de chaque escouade ou importer une capture et l’OCR détectera automatiquement la puissance. Prépare tes captures si tu veux utiliser la détection automatique.",squadImage:"Ou importe une capture pour détecter automatiquement la puissance (facultatif)",scanPower:"Détecter automatiquement la puissance",ocrWorking:"Analyse de la capture...",ocrFound:"Puissance détectée : ",ocrNotFound:"Puissance non détectée. Essaie une capture plus nette.",ocrImageFirst:"Importe d’abord une capture.",welcomeAvatarTitle:"Une image d’avatar",welcomeAvatarText:"Prépare une image si tu souhaites ajouter un avatar à ta carte de joueur.",welcomeThpTitle:"Une capture d’écran de ton THP",welcomeThpText:"Tu auras besoin d’une capture de ta Puissance totale des héros (THP).",welcomeFindTitle:"Où trouver ton THP",welcomeStep1:"Appuie sur ta photo de profil en haut à gauche.",welcomeStep2:"Appuie sur Classements.",welcomeStep3:"Sélectionne Total Hero Power.",welcomeOptional:"ℹ️ Tous les champs sont facultatifs. Tu peux mettre à jour tes informations plus tard sans supprimer les données que tu ne modifies pas.",startSurvey:"JE SUIS PRÊT – COMMENCER"},
+    it:{title:"Questionario giocatori dell'alleanza",subtitle:"Inserisci le tue informazioni attuali di gioco. Puoi inviarle di nuovo più tardi per aggiornare i dati.",name:"Nome in gioco",namePlaceholder:"Inserisci il tuo nome esatto in gioco",thp:"THP (Potenza totale eroi)",t10:"T10 sbloccato",yes:"Sì",profession:"Professione",selectProfession:"Seleziona la tua professione",engineer:"Ingegnere",warlord:"Signore della guerra",squads:"Squadre",squad1:"Squadra 1",squad2:"Squadra 2",squad3:"Squadra 3",power:"Potenza",powerPlaceholder:"Esempio: 120M",squadType:"Tipo di squadra",selectType:"Seleziona il tipo",tank:"Carro armato",aircraft:"Aereo",missile:"Missile",mixed:"Misto",submit:"Salva / Aggiorna",saving:"Salvataggio...",saved:"Salvato con successo!",error:"Qualcosa è andato storto. Riprova.",thpHelpTitle:"Dove trovare il THP",thpHelpText:"Apri il tuo profilo nel gioco. Vai alla sezione Classifiche. Cerca la categoria Potenza totale degli eroi per vedere il valore reale.",close:"Chiudi",welcomeTitle:"PRIMA DI INIZIARE",welcomeLead:"Prepara tutto prima di iniziare il questionario.",welcomeSquadsTitle:"Le tue 3 squadre – Scrivi o carica",welcomeSquadsText:"Puoi inserire manualmente la potenza di ogni squadra oppure caricare uno screenshot e l’OCR rileverà automaticamente la potenza. Tieni pronti gli screenshot se vuoi usare il rilevamento automatico.",squadImage:"Oppure carica uno screenshot per rilevare automaticamente la potenza (facoltativo)",scanPower:"Rileva automaticamente la potenza",ocrWorking:"Analisi dello screenshot...",ocrFound:"Potenza rilevata: ",ocrNotFound:"Potenza non rilevata. Prova con uno screenshot più chiaro.",ocrImageFirst:"Carica prima uno screenshot.",welcomeAvatarTitle:"Un’immagine avatar",welcomeAvatarText:"Prepara un’immagine se vuoi caricare un avatar sulla tua scheda giocatore.",welcomeThpTitle:"Uno screenshot del tuo THP",welcomeThpText:"Ti servirà uno screenshot della tua Potenza totale degli eroi (THP).",welcomeFindTitle:"Dove trovare il tuo THP",welcomeStep1:"Tocca la tua foto profilo nell’angolo in alto a sinistra.",welcomeStep2:"Tocca Classifiche.",welcomeStep3:"Seleziona Total Hero Power.",welcomeOptional:"ℹ️ Tutti i campi sono facoltativi. Puoi aggiornare le tue informazioni più tardi senza cancellare i dati che non modifichi.",startSurvey:"SONO PRONTO – INIZIA IL QUESTIONARIO"},
+    de:{title:"Spielerumfrage der Allianz",subtitle:"Trage deine aktuellen Spieldaten ein. Du kannst sie später erneut senden, um deine Daten zu aktualisieren.",name:"Name im Spiel",namePlaceholder:"Gib deinen genauen Namen im Spiel ein",thp:"THP (Gesamte Heldenstärke)",t10:"T10 freigeschaltet",yes:"Ja",profession:"Beruf",selectProfession:"Wähle deinen Beruf",engineer:"Ingenieur",warlord:"Kriegsherr",squads:"Trupps",squad1:"Trupp 1",squad2:"Trupp 2",squad3:"Trupp 3",power:"Stärke",powerPlaceholder:"Beispiel: 120M",squadType:"Trupp-Typ",selectType:"Typ auswählen",tank:"Panzer",aircraft:"Flugzeug",missile:"Rakete",mixed:"Gemischt",submit:"Speichern / Aktualisieren",saving:"Speichern...",saved:"Erfolgreich gespeichert!",error:"Etwas ist schiefgelaufen. Bitte versuche es erneut.",thpHelpTitle:"Wo du THP findest",thpHelpText:"Öffne dein Profil im Spiel. Gehe zum Bereich Ranglisten. Suche nach der Kategorie Gesamte Heldenstärke, um deinen tatsächlichen Wert zu sehen.",close:"Schließen",welcomeTitle:"BEVOR DU STARTET",welcomeLead:"Halte alles bereit, bevor du die Umfrage startest.",welcomeSquadsTitle:"Deine 3 Trupps – Eingeben oder Hochladen",welcomeSquadsText:"Du kannst die Stärke jedes Trupps manuell eingeben oder einen Screenshot hochladen, damit OCR die Stärke automatisch erkennt. Halte deine Screenshots für die automatische Erkennung bereit.",squadImage:"Oder lade einen Screenshot hoch, um die Stärke automatisch zu erkennen (optional)",scanPower:"Stärke automatisch erkennen",ocrWorking:"Screenshot wird analysiert...",ocrFound:"Stärke erkannt: ",ocrNotFound:"Stärke nicht erkannt. Versuche einen klareren Screenshot.",ocrImageFirst:"Lade zuerst einen Screenshot hoch.",welcomeAvatarTitle:"Ein Avatarbild",welcomeAvatarText:"Halte ein Bild bereit, wenn du einen Avatar auf deiner Spielerkarte hochladen möchtest.",welcomeThpTitle:"Ein Screenshot deines THP",welcomeThpText:"Du brauchst einen Screenshot deiner Gesamten Heldenstärke (THP).",welcomeFindTitle:"Wo du dein THP findest",welcomeStep1:"Tippe oben links auf dein Profilbild.",welcomeStep2:"Tippe auf Ranglisten.",welcomeStep3:"Wähle Total Hero Power.",welcomeOptional:"ℹ️ Alle Felder sind optional. Du kannst deine Informationen später aktualisieren, ohne Daten zu löschen, die du nicht änderst.",startSurvey:"ICH BIN BEREIT – UMFRAGE STARTEN"},
+    uk:{title:"Опитування гравців альянсу",subtitle:"Заповніть актуальну інформацію про ваш акаунт у грі. Ви можете надіслати форму повторно пізніше, щоб оновити свої дані.",name:"Ім’я в грі",namePlaceholder:"Введіть точне ім’я з гри",thp:"THP (Загальна сила героїв)",t10:"T10 відкрито",yes:"Так",profession:"Професія",selectProfession:"Оберіть професію",engineer:"Інженер",warlord:"Володар війни",squads:"Загони",squad1:"Загін 1",squad2:"Загін 2",squad3:"Загін 3",power:"Сила",powerPlaceholder:"Приклад: 120M",squadType:"Тип загону",selectType:"Оберіть тип",tank:"Танк",aircraft:"Авіація",missile:"Ракети",mixed:"Змішаний",submit:"Зберегти / Оновити",saving:"Збереження...",saved:"Успішно збережено!",error:"Щось пішло не так. Спробуйте ще раз.",thpHelpTitle:"Де знайти THP",thpHelpText:"Відкрийте свій профіль у грі. Перейдіть до розділу рейтингів. Знайдіть таблицю або категорію загальної сили героїв, щоб побачити своє фактичне значення.",close:"Закрити",welcomeTitle:"ПЕРЕД ПОЧАТКОМ",welcomeLead:"Підготуйте все необхідне перед початком опитування.",welcomeSquadsTitle:"Ваші 3 загони – Введіть або завантажте",welcomeSquadsText:"Ви можете вручну ввести силу кожного загону або завантажити скріншот, і OCR автоматично визначить силу. Підготуйте скріншоти, якщо хочете використати автоматичне визначення.",squadImage:"Або завантажте скріншот для автоматичного визначення сили (необов’язково)",scanPower:"Автоматично визначити силу",ocrWorking:"Аналіз скріншота...",ocrFound:"Силу визначено: ",ocrNotFound:"Силу не знайдено. Спробуйте чіткіший скріншот.",ocrImageFirst:"Спочатку завантажте скріншот.",welcomeAvatarTitle:"Зображення аватара",welcomeAvatarText:"Підготуйте зображення, якщо хочете завантажити аватар на свою картку гравця.",welcomeThpTitle:"Скріншот вашого THP",welcomeThpText:"Вам знадобиться скріншот вашої Загальної сили героїв (THP).",welcomeFindTitle:"Де знайти ваш THP",welcomeStep1:"Натисніть на фото профілю у верхньому лівому куті.",welcomeStep2:"Натисніть Rankings.",welcomeStep3:"Виберіть Total Hero Power.",welcomeOptional:"ℹ️ Усі поля необов’язкові. Ви можете оновити інформацію пізніше, не видаляючи дані, які не змінюєте.",startSurvey:"Я ГОТОВИЙ – ПОЧАТИ ОПИТУВАННЯ"}
   };
 
   const languageSelect = document.getElementById("language");
   let lang = (navigator.language || "en").slice(0,2).toLowerCase();
   if (!T[lang]) lang = "en";
   languageSelect.value = lang;
+  const welcomeLanguage = document.getElementById("welcomeLanguage");
+  if(welcomeLanguage) welcomeLanguage.value = lang;
+  if(welcomeLanguage){
+    welcomeLanguage.addEventListener("change",()=>{
+      lang=welcomeLanguage.value;
+      languageSelect.value=lang;
+      applyLanguage();
+    });
+  }
 
   function applyLanguage(){
     const d=T[lang];
@@ -248,6 +350,14 @@
   }
   languageSelect.addEventListener("change",e=>{lang=e.target.value;applyLanguage()});
   applyLanguage();
+
+  const welcomeScreen=document.getElementById("welcomeScreen");
+  const startSurveyBtn=document.getElementById("startSurveyBtn");
+  startSurveyBtn.addEventListener("click",()=>{
+    welcomeScreen.style.display="none";
+    document.body.classList.remove("welcome-open","survey-hidden");
+    window.scrollTo({top:0,behavior:"instant"});
+  });
 
   const modal=document.getElementById("modal");
   document.getElementById("thpHelp").onclick=()=>modal.classList.add("open");
@@ -280,6 +390,119 @@
     if(!file){avatarData="";avatarPreview.textContent="No avatar selected";return}
     try{avatarData=await resizeAvatar(file);avatarPreview.innerHTML='<img src="'+avatarData+'" style="width:100%;height:100%;object-fit:cover">'}
     catch(e){avatarData="";avatarPreview.textContent="Could not read image"}
+  });
+
+  // OCR.Space: same external OCR service used by the alliance tracker.
+  const OCRSPACE_ENDPOINT='https://api.ocr.space/parse/image';
+  const OCRSPACE_KEY_STORAGE='hola:ocrspace:key';
+  const OCRSPACE_DEFAULT_KEY='K88248924688957';
+  function getOcrApiKey(){
+    return localStorage.getItem(OCRSPACE_KEY_STORAGE)||OCRSPACE_DEFAULT_KEY;
+  }
+
+  async function cropSquadPowerForOcr(file){
+    const img=await new Promise((resolve,reject)=>{
+      const url=URL.createObjectURL(file), im=new Image();
+      im.onload=()=>{URL.revokeObjectURL(url);resolve(im)};
+      im.onerror=reject; im.src=url;
+    });
+    // In Last War squad screenshots the squad power is at the top centre.
+    // Crop only that band so OCR ignores hero levels, stars, squad numbers, etc.
+    const sx=Math.floor(img.naturalWidth*0.27);
+    const sy=Math.floor(img.naturalHeight*0.02);
+    const sw=Math.floor(img.naturalWidth*0.46);
+    const sh=Math.floor(img.naturalHeight*0.16);
+    const canvas=document.createElement('canvas');
+    canvas.width=sw*2; canvas.height=sh*2;
+    const ctx=canvas.getContext('2d');
+    ctx.imageSmoothingEnabled=true;
+    ctx.imageSmoothingQuality='high';
+    ctx.drawImage(img,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
+    return await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+  }
+
+  async function ocrSquadPower(file){
+    const cropped=await cropSquadPowerForOcr(file);
+    const fd=new FormData();
+    fd.append('file',cropped,'squad-power.png');
+    fd.append('language','eng');
+    fd.append('isOverlayRequired','false');
+    fd.append('isTable','false');
+    fd.append('scale','true');
+    fd.append('detectOrientation','false');
+    fd.append('OCREngine','2');
+    const res=await fetch(OCRSPACE_ENDPOINT,{method:'POST',headers:{apikey:getOcrApiKey()},body:fd});
+    if(!res.ok) throw new Error('OCR service HTTP '+res.status);
+    const json=await res.json();
+    if(json.IsErroredOnProcessing) throw new Error((json.ErrorMessage||['OCR service error']).join(' '));
+    return (json.ParsedResults||[]).map(x=>x.ParsedText||'').join('\n');
+  }
+
+  function extractPowerFromText(text){
+    const cleaned=String(text||'')
+      .replace(/\s+/g,' ')
+      .replace(/[Oo]/g,'0')
+      .replace(/[lI]/g,'1');
+    // Accept values such as 27.46M, 32.63M, 110M or 950K.
+    const matches=[...cleaned.matchAll(/(\d{1,4}(?:[.,]\d{1,3})?)\s*([KkMmBb])/g)]
+      .map(m=>({num:parseFloat(m[1].replace(',','.')),unit:m[2].toUpperCase()}))
+      .filter(x=>Number.isFinite(x.num)&&x.num>0);
+    if(!matches.length) return '';
+    // The cropped image should normally contain only the power. If OCR returns
+    // several candidates, prefer the largest power value.
+    const factor={K:1e3,M:1e6,B:1e9};
+    matches.sort((a,b)=>b.num*factor[b.unit]-a.num*factor[a.unit]);
+    const best=matches[0];
+    return `${best.num}${best.unit}`;
+  }
+
+  async function runSquadOcr(squad){
+    const fileInput=document.getElementById(`s${squad}image`);
+    const status=document.getElementById(`s${squad}ocrstatus`);
+    const button=document.querySelector(`[data-ocr-squad="${squad}"]`);
+    const file=fileInput?.files?.[0];
+    const d=T[lang]||T.en;
+    if(!file){status.textContent=d.ocrImageFirst||'Upload a screenshot first.';return;}
+    button.disabled=true; status.textContent=d.ocrWorking||'Scanning screenshot...';
+    try{
+      const text=await ocrSquadPower(file);
+      const power=extractPowerFromText(text);
+      if(power){
+        const target=document.getElementById(`s${squad}power`);
+        target.value=power;
+        target.dispatchEvent(new Event('input',{bubbles:true}));
+        status.textContent=(d.ocrFound||'Power detected: ')+power;
+      }else status.textContent=d.ocrNotFound||'Power not detected. Try a clearer screenshot.';
+    }catch(err){
+      console.error('OCR.Space failed',err);
+      status.textContent=d.ocrNotFound||'Power not detected. Try a clearer screenshot.';
+    }finally{button.disabled=false;}
+  }
+
+  [1,2,3].forEach(squad=>{
+    const input=document.getElementById(`s${squad}image`);
+    const preview=document.getElementById(`s${squad}preview`);
+
+    // Allow the player to replace a screenshot at any time. Reset the file
+    // input before opening the picker so Android/browser also fires `change`
+    // when the player selects the same image again.
+    input.addEventListener('click',()=>{
+      input.value='';
+      preview.style.display='none';
+      preview.removeAttribute('src');
+      const status=document.getElementById(`s${squad}ocrstatus`);
+      if(status) status.textContent='';
+    });
+
+    input.addEventListener('change',()=>{
+      const file=input.files?.[0];
+      if(!file){preview.style.display='none';preview.removeAttribute('src');return;}
+      const url=URL.createObjectURL(file);
+      preview.onload=()=>URL.revokeObjectURL(url);
+      preview.src=url;preview.style.display='block';
+      runSquadOcr(squad);
+    });
+    document.querySelector(`[data-ocr-squad="${squad}"]`).addEventListener('click',()=>runSquadOcr(squad));
   });
 
   document.getElementById("surveyForm").addEventListener("submit",async e=>{
