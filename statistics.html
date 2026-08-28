@@ -232,6 +232,21 @@ a.tab[data-tab-link="survey"]{
 }
 </style>
 
+
+<style id="firebase-survey-stats-style">
+.firebase-stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0 18px}
+.firebase-stat-card{width:100%;text-align:left;border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;background:rgba(255,255,255,.035);color:#fff;cursor:pointer}
+.firebase-stat-card:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
+.firebase-stat-card .fstat-icon{font-size:23px;margin-bottom:6px}.firebase-stat-card b{display:block;font-size:28px;line-height:1}.firebase-stat-card span{display:block;margin-top:5px;font-size:12px;color:#b9c2d3;font-weight:800}
+.firebase-stat-card small{display:block;margin-top:4px;color:#78839a;font-size:10px}
+.firebase-stat-details{margin:-5px 0 14px;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;background:rgba(0,0,0,.14)}
+.firebase-stat-details summary{padding:11px 13px;cursor:pointer;font-weight:800;color:#cfd7e8}
+.firebase-name-list{padding:0 13px 13px;display:flex;flex-wrap:wrap;gap:7px}
+.firebase-name-chip{padding:6px 9px;border-radius:999px;background:rgba(91,140,255,.12);border:1px solid rgba(91,140,255,.25);font-size:12px}
+.firebase-empty{color:#78839a;font-style:italic;padding:0 13px 13px}
+@media(max-width:520px){.firebase-stat-grid{grid-template-columns:1fr}}
+</style>
+
 </head><body><div class="wrap"><header>
 <div class="hero-glow glow-one"></div><div class="hero-glow glow-two"></div>
 <div class="alliance-badge">⚔</div>
@@ -407,6 +422,11 @@ a.tab[data-tab-link="survey"]{
 <div class="top-row"><span class="top-pos">#9</span><span class="top-name">Rey Excalibur</span><span class="top-thp">94.8M</span></div>
 <div class="top-row"><span class="top-pos">#10</span><span class="top-name">IonuțBogdan</span><span class="top-thp">94.7M</span></div></div>
 
+
+  <div class="stats-section-title">🪖 Survey & Combat Statistics</div>
+  <p style="color:#8d98ad;margin:-4px 0 12px;font-size:12px">Live data from Firebase player survey</p>
+  <div id="firebaseSurveyStats"></div>
+
   <div class="stats-section-title">🎁 Donations</div>
   <div class="future-stats">
     <div><b>Daily Donations</b><span>Will be calculated when donation data is added.</span></div>
@@ -544,8 +564,10 @@ window.HOLaSurveyCompleted = new Set();
     const db = getFirestore(app);
     const snap = await getDocs(collection(db, "players"));
 
+    const surveyPlayers = [];
     snap.forEach(docSnap => {
       const raw = docSnap.data() || {};
+      surveyPlayers.push({name: String(raw.name || docSnap.id || '').trim(), raw});
       const key = normalizeName(raw.name || docSnap.id);
       const row = [...document.querySelectorAll("#membersTab .clickable-member")].find(r =>
         normalizeName(r.querySelector(".name")?.textContent || "") === key
@@ -577,11 +599,53 @@ window.HOLaSurveyCompleted = new Set();
 
       window.HOLaSurveyCompleted.add(normalizeName(name));
     });
+    renderFirebaseSurveyStats(surveyPlayers.filter(p => p.name));
     console.log("HOLa survey loaded:", window.HOLaSurveyCompleted.size);
   } catch (err) {
+    const host = document.getElementById('firebaseSurveyStats');
+    if (host) host.innerHTML = '<div class="firebase-empty">Could not load Firebase survey statistics.</div>';
     console.warn("Could not load survey data", err);
   }
 })();
+
+
+function renderFirebaseSurveyStats(playerDocs) {
+  const host = document.getElementById('firebaseSurveyStats');
+  if (!host) return;
+
+  const norm = v => String(v || '').trim().toLowerCase();
+  const names = (filter) => playerDocs.filter(filter).map(x => x.name).sort((a,b)=>a.localeCompare(b));
+  const isT10 = x => x.raw.t10 === true || norm(x.raw.t10) === 'true' || norm(x.raw.t10) === 't10';
+  const profession = x => norm(x.raw.profession);
+  const squad1 = x => norm(x.raw.squad1Type);
+
+  const groups = [
+    {id:'t10yes', icon:'🪖', label:'WITH T10', names:names(isT10)},
+    {id:'t10no', icon:'⚪', label:'WITHOUT T10', names:names(x=>!isT10(x))},
+    {id:'air', icon:'✈️', label:'SQUAD 1 · AIRCRAFT', names:names(x=>squad1(x)==='aircraft' || squad1(x)==='air')},
+    {id:'tanks', icon:'🛡️', label:'SQUAD 1 · TANKS', names:names(x=>squad1(x)==='tanks' || squad1(x)==='tank')},
+    {id:'missiles', icon:'🚀', label:'SQUAD 1 · MISSILES', names:names(x=>squad1(x)==='missiles' || squad1(x)==='missile')},
+    {id:'engineer', icon:'👷', label:'ENGINEERS', names:names(x=>profession(x)==='engineer' || profession(x)==='engineers')},
+    {id:'warlord', icon:'⚔️', label:'WARLORDS', names:names(x=>profession(x)==='warlord' || profession(x)==='warlords')}
+  ];
+
+  host.innerHTML = `
+    <div class="firebase-stat-grid">
+      ${groups.map(g=>`<button type="button" class="firebase-stat-card" data-fstat="${g.id}">
+        <div class="fstat-icon">${g.icon}</div><b>${g.names.length}</b><span>${g.label}</span><small>Tap to see names</small>
+      </button>`).join('')}
+    </div>
+    ${groups.map(g=>`<details id="fstat-${g.id}" class="firebase-stat-details">
+      <summary>${g.icon} ${g.label} · ${g.names.length} member${g.names.length===1?'':'s'}</summary>
+      ${g.names.length ? `<div class="firebase-name-list">${g.names.map(n=>`<span class="firebase-name-chip">${esc(n)}</span>`).join('')}</div>` : `<div class="firebase-empty">No players in this category yet.</div>`}
+    </details>`).join('')}
+  `;
+
+  host.querySelectorAll('[data-fstat]').forEach(btn => btn.addEventListener('click', () => {
+    const details = document.getElementById('fstat-' + btn.dataset.fstat);
+    if (details) { details.open = true; details.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+  }));
+}
 
 const memberProfileModal = document.getElementById('memberProfileModal');
 const memberProfileContent = document.getElementById('memberProfileContent');
