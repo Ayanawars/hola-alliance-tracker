@@ -174,7 +174,7 @@ body.hola-admin .vs-config.admin-only{display:grid!important}
 
 <style id="hide-members-main">
 button[data-tab="members"], .tab[data-tab="members"]{
-  display:inline-flex!important;
+  display:none!important;
 }
 </style>
 
@@ -184,9 +184,38 @@ a.tab{text-decoration:none;display:inline-flex;align-items:center;justify-conten
 </style>
 
 
-<style id="members-page-style">
-.tabs{display:none!important}
-#membersPageBack{display:inline-flex;margin:10px 0 14px;text-decoration:none}
+<style id="force-survey-button">
+button[data-tab="survey"],.tab[data-tab="survey"]{
+  display:inline-flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+</style>
+
+
+<style id="survey-direct-link">
+a.tab[data-tab-link="survey"]{
+  display:inline-flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  text-decoration:none;
+  align-items:center;
+  justify-content:center;
+}
+</style>
+
+
+<style id="separate-page-override">
+.tab-panel{display:none!important;}
+#membersTab{display:block!important;}
+.tabs .tab{
+  display:inline-flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  text-decoration:none!important;
+  align-items:center;
+  justify-content:center;
+}
 </style>
 
 </head><body><div class="wrap"><header>
@@ -200,14 +229,18 @@ a.tab{text-decoration:none;display:inline-flex;align-items:center;justify-conten
   
 </div>
 <div class="stats"><div class="stat"><b>87</b><small>MEMBERS</small></div><div class="stat"><b>1</b><small>R5</small></div><div class="stat"><b>9</b><small>R4</small></div><div class="stat"><b>39</b><small>R3</small></div><div class="stat"><b>21</b><small>R2</small></div><div class="stat"><b>17</b><small>R1</small></div></div></header>
-<div class="tabs" role="tablist">
-  <button class="tab active" data-tab="members" style="display:none!important">👥 Members</button>
-  <button class="tab" data-tab="donations">🎁 Donations</button>
-  <button class="tab" data-tab="vs">⚔️ VS Points</button>
-  <button class="tab" data-tab="ds">🛡️ DS</button><button class="tab" data-tab="stats">📊 Statistics</button>
 
-  <a class="tab" href="members.html">👥 Members</a></div>
-<a id="membersPageBack" class="btn-ghost" href="main.html">← Back to Tracker</a><div id="membersTab" class="tab-panel active"><div class="survey-link-wrap"><a id="surveyBtn" class="survey-btn" href="survey.html">📝 FILL IN PLAYER SURVEY</a></div>
+<div class="tabs" role="tablist">
+  <a class="tab active" href="members.html">👥 Members</a>
+  <a class="tab " href="donations.html">🎁 Donations</a>
+  <a class="tab " href="vs.html">⚔️ VS Points</a>
+  <a class="tab " href="ds.html">🛡️ DS</a>
+  <a class="tab " href="statistics.html">📊 Statistics</a>
+  <a class="tab" href="survey.html">📝 Survey</a>
+  <a class="tab " href="train.html">🚂 Tren</a>
+</div>
+
+<div id="membersTab" class="tab-panel"><div class="survey-link-wrap"><a id="surveyBtn" class="survey-btn" href="survey.html">📝 FILL IN PLAYER SURVEY</a></div>
 <div class="controls">
   <div class="search-wrap">
     <span class="search-icon">⌕</span>
@@ -389,6 +422,15 @@ a.tab{text-decoration:none;display:inline-flex;align-items:center;justify-conten
     <div id="memberProfileContent"></div>
   </div>
 </div><footer>HOLa Alliance Tracker · 87 members</footer></div>
+
+<div id="trainTab" class="tab-panel">
+  <div class="card">
+    <h2>🚂 Tren de la Alianza</h2>
+    <p>Aquí se mostrará la rotación del tren y el ranking semanal.</p>
+    <div id="trainContent"></div>
+  </div>
+</div>
+
 <script>
 const memberSearch = document.getElementById('memberSearch');
 const rankFilter = document.getElementById('rankFilter');
