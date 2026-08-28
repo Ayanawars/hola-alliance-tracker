@@ -95,19 +95,11 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.4;
 </nav>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const firebaseConfig = {
-      apiKey:"AIzaSyDxipuHjcf0EI5aMjM7534asdtq03AlQzQ",
-      authDomain:"hola-alliance-tracker.firebaseapp.com",
-      projectId:"hola-alliance-tracker",
-      storageBucket:"hola-alliance-tracker.firebasestorage.app",
-      messagingSenderId:"843941636060",
-      appId:"1:843941636060:web:f8f059f72ccff0eaabd119"
-    };
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const supabaseUrl = "https://ovybstpiomphrouvqxmf.supabase.co";
+const supabaseKey = "sb_publishable_gU5Wgy2NhdXcy23_TotF9g_LKthVmKV";
+const supabase = createClient(supabaseUrl, supabaseKey);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 
 function norm(v){return String(v ?? '').trim().toLowerCase()}
@@ -166,11 +158,24 @@ function card({title,count,icon,accent,players,listTitle,valueKey='thp',valueLab
 async function load(){
   document.getElementById('updatedAt').textContent='Actualizando...';
   try{
-    const snap=await getDocs(collection(db, "players"));
+    const { data: rows, error } = await supabase
+      .from("players")
+      .select("*");
+    if (error) throw error;
+
     const all=[];
-    snap.forEach(d=>{
-      const raw=d.data()||{};
-      const name=String(raw.name||raw.playerName||d.id||'').trim();
+    (rows || []).forEach(dbRow=>{
+      const raw={
+        ...dbRow,
+        squad1Type: dbRow.squad1_type || dbRow.squad1Type || "",
+        squad1Power: dbRow.squad1_power || dbRow.squad1Power || "",
+        squad2Type: dbRow.squad2_type || dbRow.squad2Type || "",
+        squad2Power: dbRow.squad2_power || dbRow.squad2Power || "",
+        squad3Type: dbRow.squad3_type || dbRow.squad3Type || "",
+        squad3Power: dbRow.squad3_power || dbRow.squad3Power || ""
+      };
+      const name=String(raw.name||raw.playerName||'').trim();
+      if (!name) return;
       all.push(player(name,raw));
       all[all.length-1].raw=raw;
     });
@@ -198,12 +203,13 @@ async function load(){
     document.getElementById('updatedAt').textContent=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
   }catch(err){
     console.error(err);
-    document.querySelectorAll('.grid').forEach(g=>g.innerHTML='<div class="empty">No se pudieron cargar los datos de Firebase.</div>');
+    document.querySelectorAll('.grid').forEach(g=>g.innerHTML='<div class="empty">No se pudieron cargar los datos de Supabase.</div>');
     document.getElementById('updatedAt').textContent='Error al cargar';
   }
 }
 document.getElementById('refreshBtn').addEventListener('click',load);
 load();
 </script>
+
 </body>
 </html>
