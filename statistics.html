@@ -234,17 +234,23 @@ a.tab[data-tab-link="survey"]{
 
 
 <style id="firebase-survey-stats-style">
-.firebase-stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0 18px}
-.firebase-stat-card{width:100%;text-align:left;border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;background:rgba(255,255,255,.035);color:#fff;cursor:pointer}
-.firebase-stat-card:hover{transform:translateY(-1px);background:rgba(255,255,255,.06)}
-.firebase-stat-card .fstat-icon{font-size:23px;margin-bottom:6px}.firebase-stat-card b{display:block;font-size:28px;line-height:1}.firebase-stat-card span{display:block;margin-top:5px;font-size:12px;color:#b9c2d3;font-weight:800}
-.firebase-stat-card small{display:block;margin-top:4px;color:#78839a;font-size:10px}
-.firebase-stat-details{margin:-5px 0 14px;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;background:rgba(0,0,0,.14)}
-.firebase-stat-details summary{padding:11px 13px;cursor:pointer;font-weight:800;color:#cfd7e8}
-.firebase-name-list{padding:0 13px 13px;display:flex;flex-wrap:wrap;gap:7px}
-.firebase-name-chip{padding:6px 9px;border-radius:999px;background:rgba(91,140,255,.12);border:1px solid rgba(91,140,255,.25);font-size:12px}
-.firebase-empty{color:#78839a;font-style:italic;padding:0 13px 13px}
-@media(max-width:520px){.firebase-stat-grid{grid-template-columns:1fr}}
+.firebase-survey-wrap{margin:10px 0 22px}
+.firebase-survey-section{margin:18px 0 26px;padding:14px;border:1px solid rgba(255,255,255,.09);border-radius:20px;background:linear-gradient(180deg,rgba(28,36,57,.62),rgba(14,18,29,.42));box-shadow:0 10px 28px rgba(0,0,0,.16)}
+.firebase-survey-section-title{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:900;letter-spacing:.4px;margin:0 0 14px;color:#f1f5ff}
+.firebase-survey-section-title .section-icon{font-size:26px}
+.firebase-stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.firebase-stat-grid.squad-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.firebase-stat-card{border:1px solid rgba(255,255,255,.11);border-radius:16px;overflow:hidden;background:rgba(9,14,24,.62);min-width:0;box-shadow:0 8px 22px rgba(0,0,0,.16)}
+.firebase-stat-card.air{border-color:rgba(63,150,255,.38)}.firebase-stat-card.tanks{border-color:rgba(225,166,40,.38)}.firebase-stat-card.missiles{border-color:rgba(151,93,255,.42)}
+.firebase-stat-card.t10yes,.firebase-stat-card.engineer{border-color:rgba(74,181,99,.38)}.firebase-stat-card.t10no,.firebase-stat-card.warlord{border-color:rgba(225,74,74,.38)}
+.firebase-card-top{display:flex;align-items:center;gap:12px;padding:15px 14px 12px;background:linear-gradient(135deg,rgba(255,255,255,.045),rgba(255,255,255,.015))}
+.fstat-icon{font-size:28px;line-height:1}.firebase-card-title{font-size:14px;font-weight:900;letter-spacing:.5px;color:#eaf0ff}.firebase-card-count{margin-left:auto;text-align:right}.firebase-card-count b{display:block;font-size:31px;line-height:.95;color:#fff}.firebase-card-count span{font-size:11px;color:#aab5c9;font-weight:800}
+.firebase-list-head{padding:9px 13px;font-size:12px;font-weight:900;letter-spacing:.35px;color:#fff;background:rgba(255,255,255,.07);border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07)}
+.firebase-name-list{padding:0 12px}.firebase-name-row{display:flex;align-items:center;gap:8px;padding:9px 2px;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px;font-weight:800;min-width:0}.firebase-name-row:last-child{border-bottom:none}.firebase-name-avatar{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.08);font-size:12px;flex:0 0 auto}.firebase-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.firebase-thp{margin-left:auto;color:#f2c56d;font-size:12px;white-space:nowrap}
+.firebase-more{width:100%;border:0;border-top:1px solid rgba(255,255,255,.09);background:transparent;color:#d8e2f7;padding:11px;font-weight:900;font-size:13px;cursor:pointer}.firebase-more:hover{background:rgba(255,255,255,.05)}
+.firebase-all{display:none;padding:0 12px 10px}.firebase-stat-card.expanded .firebase-all{display:block}.firebase-stat-card.expanded .firebase-more{color:#fff}.firebase-empty{padding:13px;color:#7f8ba2;font-style:italic;font-size:12px}
+@media(max-width:760px){.firebase-stat-grid.squad-grid{grid-template-columns:1fr}.firebase-survey-section-title{font-size:17px}.firebase-card-title{font-size:13px}}
+@media(max-width:520px){.firebase-stat-grid{grid-template-columns:1fr}.firebase-survey-section{padding:10px}.firebase-card-top{padding:13px}.firebase-name-row{font-size:14px}.firebase-card-count b{font-size:30px}}
 </style>
 
 </head><body><div class="wrap"><header>
@@ -614,38 +620,51 @@ function renderFirebaseSurveyStats(playerDocs) {
   if (!host) return;
 
   const norm = v => String(v || '').trim().toLowerCase();
-  const names = (filter) => playerDocs.filter(filter).map(x => x.name).sort((a,b)=>a.localeCompare(b));
+  const thpNumber = v => {
+    const s = String(v ?? '').replace(/\s/g,'').replace(',', '.');
+    const m = s.match(/([0-9]+(?:\.[0-9]+)?)/);
+    if (!m) return 0;
+    const n = Number(m[1]);
+    return /k$/i.test(s) ? n/1000 : /b$/i.test(s) ? n*1000 : n;
+  };
+  const sorted = filter => playerDocs.filter(filter).sort((a,b)=>thpNumber(b.raw.thp)-thpNumber(a.raw.thp) || a.name.localeCompare(b.name));
   const isT10 = x => x.raw.t10 === true || norm(x.raw.t10) === 'true' || norm(x.raw.t10) === 't10';
   const profession = x => norm(x.raw.profession);
   const squad1 = x => norm(x.raw.squad1Type);
 
-  const groups = [
-    {id:'t10yes', icon:'🪖', label:'WITH T10', names:names(isT10)},
-    {id:'t10no', icon:'⚪', label:'WITHOUT T10', names:names(x=>!isT10(x))},
-    {id:'air', icon:'✈️', label:'SQUAD 1 · AIRCRAFT', names:names(x=>squad1(x)==='aircraft' || squad1(x)==='air')},
-    {id:'tanks', icon:'🛡️', label:'SQUAD 1 · TANKS', names:names(x=>squad1(x)==='tanks' || squad1(x)==='tank')},
-    {id:'missiles', icon:'🚀', label:'SQUAD 1 · MISSILES', names:names(x=>squad1(x)==='missiles' || squad1(x)==='missile')},
-    {id:'engineer', icon:'👷', label:'ENGINEERS', names:names(x=>profession(x)==='engineer' || profession(x)==='engineers')},
-    {id:'warlord', icon:'⚔️', label:'WARLORDS', names:names(x=>profession(x)==='warlord' || profession(x)==='warlords')}
-  ];
+  const groups = {
+    t10yes:{id:'t10yes', icon:'🛡️', title:'CON T10', people:sorted(isT10)},
+    t10no:{id:'t10no', icon:'🚫', title:'SIN T10', people:sorted(x=>!isT10(x))},
+    air:{id:'air', icon:'✈️', title:'AIRE', people:sorted(x=>squad1(x)==='aircraft' || squad1(x)==='air')},
+    tanks:{id:'tanks', icon:'🛡️', title:'TANQUE', people:sorted(x=>squad1(x)==='tanks' || squad1(x)==='tank')},
+    missiles:{id:'missiles', icon:'🚀', title:'MISILES', people:sorted(x=>squad1(x)==='missiles' || squad1(x)==='missile')},
+    engineer:{id:'engineer', icon:'👷', title:'INGENIEROS', people:sorted(x=>profession(x)==='engineer' || profession(x)==='engineers')},
+    warlord:{id:'warlord', icon:'⚔️', title:'WARLORDS', people:sorted(x=>profession(x)==='warlord' || profession(x)==='warlords')}
+  };
 
-  host.innerHTML = `
-    <div class="firebase-stat-grid">
-      ${groups.map(g=>`<button type="button" class="firebase-stat-card" data-fstat="${g.id}">
-        <div class="fstat-icon">${g.icon}</div><b>${g.names.length}</b><span>${g.label}</span><small>Tap to see names</small>
-      </button>`).join('')}
-    </div>
-    ${groups.map(g=>`<details id="fstat-${g.id}" class="firebase-stat-details">
-      <summary>${g.icon} ${g.label} · ${g.names.length} member${g.names.length===1?'':'s'}</summary>
-      ${g.names.length ? `<div class="firebase-name-list">${g.names.map(n=>`<span class="firebase-name-chip">${esc(n)}</span>`).join('')}</div>` : `<div class="firebase-empty">No players in this category yet.</div>`}
-    </details>`).join('')}
-  `;
+  const renderRows = (people, cls='') => people.map((p,i)=>`<div class="firebase-name-row ${cls}"><span class="firebase-name-avatar">👤</span><span class="firebase-name">${esc(p.name)}</span><span class="firebase-thp">${esc(String(p.raw.thp || '—'))}</span></div>`).join('');
+  const card = g => {
+    const preview = g.people.slice(0,5), extra = g.people.slice(5);
+    return `<article class="firebase-stat-card ${g.id}">
+      <div class="firebase-card-top"><span class="fstat-icon">${g.icon}</span><div class="firebase-card-title">${g.title}</div><div class="firebase-card-count"><b>${g.people.length}</b><span>jugadores</span></div></div>
+      <div class="firebase-list-head">👥 JUGADORES (${g.people.length})</div>
+      ${g.people.length ? `<div class="firebase-name-list">${renderRows(preview)}</div>` : `<div class="firebase-empty">Todavía no hay jugadores en esta categoría.</div>`}
+      ${extra.length ? `<div class="firebase-all">${renderRows(extra)}</div><button type="button" class="firebase-more" data-fstat="${g.id}">Ver todos (${g.people.length})⌄</button>` : ''}
+    </article>`;
+  };
+
+  host.innerHTML = `<div class="firebase-survey-wrap">
+    <section class="firebase-survey-section"><h2 class="firebase-survey-section-title"><span class="section-icon">🪖</span> TROPAS NIVEL 10 (T10)</h2><div class="firebase-stat-grid">${card(groups.t10yes)}${card(groups.t10no)}</div></section>
+    <section class="firebase-survey-section"><h2 class="firebase-survey-section-title"><span class="section-icon">⚔️</span> SQUAD 1 PRINCIPAL</h2><div class="firebase-stat-grid squad-grid">${card(groups.air)}${card(groups.tanks)}${card(groups.missiles)}</div></section>
+    <section class="firebase-survey-section"><h2 class="firebase-survey-section-title"><span class="section-icon">💼</span> PROFESIÓN</h2><div class="firebase-stat-grid">${card(groups.engineer)}${card(groups.warlord)}</div></section>
+  </div>`;
 
   host.querySelectorAll('[data-fstat]').forEach(btn => btn.addEventListener('click', () => {
-    const details = document.getElementById('fstat-' + btn.dataset.fstat);
-    if (details) { details.open = true; details.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+    const cardEl = btn.closest('.firebase-stat-card');
+    const open = cardEl.classList.toggle('expanded');
+    btn.textContent = open ? 'Ocultar jugadores ⌃' : `Ver todos (${groups[btn.dataset.fstat].people.length})⌄`;
   }));
-}
+} 
 
 const memberProfileModal = document.getElementById('memberProfileModal');
 const memberProfileContent = document.getElementById('memberProfileContent');
