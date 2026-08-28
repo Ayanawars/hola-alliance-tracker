@@ -168,6 +168,13 @@ body.hola-admin .vs-config.admin-only{display:grid!important}
 .bottom-nav a .nav-icon{font-size:20px;line-height:1}
 .bottom-nav a.active{color:#fff;background:linear-gradient(135deg,#5b8cff,#9b5cff);box-shadow:0 6px 20px rgba(91,140,255,.22)}
 @media(max-width:560px){.bottom-nav{padding:7px 5px}.bottom-nav a{font-size:9px;min-height:56px}.bottom-nav a .nav-icon{font-size:19px}body{padding-bottom:78px}}
+
+/* Detail page: show only this section, without the main dashboard header or section buttons */
+header,.tabs{display:none!important}
+.tab-panel{display:none!important}
+#donationsTab{display:block!important}
+/*
+.wrap{padding-top:16px}
 </style>
 <style id="remove-login-edit-controls">
 #googleLoginBtn,#loginBtn,#googleLogoutBtn,#logoutBtn,
