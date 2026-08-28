@@ -1,9 +1,286 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>HOLa Alliance Tracker</title><style>
-*{box-sizing:border-box}body{margin:0;background:#080b12;color:#eef3ff;font-family:Arial,sans-serif;padding-bottom:82px}.wrap{max-width:950px;margin:auto;padding:16px}header{position:relative;overflow:hidden;padding:34px 22px 26px;border:1px solid #36466a;border-radius:22px;background:linear-gradient(135deg,#121a31 0%,#1b1434 45%,#10283a 100%);text-align:center;box-shadow:0 12px 35px rgba(0,0,0,.28)}.alliance-badge{margin:0 auto 10px;width:56px;height:56px;display:grid;place-items:center;border-radius:18px;font-size:29px;background:linear-gradient(135deg,#ffca45,#ff7a3d);color:#111}.alliance-name{font-size:48px;font-weight:900;letter-spacing:2px;background:linear-gradient(90deg,#ffd64d,#ff7d4d,#b75cff,#5ca9ff);-webkit-background-clip:text;background-clip:text;color:transparent}.alliance-tag{margin-top:9px;font-size:11px;font-weight:800;letter-spacing:3px;color:#b9c6df}.sub{margin-top:10px;color:#9ba7bd}.home-card{margin-top:16px;padding:24px;border:1px solid #2d3a52;border-radius:20px;background:#101622}.home-card h2{margin:0 0 8px;font-size:22px}.home-card p{margin:0 0 20px;color:#9ba7bd;line-height:1.5}.survey-btn{display:block;padding:17px;border-radius:14px;text-align:center;text-decoration:none;color:#fff;font-weight:900;background:linear-gradient(135deg,#5b8cff,#9b5cff);border:1px solid #6f91ff;font-size:16px;box-shadow:0 8px 25px rgba(91,140,255,.2)}.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.quick{padding:16px 10px;border:1px solid #2d3a52;border-radius:16px;background:#101722;text-align:center}.quick b{display:block;font-size:24px;color:#77d8ff}.quick span{font-size:10px;color:#9ba7bd;font-weight:800;letter-spacing:1px}@media(max-width:560px){.wrap{padding:10px}.alliance-name{font-size:40px}.quick-grid{grid-template-columns:repeat(3,1fr)}.quick{padding:14px 6px}.quick b{font-size:20px}}
-/* Global bottom navigation */
-.bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:1200;width:min(950px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px;background:rgba(8,11,18,.96);border-top:1px solid #263047;backdrop-filter:blur(12px)}
-.bottom-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;padding:6px 4px;border-radius:12px;text-decoration:none;color:#9ba7bd;font-size:10px;font-weight:900;text-align:center;letter-spacing:.2px}
-.bottom-nav a .nav-icon{font-size:20px;line-height:1}
-.bottom-nav a.active{color:#fff;background:linear-gradient(135deg,#5b8cff,#9b5cff);box-shadow:0 6px 20px rgba(91,140,255,.22)}
-@media(max-width:560px){.bottom-nav{padding:7px 5px}.bottom-nav a{font-size:9px;min-height:56px}.bottom-nav a .nav-icon{font-size:19px}body{padding-bottom:78px}}
-</style></head><body><main class="wrap"><header><div class="alliance-badge">⚔</div><div class="alliance-name">HOLa</div><div class="alliance-tag">ALLIANCE MEMBER TRACKER</div><div class="sub">Welcome to the HOLa Alliance Center</div></header><section class="home-card"><h2>📝 Player Survey</h2><p>Fill in or update your player information so the alliance tracker has your latest data.</p><a class="survey-btn" href="survey.html">FILL IN PLAYER SURVEY</a></section><section class="quick-grid"><div class="quick"><b>👥</b><span>MEMBERS</span></div><div class="quick"><b>📊</b><span>STATS</span></div><div class="quick"><b>🏰</b><span>ALLIANCE</span></div></section></main><nav class="bottom-nav" aria-label="Navegación principal"><a href="index.html" class="active"><span class="nav-icon">⌂</span><span>Inicio</span></a><a href="alliance.html" class=""><span class="nav-icon">🏰</span><span>Centro de Alianza</span></a><a href="statistics.html" class=""><span class="nav-icon">📊</span><span>Estadísticas</span></a><a href="guides.html" class=""><span class="nav-icon">📚</span><span>Guías</span></a></nav></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HOLa Alliance Tracker</title>
+<style>
+:root{
+  --bg:#07111e; --bg2:#0b1726; --panel:#101d2c; --line:#31465d;
+  --text:#eef5ff; --muted:#9fb0c4; --blue:#25b9ff; --gold:#e4b548;
+  --green:#3f9c61; --red:#b93b3b; --purple:#8b5bd8;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; color:var(--text); font-family:Arial,Helvetica,sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%,rgba(28,116,184,.18),transparent 32%),
+    radial-gradient(circle at 90% 8%,rgba(221,119,30,.10),transparent 24%),
+    linear-gradient(180deg,#06111d 0%,#0a1420 45%,#07111b 100%);
+  min-height:100vh; padding-bottom:94px;
+}
+.header{
+  min-height:145px; padding:20px clamp(16px,4vw,54px);
+  border-bottom:1px solid #263b51; position:relative; overflow:hidden;
+  background:linear-gradient(100deg,rgba(5,17,29,.98),rgba(8,17,28,.92));
+}
+.header:after{
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(circle at 75% 45%,rgba(22,129,210,.16),transparent 28%),
+             radial-gradient(circle at 92% 10%,rgba(244,146,31,.12),transparent 18%);
+  pointer-events:none;
+}
+.header-inner{max-width:1250px;margin:auto;display:flex;align-items:center;gap:24px;position:relative;z-index:1}
+.brand{
+  min-width:185px; font-size:42px; line-height:.85; font-weight:900; letter-spacing:-3px;
+  text-shadow:0 3px 0 #0a111a,0 6px 12px #000;
+}
+.brand .world{font-size:30px;vertical-align:middle}
+.brand small{display:block;margin-top:9px;font-size:10px;letter-spacing:2px;color:#cbd5df}
+.title{flex:1;border-left:1px solid #31465d;padding-left:24px}
+.title h1{margin:0;font-size:31px;letter-spacing:.5px}
+.title h1 span{color:var(--blue);margin-right:9px}
+.title p{margin:8px 0 0;color:var(--muted);font-size:15px}
+.updated{text-align:right;min-width:190px;color:#d2dce7;font-size:13px}
+.updated strong{display:block;color:var(--gold);font-size:16px;margin-top:4px}
+#refreshBtn{margin-top:7px;border:0;background:transparent;color:var(--blue);font-size:28px;cursor:pointer}
+.wrap{max-width:1250px;margin:auto;padding:22px 18px}
+.home-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}
+.hero-card,.panel,.stat-card,.quick-card{
+  background:linear-gradient(145deg,rgba(20,34,49,.98),rgba(10,22,34,.98));
+  border:1px solid var(--line); border-radius:20px; box-shadow:0 12px 32px rgba(0,0,0,.22);
+}
+.hero-card{padding:26px;min-height:270px;display:flex;flex-direction:column;justify-content:center}
+.kicker{font-size:12px;font-weight:900;letter-spacing:2px;color:var(--blue)}
+.hero-card h2{font-size:31px;margin:9px 0}
+.hero-card p{color:var(--muted);max-width:550px;line-height:1.55}
+.big-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;margin-top:16px;
+  padding:15px 20px;border-radius:13px;background:linear-gradient(135deg,#0f86ca,#34c8ff);
+  color:white;text-decoration:none;font-weight:900;width:min(330px,100%);
+  box-shadow:0 8px 24px rgba(37,185,255,.20)
+}
+.panel{padding:22px}
+.panel h2{margin:0 0 8px;font-size:22px}.panel p{color:var(--muted);margin-top:0}
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.quick-card{
+  padding:15px;text-decoration:none;color:var(--text);min-height:100px;
+  transition:.2s transform,.2s border-color
+}
+.quick-card:hover{transform:translateY(-2px);border-color:#5c89ad}
+.quick-icon{font-size:28px;display:block;margin-bottom:7px}.quick-card b{display:block;font-size:15px}.quick-card span{font-size:12px;color:var(--muted);margin-top:4px;display:block}
+.section-title{
+  margin:24px 0 12px;display:flex;align-items:center;gap:10px;font-size:23px;font-weight:900
+}
+.section-title:before{content:"";width:6px;height:28px;background:var(--blue);border-radius:4px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat-card{padding:18px;position:relative;overflow:hidden}
+.stat-card:before{content:"";position:absolute;left:0;top:0;width:5px;height:100%;background:var(--blue)}
+.stat-card.green:before{background:var(--green)}.stat-card.gold:before{background:var(--gold)}
+.stat-card.purple:before{background:var(--purple)}
+.stat-card span{font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.8px}
+.stat-card strong{display:block;font-size:31px;margin-top:8px}
+.stat-card small{display:block;color:#8fa3b7;margin-top:3px}
+.stats-link{display:inline-flex;margin-top:15px;color:var(--blue);font-weight:900;text-decoration:none}
+.center-panel{display:none}
+.center-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.center-link{
+  min-height:150px;padding:22px;text-decoration:none;color:var(--text);position:relative;overflow:hidden;
+  background:linear-gradient(145deg,#172637,#0d1926);border:1px solid var(--line);border-radius:17px;
+}
+.center-link .ci{font-size:34px;display:block;margin-bottom:11px}.center-link b{font-size:18px}.center-link p{color:var(--muted);font-size:12px;line-height:1.45}
+.center-link:hover{border-color:#5794bf}
+.guides-panel{display:none}
+.guide-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.guide{padding:20px;border-radius:17px;background:#101d2c;border:1px solid var(--line)}
+.guide h3{margin:0 0 7px}.guide p{margin:0;color:var(--muted)}
+.nav{
+  position:fixed;z-index:20;left:0;right:0;bottom:0;height:78px;
+  background:rgba(7,17,29,.96);backdrop-filter:blur(16px);
+  border-top:1px solid #29445c;display:flex;justify-content:center;
+}
+.nav-inner{width:min(100%,900px);display:grid;grid-template-columns:repeat(4,1fr)}
+.nav button{
+  border:0;background:transparent;color:#9eafc2;font-weight:900;font-size:11px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px
+}
+.nav .icon{font-size:28px;line-height:25px}.nav button.active{color:white;background:linear-gradient(180deg,rgba(20,157,225,.23),transparent)}
+.nav button.active .icon{color:#4fc7ff;filter:drop-shadow(0 0 8px rgba(79,199,255,.6))}
+.loading{padding:35px;text-align:center;color:var(--muted)}
+@media(max-width:900px){
+ .header-inner{gap:14px}.brand{min-width:120px;font-size:34px}.title{padding-left:14px}
+ .home-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,1fr)}
+ .center-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:620px){
+ .header{min-height:116px;padding:14px 16px}.header-inner{display:grid;grid-template-columns:92px 1fr}
+ .brand{font-size:28px;letter-spacing:-2px;min-width:0}.brand .world{font-size:19px}.brand small{font-size:7px;letter-spacing:1px;margin-top:5px}
+ .title{border-left:1px solid #31465d}.title h1{font-size:21px}.title p{font-size:11px}.updated{display:none}
+ .wrap{padding:14px 10px}.hero-card,.panel{padding:18px}.hero-card h2{font-size:25px}
+ .stats-grid{gap:8px}.stat-card{padding:14px}.stat-card strong{font-size:26px}
+ .center-grid{grid-template-columns:repeat(2,1fr);gap:8px}.center-link{min-height:128px;padding:16px}
+ .guide-list{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">H<span class="world">🌍</span>La<small>ALLIANCE TRACKER</small></div>
+    <div class="title">
+      <h1 id="pageTitle"><span>⌂</span> INICIO</h1>
+      <p id="pageSubtitle">Panel principal de la alianza</p>
+    </div>
+    <div class="updated">Datos de Supabase<strong id="updatedAt">Cargando...</strong><button id="refreshBtn" title="Actualizar">↻</button></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="homePanel">
+    <div class="home-grid">
+      <article class="hero-card">
+        <div class="kicker">HOLa ALLIANCE TRACKER</div>
+        <h2>Bienvenido al centro de la alianza</h2>
+        <p>Consulta tus datos, rellena la encuesta y accede a todas las herramientas de HOLa desde un único panel.</p>
+        <a class="big-btn" href="survey.html">📝 RELLENAR ENCUESTA</a>
+      </article>
+
+      <article class="panel">
+        <h2>⚡ Acceso rápido</h2>
+        <p>Las herramientas principales de la alianza.</p>
+        <div class="quick-grid">
+          <a class="quick-card" href="members.html"><span class="quick-icon">👥</span><b>Miembros</b><span>Lista y perfiles</span></a>
+          <a class="quick-card" href="statistics.html"><span class="quick-icon">📊</span><b>Estadísticas</b><span>Datos de la encuesta</span></a>
+          <a class="quick-card" href="train.html"><span class="quick-icon">🚆</span><b>Tren</b><span>Elegibilidad y ranking</span></a>
+          <a class="quick-card" href="guides.html"><span class="quick-icon">📚</span><b>Guías</b><span>Información útil</span></a>
+        </div>
+      </article>
+    </div>
+
+    <div class="section-title">RESUMEN DE LA ENCUESTA</div>
+    <div class="stats-grid">
+      <article class="stat-card"><span>JUGADORES CON ENCUESTA</span><strong id="countPlayers">—</strong><small>datos guardados en Supabase</small></article>
+      <article class="stat-card green"><span>CON T10</span><strong id="countT10">—</strong><small>tropas nivel 10</small></article>
+      <article class="stat-card gold"><span>SQUAD PRINCIPAL</span><strong id="countSquad">—</strong><small id="topSquad">tipo más frecuente</small></article>
+      <article class="stat-card purple"><span>PROFESIÓN</span><strong id="countProfession">—</strong><small id="topProfession">profesión más frecuente</small></article>
+    </div>
+    <a class="stats-link" href="statistics.html">VER ESTADÍSTICAS COMPLETAS →</a>
+  </section>
+
+  <section id="centerPanel" class="center-panel">
+    <div class="section-title">CENTRO DE ALIANZA</div>
+    <div class="center-grid">
+      <a class="center-link" href="members.html"><span class="ci">👥</span><b>MIEMBROS</b><p>Miembros de HOLa y datos principales.</p></a>
+      <a class="center-link" href="donations.html"><span class="ci">🎁</span><b>DONACIONES</b><p>Consulta las donaciones de la alianza.</p></a>
+      <a class="center-link" href="vs.html"><span class="ci">⚔️</span><b>VS</b><p>Puntos y clasificación semanal.</p></a>
+      <a class="center-link" href="ds.html"><span class="ci">🛡️</span><b>DS</b><p>Información y participación en Desert Storm.</p></a>
+      <a class="center-link" href="train.html"><span class="ci">🚆</span><b>TREN</b><p>Elegibilidad y ranking para el tren.</p></a>
+    </div>
+  </section>
+
+  <section id="statsPanel" class="center-panel">
+    <div class="section-title">ESTADÍSTICAS</div>
+    <div class="stats-grid">
+      <article class="stat-card"><span>JUGADORES</span><strong id="sPlayers">—</strong><small>encuestas completadas</small></article>
+      <article class="stat-card green"><span>CON T10</span><strong id="sT10">—</strong><small id="sNoT10">— sin T10</small></article>
+      <article class="stat-card gold"><span>AIRE</span><strong id="sAir">—</strong><small>Squad 1 principal</small></article>
+      <article class="stat-card purple"><span>TANQUE / MISILES</span><strong id="sOther">—</strong><small id="sOtherDetail">—</small></article>
+    </div>
+    <a class="big-btn" style="margin-top:20px" href="statistics.html">📊 ABRIR ESTADÍSTICAS COMPLETAS</a>
+  </section>
+
+  <section id="guidesPanel" class="guides-panel">
+    <div class="section-title">GUÍAS</div>
+    <div class="guide-list">
+      <article class="guide"><h3>📚 Guías de la alianza</h3><p>Accede a las guías y recursos disponibles.</p></article>
+      <article class="guide"><h3>📝 Encuesta de jugador</h3><p>Mantén actualizados tus datos para mejorar las estadísticas.</p></article>
+    </div>
+    <a class="big-btn" style="margin-top:20px" href="guides.html">📖 ABRIR GUÍAS</a>
+  </section>
+</main>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="active" data-panel="homePanel" data-title="INICIO" data-sub="Panel principal de la alianza"><span class="icon">⌂</span>INICIO</button>
+    <button data-panel="centerPanel" data-title="CENTRO DE ALIANZA" data-sub="Herramientas y actividades de HOLa"><span class="icon">♜</span>CENTRO DE ALIANZA</button>
+    <button data-panel="statsPanel" data-title="ESTADÍSTICAS" data-sub="Datos recopilados desde Supabase"><span class="icon">▮▮▮</span>ESTADÍSTICAS</button>
+    <button data-panel="guidesPanel" data-title="GUÍAS" data-sub="Información y recursos de la alianza"><span class="icon">▱</span>GUÍAS</button>
+  </div>
+</nav>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const supabaseUrl="https://ovybstpiomphrouvqxmf.supabase.co";
+const supabaseKey="sb_publishable_gU5Wgy2NhdXcy23_TotF9g_LKthVmKV";
+const supabase=createClient(supabaseUrl,supabaseKey);
+
+const norm=v=>String(v??"").trim().toLowerCase();
+const yesT10=r=>r.t10===true||["true","yes","si","sí","t10","with t10","con t10"].includes(norm(r.t10??r.hasT10??r.troopsT10));
+const squad=r=>norm(r.squad1_type??r.squad1Type??r.squad1??r.primarySquad??r.squad);
+const profession=r=>norm(r.profession??r.role??r.professionType);
+
+function set(id,value){const el=document.getElementById(id);if(el)el.textContent=value}
+
+async function load(){
+  set("updatedAt","Actualizando...");
+  try{
+    const {data,error}=await supabase.from("players").select("*");
+    if(error) throw error;
+    const rows=(data||[]).filter(r=>String(r.name||"").trim());
+    const withT10=rows.filter(yesT10);
+    const types=rows.map(squad).filter(Boolean);
+    const professions=rows.map(profession).filter(Boolean);
+
+    const countMap=arr=>arr.reduce((a,v)=>(a[v]=(a[v]||0)+1,a),{});
+    const top=map=>{
+      const entries=Object.entries(map).sort((a,b)=>b[1]-a[1]);
+      return entries[0]||["Sin datos",0];
+    };
+
+    const squadCounts=countMap(types), profCounts=countMap(professions);
+    const [topSquad,topSquadCount]=top(squadCounts);
+    const [topProf,topProfCount]=top(profCounts);
+
+    const air=rows.filter(r=>["aircraft","air","aire"].includes(squad(r))).length;
+    const tank=rows.filter(r=>["tank","tanks","tanque"].includes(squad(r))).length;
+    const missile=rows.filter(r=>["missile","missiles","misiles"].includes(squad(r))).length;
+
+    set("countPlayers",rows.length);
+    set("countT10",withT10.length);
+    set("countSquad",topSquadCount||"—");
+    set("topSquad",topSquadCount?`${topSquad.toUpperCase()} · ${topSquadCount} jugadores`:"sin datos");
+    set("countProfession",topProfCount||"—");
+    set("topProfession",topProfCount?`${topProf.toUpperCase()} · ${topProfCount} jugadores`:"sin datos");
+
+    set("sPlayers",rows.length);
+    set("sT10",withT10.length);
+    set("sNoT10",`${rows.length-withT10.length} sin T10`);
+    set("sAir",air);
+    set("sOther",tank+missile);
+    set("sOtherDetail",`${tank} tanque · ${missile} misiles`);
+
+    set("updatedAt",new Date().toLocaleString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}));
+  }catch(err){
+    console.error(err);
+    set("updatedAt","Error");
+  }
+}
+
+document.querySelectorAll(".nav button").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll("main > section").forEach(p=>p.style.display="none");
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.panel).style.display=btn.dataset.panel==="homePanel"?"block":"block";
+    document.getElementById("pageTitle").innerHTML=`<span>${btn.querySelector(".icon").textContent}</span> ${btn.dataset.title}`;
+    document.getElementById("pageSubtitle").textContent=btn.dataset.sub;
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+});
+document.getElementById("refreshBtn").addEventListener("click",load);
+load();
+</script>
+</body>
+</html>
