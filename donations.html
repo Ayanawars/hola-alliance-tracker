@@ -1,7 +1,7 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HOLa Alliance Tracker</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#080b12;color:#eef3ff;font-family:Arial,sans-serif}.wrap{max-width:950px;margin:auto;padding:16px}
+*{box-sizing:border-box}body{margin:0;padding-bottom:82px;background:#080b12;color:#eef3ff;font-family:Arial,sans-serif}.wrap{max-width:950px;margin:auto;padding:16px}
 header{position:relative;overflow:hidden;padding:30px 24px 24px;border:1px solid #36466a;border-radius:22px;background:linear-gradient(135deg,#121a31 0%,#1b1434 45%,#10283a 100%);margin-bottom:18px;text-align:center;box-shadow:0 12px 35px rgba(0,0,0,.28)}
 .hero-glow{position:absolute;border-radius:50%;filter:blur(45px);opacity:.45;pointer-events:none}.glow-one{width:220px;height:220px;top:-130px;left:-60px;background:#2e7cff}.glow-two{width:190px;height:190px;bottom:-120px;right:-40px;background:#b950ff}
 .alliance-badge{position:relative;margin:0 auto 8px;width:52px;height:52px;display:grid;place-items:center;border-radius:16px;font-size:27px;background:linear-gradient(135deg,#ffca45,#ff7a3d);box-shadow:0 5px 20px rgba(255,164,55,.3);color:#111}
@@ -161,6 +161,13 @@ body.hola-admin .vs-config.admin-only{display:grid!important}
 .member-rank-group.collapsed .member-rank-chevron{transform:rotate(-90deg)}
 .member-rank-group.collapsed .member-rank-body{display:none}
 
+
+/* Global bottom navigation */
+.bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:1200;width:min(950px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px;background:rgba(8,11,18,.96);border-top:1px solid #263047;backdrop-filter:blur(12px)}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;padding:6px 4px;border-radius:12px;text-decoration:none;color:#9ba7bd;font-size:10px;font-weight:900;text-align:center;letter-spacing:.2px}
+.bottom-nav a .nav-icon{font-size:20px;line-height:1}
+.bottom-nav a.active{color:#fff;background:linear-gradient(135deg,#5b8cff,#9b5cff);box-shadow:0 6px 20px rgba(91,140,255,.22)}
+@media(max-width:560px){.bottom-nav{padding:7px 5px}.bottom-nav a{font-size:9px;min-height:56px}.bottom-nav a .nav-icon{font-size:19px}body{padding-bottom:78px}}
 </style>
 <style id="remove-login-edit-controls">
 #googleLoginBtn,#loginBtn,#googleLogoutBtn,#logoutBtn,
@@ -1184,4 +1191,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-</body></html>
+<nav class="bottom-nav" aria-label="Navegación principal"><a href="index.html" class=""><span class="nav-icon">⌂</span><span>Inicio</span></a><a href="alliance.html" class="active"><span class="nav-icon">🏰</span><span>Centro de Alianza</span></a><a href="statistics.html" class=""><span class="nav-icon">📊</span><span>Estadísticas</span></a><a href="guides.html" class=""><span class="nav-icon">📚</span><span>Guías</span></a></nav></body></html>

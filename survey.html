@@ -87,7 +87,14 @@
       header{flex-direction:column}.lang-select{width:100%}.grid{grid-template-columns:1fr}
       .full{grid-column:auto}.wrap{width:min(100% - 20px,900px);padding-top:16px}form{padding:16px;border-radius:18px}
     }
-  </style>
+  
+/* Global bottom navigation */
+.bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:1200;width:min(950px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px;background:rgba(8,11,18,.96);border-top:1px solid #263047;backdrop-filter:blur(12px)}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;padding:6px 4px;border-radius:12px;text-decoration:none;color:#9ba7bd;font-size:10px;font-weight:900;text-align:center;letter-spacing:.2px}
+.bottom-nav a .nav-icon{font-size:20px;line-height:1}
+.bottom-nav a.active{color:#fff;background:linear-gradient(135deg,#5b8cff,#9b5cff);box-shadow:0 6px 20px rgba(91,140,255,.22)}
+@media(max-width:560px){.bottom-nav{padding:7px 5px}.bottom-nav a{font-size:9px;min-height:56px}.bottom-nav a .nav-icon{font-size:19px}body{padding-bottom:78px}}
+</style>
 </head>
 <body class="welcome-open survey-hidden">
   <div class="welcome-screen" id="welcomeScreen" aria-label="Survey preparation">
@@ -547,5 +554,5 @@
     }finally{btn.disabled=false}
   });
 </script>
-</body>
+<nav class="bottom-nav" aria-label="Navegación principal"><a href="index.html" class="active"><span class="nav-icon">⌂</span><span>Inicio</span></a><a href="alliance.html" class=""><span class="nav-icon">🏰</span><span>Centro de Alianza</span></a><a href="statistics.html" class=""><span class="nav-icon">📊</span><span>Estadísticas</span></a><a href="guides.html" class=""><span class="nav-icon">📚</span><span>Guías</span></a></nav></body>
 </html>
