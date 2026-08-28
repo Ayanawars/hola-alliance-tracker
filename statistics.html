@@ -43,7 +43,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.4;
 .big-icon{font-size:82px;text-align:center;filter:drop-shadow(0 6px 4px rgba(0,0,0,.22))}
 .card-head h2{margin:0;color:var(--accent);font-size:27px;text-transform:uppercase;line-height:1.05}
 .card-head .count{font-size:55px;font-weight:1000;color:var(--accent);line-height:1;margin:6px 0}
-.card-head .players{font-size:17px;font-weight:700;color:#3d4653}
+.card-head .players{font-size:17px;font-weight:700;color:#3d4653}.total-power{margin-top:5px;font-size:12px;font-weight:700;color:#586273}.total-power b{color:var(--accent);font-size:15px}
 .list-title{background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent),#ffffff 12%));color:white;font-weight:900;text-transform:uppercase;padding:9px 13px;font-size:14px;letter-spacing:.3px}
 .player-list{padding:3px 12px 0}
 .player{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:7px 4px;border-bottom:1px solid rgba(72,80,93,.23);font-size:16px;font-weight:800}
@@ -59,7 +59,8 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.4;
 .nav-item{color:#d9e0e8;text-decoration:none;text-align:center;padding:10px 4px;font-size:13px;font-weight:900;text-transform:uppercase;border-right:1px solid #23415b}
 .nav-item:last-child{border-right:0}.nav-item .ni{display:block;font-size:31px;line-height:34px}.nav-item.active{background:radial-gradient(circle at 50% 0,rgba(38,152,218,.4),transparent 60%);color:#fff;box-shadow:inset 0 0 18px rgba(38,152,218,.22)}
 @media(max-width:800px){
- body{padding-bottom:76px}.header{min-height:106px;padding:13px 16px;gap:12px}.brand{display:none}.title{border-left:0;padding-left:0}.title h1{font-size:26px}.title p{font-size:13px}.updated{min-width:118px;font-size:11px}.updated strong{font-size:14px}.wrap{padding:0 8px}.section{padding:58px 9px 10px;border-radius:14px}.section-tab{left:7px;top:7px;min-width:250px;font-size:18px;padding:12px 15px 12px 58px}.section-tab:before{left:13px;top:8px;font-size:30px}.grid.two,.grid.three{grid-template-columns:1fr}.card-top{grid-template-columns:120px 1fr;min-height:138px}.big-icon{font-size:68px}.card-head h2{font-size:23px}.card-head .count{font-size:48px}.stat-card{min-height:0}.bottom-nav{height:68px}.nav-item{font-size:10px;padding-top:7px}.nav-item .ni{font-size:25px;line-height:27px}}
+ body{padding-bottom:76px}.header{min-height:106px;padding:13px 16px;gap:12px}.brand{display:none}.title{border-left:0;padding-left:0}.title h1{font-size:26px}.title p{font-size:13px}.updated{min-width:118px;font-size:11px}.updated strong{font-size:14px}.wrap{padding:0 8px}.section{padding:58px 9px 10px;border-radius:14px}.section-tab{left:7px;top:7px;min-width:250px;font-size:18px;padding:12px 15px 12px 58px}.section-tab:before{left:13px;top:8px;font-size:30px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.card-top{grid-template-columns:1fr;min-height:116px;padding:8px 6px 0;text-align:center}.big-icon{font-size:42px;line-height:1}.card-head h2{font-size:15px}.card-head .count{font-size:34px;margin:2px 0}.card-head .players{font-size:11px}.total-power{font-size:9px;margin-top:2px}.total-power b{font-size:11px}.list-title{font-size:10px;padding:7px 5px}.player-list{padding:2px 5px 0}.player{font-size:11px;gap:4px;padding:6px 1px;grid-template-columns:1fr auto}.player:before{display:none}.more{font-size:11px;padding:7px 3px}.more span{font-size:16px}.stat-card{min-height:0}.bottom-nav{height:68px}.nav-item{font-size:10px;padding-top:7px}.nav-item .ni{font-size:25px;line-height:27px}}
+@media(max-width:390px){.section{padding-left:6px;padding-right:6px}.section-tab{min-width:220px;font-size:16px}.title h1{font-size:23px}.updated{display:none}.card-head h2{font-size:14px}.card-head .count{font-size:31px}.player{font-size:10px}.list-title{font-size:9px}.grid.three{gap:4px}}
 </style>
 </head>
 <body>
@@ -120,24 +121,45 @@ function squadType(raw){
 function profession(raw){
   return norm(raw.profession ?? raw.role ?? raw.professionType);
 }
+function parseMillions(v){
+  if(v===null || v===undefined || v==='') return 0;
+  const text=String(v).trim().toUpperCase().replace(/\s/g,'');
+  const hasB=/B/.test(text), hasK=/K/.test(text);
+  let cleaned=text.replace(/[^0-9,.-]/g,'');
+  if(cleaned.includes(',') && cleaned.includes('.')) cleaned=cleaned.replace(/,/g,'');
+  else if(cleaned.includes(',')) cleaned=cleaned.replace(',','.');
+  const n=parseFloat(cleaned);
+  if(!Number.isFinite(n)) return 0;
+  if(hasB) return n*1000;
+  if(hasK) return n/1000;
+  return n;
+}
 function thp(raw){
   const vals=[raw.thp,raw.THP,raw.totalHeroPower,raw.heroPower,raw.power];
-  for(const v of vals){const n=parseFloat(String(v??'').replace(/[^\d.]/g,''));if(Number.isFinite(n)) return n;}
+  for(const v of vals){const n=parseMillions(v);if(n) return n;}
   return 0;
 }
-function formatPower(n){return n>=1000 ? (n/1000).toFixed(1)+'B' : n.toFixed(1)+'M'}
-function player(name, raw){return {name:name||'Unknown', thp:thp(raw)}}
-function sortPlayers(a){return a.sort((x,y)=>y.thp-x.thp||x.name.localeCompare(y.name))}
+function squad1Power(raw){
+  const vals=[raw.squad1Power,raw.squad1power,raw.squadPower1,raw.squad1Total,raw.primarySquadPower];
+  for(const v of vals){const n=parseMillions(v);if(n) return n;}
+  return 0;
+}
+function formatPower(n){return Number.isFinite(n)&&n>0 ? n.toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1})+'M' : '—'}
+function player(name, raw){return {name:name||'Unknown', thp:thp(raw), squadPower:squad1Power(raw)}}
+function sortPlayers(a, valueKey='thp'){return [...a].sort((x,y)=>(y[valueKey]||0)-(x[valueKey]||0)||x.name.localeCompare(y.name))}
 
-function card({title,count,icon,accent,players,listTitle}){
+function card({title,count,icon,accent,players,listTitle,valueKey='thp',valueLabel='THP'}){
+  const sorted=sortPlayers(players,valueKey);
+  const top=sorted.slice(0,5);
+  const rest=sorted.slice(5);
+  const total=sorted.reduce((sum,p)=>sum+(Number(p[valueKey])||0),0);
   const id='c'+Math.random().toString(36).slice(2);
-  const top=sortPlayers(players).slice(0,5);
-  const rest=sortPlayers(players).slice(5);
+  const value=p=>formatPower(p[valueKey]);
   return `<article class="stat-card ${accent}">
-    <div class="card-top"><div class="big-icon">${icon}</div><div class="card-head"><h2>${esc(title)}</h2><div class="count">${count}</div><div class="players">jugadores</div></div></div>
+    <div class="card-top"><div class="big-icon">${icon}</div><div class="card-head"><h2>${esc(title)}</h2><div class="count">${count}</div><div class="players">jugadores</div><div class="total-power">Total ${esc(valueLabel)}: <b>${formatPower(total)}</b></div></div></div>
     <div class="list-title">👥 ${esc(listTitle)}</div>
-    <div class="player-list">${top.length ? top.map(p=>`<div class="player"><span class="name">${esc(p.name)}</span><span class="thp">${p.thp?formatPower(p.thp):'—'}</span></div>`).join('') : '<div class="empty">Sin datos todavía</div>'}</div>
-    ${rest.length ? `<div id="${id}" hidden class="player-list">${rest.map(p=>`<div class="player"><span class="name">${esc(p.name)}</span><span class="thp">${p.thp?formatPower(p.thp):'—'}</span></div>`).join('')}</div><button class="more" onclick="const e=document.getElementById('${id}');e.hidden=!e.hidden;this.innerHTML=e.hidden?'Ver todos (${count}) <span>⌄</span>':'Ver menos <span>⌃</span>'">Ver todos (${count}) <span>⌄</span></button>`:''}
+    <div class="player-list">${top.length ? top.map(p=>`<div class="player"><span class="name">${esc(p.name)}</span><span class="thp">${value(p)}</span></div>`).join('') : '<div class="empty">Sin datos todavía</div>'}</div>
+    ${rest.length ? `<div id="${id}" hidden class="player-list">${rest.map(p=>`<div class="player"><span class="name">${esc(p.name)}</span><span class="thp">${value(p)}</span></div>`).join('')}</div><button class="more" onclick="const e=document.getElementById('${id}');e.hidden=!e.hidden;this.innerHTML=e.hidden?'Ver todos (${count}) <span>⌄</span>':'Ver menos <span>⌃</span>'">Ver todos (${count}) <span>⌄</span></button>`:''}
   </article>`;
 }
 
@@ -165,9 +187,9 @@ async function load(){
       card({title:'SIN T10',count:withoutT10.length,icon:'🛡️',accent:'red',players:withoutT10,listTitle:'JUGADORES SIN T10'});
 
     document.getElementById('squadGrid').innerHTML =
-      card({title:'AIRE',count:air.length,icon:'🚁',accent:'blue',players:air,listTitle:'JUGADORES (AIRE)'}) +
-      card({title:'TANQUE',count:tanks.length,icon:'🛡️',accent:'gold',players:tanks,listTitle:'JUGADORES (TANQUE)'}) +
-      card({title:'MISILES',count:missiles.length,icon:'🚀',accent:'purple',players:missiles,listTitle:'JUGADORES (MISILES)'});
+      card({title:'AIRE',count:air.length,icon:'🚁',accent:'blue',players:air,listTitle:'JUGADORES (AIRE)',valueKey:'squadPower',valueLabel:'SQUAD 1'}) +
+      card({title:'TANQUE',count:tanks.length,icon:'🛡️',accent:'gold',players:tanks,listTitle:'JUGADORES (TANQUE)',valueKey:'squadPower',valueLabel:'SQUAD 1'}) +
+      card({title:'MISILES',count:missiles.length,icon:'🚀',accent:'purple',players:missiles,listTitle:'JUGADORES (MISILES)',valueKey:'squadPower',valueLabel:'SQUAD 1'});
 
     document.getElementById('professionGrid').innerHTML =
       card({title:'INGENIEROS',count:engineers.length,icon:'👷',accent:'green',players:engineers,listTitle:'INGENIEROS'}) +
