@@ -664,18 +664,24 @@ document.getElementById("save").onclick=async()=>{
 
   if(!vs_date){
     status.textContent="⚠ Selecciona una fecha del VS.";
+    alert("⚠ Selecciona una fecha del VS.");
     return;
   }
 
-  const data=[...rows.children].map(r=>{
+  // Duplicamos por nombre para que una misma persona no se guarde dos veces.
+  const unique=new Map();
+  for(const r of [...rows.children]){
     const detected=r.querySelector(".n")?.value?.trim()||"";
     const official=r.querySelector(".member-select")?.value?.trim()||"";
+    const player_name=official||detected;
     const points=Number((r.querySelector(".p")?.value||"").replace(/[^0-9]/g,""))||0;
-    return {player_name:official||detected,day,week_type,vs_date,points};
-  }).filter(x=>x.player_name);
+    if(player_name) unique.set(normName(player_name),{player_name,day,week_type,vs_date,points});
+  }
+  const data=[...unique.values()];
 
   if(!data.length){
     status.textContent="⚠ No hay jugadores para guardar.";
+    alert("⚠ No hay jugadores para guardar.");
     return;
   }
 
@@ -684,12 +690,15 @@ document.getElementById("save").onclick=async()=>{
   status.textContent=`Conectando con Supabase... (${data.length} jugadores)`;
 
   try{
+    // Comprobación real de acceso a la tabla antes de guardar.
+    const {error:checkError}=await sb.from("vs_scores").select("player_name",{head:true,count:"exact"}).limit(1);
+    if(checkError) throw new Error(`No se puede acceder a vs_scores: ${checkError.message}`);
+
+    let saved=0;
     for(let i=0;i<data.length;i++){
       const x=data[i];
       status.textContent=`Guardando ${i+1}/${data.length}: ${x.player_name}`;
 
-      // Primero intentamos actualizar el registro existente usando la clave real
-      // de la puntuación. No dependemos de que exista una columna "id".
       const {data: updated,error:updateError}=await sb
         .from("vs_scores")
         .update({points:x.points})
@@ -699,19 +708,37 @@ document.getElementById("save").onclick=async()=>{
         .eq("vs_date",x.vs_date)
         .select("player_name");
 
-      if(updateError) throw new Error(`Supabase: ${updateError.message}`);
+      if(updateError) throw new Error(`Error al actualizar ${x.player_name}: ${updateError.message}`);
 
-      // Si no existía, lo insertamos.
       if(!updated || updated.length===0){
-        const {error:insertError}=await sb.from("vs_scores").insert(x);
-        if(insertError) throw new Error(`Supabase: ${insertError.message}`);
+        const {data: inserted,error:insertError}=await sb
+          .from("vs_scores")
+          .insert(x)
+          .select("player_name");
+        if(insertError) throw new Error(`Error al insertar ${x.player_name}: ${insertError.message}`);
+        if(!inserted || !inserted.length) throw new Error(`Supabase no confirmó el guardado de ${x.player_name}.`);
       }
+      saved++;
     }
 
-    status.textContent=`✓ Guardado correctamente en Supabase: ${data.length} jugadores.`;
+    // Verificación final: leemos lo que acaba de guardarse.
+    const {data: verified,error:verifyError}=await sb
+      .from("vs_scores")
+      .select("player_name")
+      .eq("day",day)
+      .eq("week_type",week_type)
+      .eq("vs_date",vs_date)
+      .limit(data.length+5);
+
+    if(verifyError) throw new Error(`Guardado sin poder verificar: ${verifyError.message}`);
+    const message=`✓ GUARDADO Y VERIFICADO: ${saved} jugadores enviados. Supabase devuelve ${verified?.length||0} registro(s) para este VS.`;
+    status.textContent=message;
+    alert(message);
   }catch(e){
     console.error("Error guardando en Supabase:",e);
-    status.textContent="⚠ "+(e?.message||String(e));
+    const message="⚠ NO SE HA GUARDADO: "+(e?.message||String(e));
+    status.textContent=message;
+    alert(message);
   }finally{
     saveBtn.disabled=false;
     saveBtn.textContent="💾 GUARDAR EN SUPABASE";
