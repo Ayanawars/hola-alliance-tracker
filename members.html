@@ -47,6 +47,38 @@ body{margin:0;color:var(--text);font-family:Arial,Helvetica,sans-serif;backgroun
   <a class="back" href="index.html">← INICIO</a>
 </div></header>
 
+
+<button id="editPlayersBtn" class="edit-players-gear" type="button" title="Editar jugadores">⚙</button>
+<div id="editPlayersModal" class="edit-players-modal" aria-hidden="true">
+  <div class="edit-players-box">
+    <div class="edit-players-head">
+      <div>
+        <h2>⚙ EDITAR JUGADORES</h2>
+        <p>Selecciona un jugador y cambia sus datos.</p>
+      </div>
+      <button id="closeEditPlayers" class="edit-close" type="button">✕</button>
+    </div>
+    <div class="edit-players-toolbar">
+      <select id="editPlayerSelect"></select>
+      <button id="newPlayerBtn" class="edit-action" type="button">＋ NUEVO</button>
+    </div>
+    <div id="editPlayerForm" class="edit-player-form"></div>
+  </div>
+</div>
+<style>
+.edit-players-gear{position:fixed;right:18px;bottom:18px;width:52px;height:52px;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:linear-gradient(135deg,#27334a,#101723);color:#fff;font-size:25px;cursor:pointer;z-index:1000;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.edit-players-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:18px;z-index:1100}
+.edit-players-modal.show{display:flex}
+.edit-players-box{width:min(680px,100%);max-height:90vh;overflow:auto;background:#111a28;border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:20px;color:#fff;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.edit-players-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}
+.edit-players-head h2{margin:0;font-size:20px}.edit-players-head p{margin:5px 0 0;opacity:.7}
+.edit-close{background:transparent;border:0;color:#fff;font-size:24px;cursor:pointer}
+.edit-players-toolbar{display:flex;gap:10px;margin-bottom:14px}.edit-players-toolbar select{flex:1}
+.edit-players-toolbar select,.edit-player-form input,.edit-player-form select{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:#0b111b;color:#fff}
+.edit-action{padding:10px 14px;border:0;border-radius:10px;background:#d8a72f;color:#16100a;font-weight:800;cursor:pointer}
+.edit-player-form{display:grid;gap:12px}.edit-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.edit-player-form label{display:grid;gap:6px;font-size:13px;opacity:.9}.edit-save{background:#2e8b57;color:#fff;border:0;padding:13px;border-radius:10px;font-weight:800;cursor:pointer}.edit-delete{background:#a33;color:#fff;border:0;padding:13px;border-radius:10px;font-weight:800;cursor:pointer}
+@media(max-width:600px){.edit-row{grid-template-columns:1fr}.edit-players-toolbar{flex-direction:column}}
+</style>
 <main class="wrap">
   <div class="toolbar">
     <input id="search" class="search" type="search" placeholder="🔎 Buscar miembro...">
@@ -71,7 +103,7 @@ body{margin:0;color:var(--text);font-family:Arial,Helvetica,sans-serif;backgroun
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const supabase=createClient("https://ovybstpiomphrouvqxmf.supabase.co","sb_publishable_gU5Wgy2NhdXcy23_TotF9g_LKthVmKV");
 
-const baseRoster=[{"rank": "R5", "name": "Rey Excalibur", "thp": "94.8M", "hq": "30"}, {"rank": "R4", "name": "colludo", "thp": "102.9M", "hq": "30"}, {"rank": "R4", "name": "atEr", "thp": "111.9M", "hq": "31"}, {"rank": "R4", "name": "N6C6R6", "thp": "88.0M", "hq": "30"}, {"rank": "R4", "name": "dAndrei20", "thp": "94.6M", "hq": "30"}, {"rank": "R4", "name": "Frizante", "thp": "73.4M", "hq": "30"}, {"rank": "R4", "name": "Kinedaniii", "thp": "84.3M", "hq": "30"}, {"rank": "R4", "name": "Ayana wars", "thp": "96.2M", "hq": "30"}, {"rank": "R4", "name": "Naranjitox82", "thp": "82.3M", "hq": "30"}, {"rank": "R4", "name": "RIKIp", "thp": "63.4M", "hq": "30"}, {"rank": "R3", "name": "IonuțBogdan", "thp": "94.7M", "hq": "30"}, {"rank": "R3", "name": "ENIGMA31415", "thp": "104.6M", "hq": "31"}, {"rank": "R3", "name": "TurboCat93", "thp": "91.7M", "hq": "30"}, {"rank": "R3", "name": "Sergio endwar", "thp": "79.7M", "hq": "31"}, {"rank": "R3", "name": "ASSASSIN428", "thp": "111.5M", "hq": "31"}, {"rank": "R3", "name": "naVia", "thp": "79.3M", "hq": "30"}, {"rank": "R3", "name": "Bola7ad", "thp": "85.3M", "hq": "30"}, {"rank": "R3", "name": "whiteshii", "thp": "84.9M", "hq": "30"}, {"rank": "R3", "name": "SilentBG", "thp": "104.3M", "hq": "31"}, {"rank": "R3", "name": "jimmyjingjog", "thp": "86.3M", "hq": "30"}, {"rank": "R3", "name": "crachy", "thp": "75.9M", "hq": "30"}, {"rank": "R3", "name": "Pippins 2nd breakfst", "thp": "81.7M", "hq": "30"}, {"rank": "R3", "name": "Aspackad", "thp": "83.9M", "hq": "30"}, {"rank": "R3", "name": "Arturlion", "thp": "97.7M", "hq": "30"}, {"rank": "R3", "name": "PDub87", "thp": "65.5M", "hq": "30"}, {"rank": "R3", "name": "Jhaizel", "thp": "77.8M", "hq": "30"}, {"rank": "R3", "name": "iR4UL", "thp": "87.9M", "hq": "30"}, {"rank": "R3", "name": "Ucigăltoaca", "thp": "102.2M", "hq": "30"}, {"rank": "R3", "name": "Bassline187", "thp": "—", "hq": "30"}, {"rank": "R3", "name": "PaTToNeiToR", "thp": "80.0M", "hq": "30"}, {"rank": "R3", "name": "txipi", "thp": "72.0M", "hq": "30"}, {"rank": "R3", "name": "Metropolitano C", "thp": "63.1M", "hq": "30"}, {"rank": "R3", "name": "Andriy0601", "thp": "84.4M", "hq": "30"}, {"rank": "R3", "name": "OSASUNAa", "thp": "61.9M", "hq": "30"}, {"rank": "R3", "name": "jack daniels g", "thp": "76.5M", "hq": "30"}, {"rank": "R3", "name": "Lil Niño", "thp": "70.5M", "hq": "30"}, {"rank": "R3", "name": "Fiexter", "thp": "79.6M", "hq": "30"}, {"rank": "R3", "name": "guerra ANDR", "thp": "53.7M", "hq": "30"}, {"rank": "R3", "name": "silviu maya", "thp": "79.2M", "hq": "30"}, {"rank": "R3", "name": "Cristina1106", "thp": "63.1M", "hq": "30"}, {"rank": "R3", "name": "Dimon02", "thp": "78.1M", "hq": "30"}, {"rank": "R3", "name": "JamesLLD", "thp": "65.6M", "hq": "30"}, {"rank": "R3", "name": "N3v3r89", "thp": "76.2M", "hq": "30"}, {"rank": "R3", "name": "Moltó17", "thp": "64.2M", "hq": "30"}, {"rank": "R3", "name": "Bumblebee222", "thp": "49.3M", "hq": "30"}, {"rank": "R3", "name": "Super Andy 3", "thp": "57.2M", "hq": "30"}, {"rank": "R3", "name": "Fenix 04", "thp": "58.1M", "hq": "30"}, {"rank": "R3", "name": "Kay433", "thp": "58.0M", "hq": "30"}, {"rank": "R3", "name": "Macvet", "thp": "70.5M", "hq": "30"}, {"rank": "R2", "name": "Matrat FC", "thp": "85.9M", "hq": "29"}, {"rank": "R2", "name": "Viking1970", "thp": "82.1M", "hq": "30"}, {"rank": "R2", "name": "OfficelAgnes", "thp": "75.0M", "hq": "30"}, {"rank": "R2", "name": "lavin hhh", "thp": "75.6M", "hq": "30"}, {"rank": "R2", "name": "margaros", "thp": "69.2M", "hq": "30"}, {"rank": "R2", "name": "mohsenjamaa", "thp": "72.0M", "hq": "30"}, {"rank": "R2", "name": "Apocalipto", "thp": "70.0M", "hq": "30"}, {"rank": "R2", "name": "Please Dont Bite", "thp": "64.1M", "hq": "30"}, {"rank": "R2", "name": "Jannettix", "thp": "64.9M", "hq": "30"}, {"rank": "R2", "name": "TREX9", "thp": "61.7M", "hq": "30"}, {"rank": "R2", "name": "Com Hannibal Smith", "thp": "66.2M", "hq": "30"}, {"rank": "R2", "name": "Constangeles", "thp": "64.3M", "hq": "30"}, {"rank": "R2", "name": "GroZ", "thp": "68.5M", "hq": "30"}, {"rank": "R2", "name": "Black pantherix", "thp": "54.5M", "hq": "30"}, {"rank": "R2", "name": "Loïc1791", "thp": "59.1M", "hq": "30"}, {"rank": "R2", "name": "IDK What Am I Doing", "thp": "66.9M", "hq": "30"}, {"rank": "R2", "name": "Ipieyoh", "thp": "46.0M", "hq": "30"}, {"rank": "R2", "name": "Larry53", "thp": "48.8M", "hq": "29"}, {"rank": "R2", "name": "Ayrix62", "thp": "64.5M", "hq": "30"}, {"rank": "R2", "name": "NutyDuck", "thp": "59.6M", "hq": "30"}, {"rank": "R2", "name": "Grička vještica", "thp": "48.4M", "hq": "30"}, {"rank": "R1", "name": "Nadezhdaaa", "thp": "71.0M", "hq": "30"}, {"rank": "R1", "name": "TaajB", "thp": "66.8M", "hq": "30"}, {"rank": "R1", "name": "Thedarkknightt", "thp": "55.4M", "hq": "30"}, {"rank": "R1", "name": "BostonApp", "thp": "59.5M", "hq": "30"}, {"rank": "R1", "name": "PikABoo", "thp": "57.4M", "hq": "30"}, {"rank": "R1", "name": "ГоШа", "thp": "53.0M", "hq": "30"}, {"rank": "R1", "name": "IX BORSAN", "thp": "48.3M", "hq": "30"}, {"rank": "R1", "name": "Niklas78", "thp": "53.2M", "hq": "30"}, {"rank": "R1", "name": "Fab745", "thp": "63.9M", "hq": "30"}, {"rank": "R1", "name": "Crystall", "thp": "57.5M", "hq": "29"}, {"rank": "R1", "name": "ElCoudou", "thp": "57.8M", "hq": "30"}, {"rank": "R1", "name": "Álvaro97", "thp": "49.1M", "hq": "29"}, {"rank": "R1", "name": "Lmario313", "thp": "46.9M", "hq": "30"}, {"rank": "R1", "name": "FuryAmsterdam", "thp": "32.6M", "hq": "28"}, {"rank": "R1", "name": "Mia Miu", "thp": "48.4M", "hq": "30"}, {"rank": "R1", "name": "ℒoℒα", "thp": "33.0M", "hq": "30"}, {"rank": "R1", "name": "Gosamyr", "thp": "31.6M", "hq": "30"}];
+const baseRoster=[{"rank": "R5", "name": "Rey Excalibur", "thp": "94.8M", "hq": "30"}, {"rank": "R4", "name": "colludo", "thp": "102.9M", "hq": "30"}, {"rank": "R4", "name": "atEr", "thp": "111.9M", "hq": "31"}, {"rank": "R4", "name": "N6C6R6", "thp": "88.0M", "hq": "30"}, {"rank": "R4", "name": "dAndrei20", "thp": "94.6M", "hq": "30"}, {"rank": "R4", "name": "Frizante", "thp": "73.4M", "hq": "30"}, {"rank": "R4", "name": "Kinedaniii", "thp": "84.3M", "hq": "30"}, {"rank": "R4", "name": "Ayana wars", "thp": "96.2M", "hq": "30"}, {"rank": "R4", "name": "Naranjitox82", "thp": "82.3M", "hq": "30"}, {"rank": "R4", "name": "RIKIp", "thp": "63.4M", "hq": "30"}, {"rank": "R3", "name": "IonuțBogdan", "thp": "94.7M", "hq": "30"}, {"rank": "R3", "name": "ENIGMA31415", "thp": "104.6M", "hq": "31"}, {"rank": "R3", "name": "TurboCat93", "thp": "91.7M", "hq": "30"}, {"rank": "R3", "name": "Sergio endwar", "thp": "79.7M", "hq": "31"}, {"rank": "R3", "name": "ASSASSIN428", "thp": "111.5M", "hq": "31"}, {"rank": "R3", "name": "naVia", "thp": "79.3M", "hq": "30"}, {"rank": "R3", "name": "Bola7ad", "thp": "85.3M", "hq": "30"}, {"rank": "R3", "name": "whiteshii", "thp": "84.9M", "hq": "30"}, {"rank": "R3", "name": "SilentBG", "thp": "104.3M", "hq": "31"}, {"rank": "R3", "name": "jimmyjingjog", "thp": "86.3M", "hq": "30"}, {"rank": "R3", "name": "crachy", "thp": "75.9M", "hq": "30"}, {"rank": "R3", "name": "Pippins 2nd breakfst", "thp": "81.7M", "hq": "30"}, {"rank": "R3", "name": "Aspackad", "thp": "83.9M", "hq": "30"}, {"rank": "R3", "name": "Arturlion", "thp": "97.7M", "hq": "30"}, {"rank": "R3", "name": "PDub87", "thp": "65.5M", "hq": "30"}, {"rank": "R3", "name": "Jhaizel", "thp": "77.8M", "hq": "30"}, {"rank": "R3", "name": "iR4UL", "thp": "87.9M", "hq": "30"}, {"rank": "R3", "name": "Ucigăltoaca", "thp": "102.2M", "hq": "30"}, {"rank": "R3", "name": "Bassline187", "thp": "—", "hq": "30"}, {"rank": "R3", "name": "PaTToNeiToR", "thp": "80.0M", "hq": "30"}, {"rank": "R3", "name": "txipi", "thp": "72.0M", "hq": "30"}, {"rank": "R3", "name": "Metropolitano C", "thp": "63.1M", "hq": "30"}, {"rank": "R3", "name": "Andriy0601", "thp": "84.4M", "hq": "30"}, {"rank": "R3", "name": "OSASUNAa", "thp": "61.9M", "hq": "30"}, {"rank": "R3", "name": "jack daniels g", "thp": "76.5M", "hq": "30"}, {"rank": "R3", "name": "Lil Niño", "thp": "70.5M", "hq": "30"}, {"rank": "R3", "name": "Fiexter", "thp": "79.6M", "hq": "30"}, {"rank": "R3", "name": "guerra ANDR", "thp": "53.7M", "hq": "30"}, {"rank": "R3", "name": "silviu maya", "thp": "79.2M", "hq": "30"}, {"rank": "R3", "name": "Cristina1106", "thp": "63.1M", "hq": "30"}, {"rank": "R3", "name": "Dimon02", "thp": "78.1M", "hq": "30"}, {"rank": "R3", "name": "JamesLLD", "thp": "65.6M", "hq": "30"}, {"rank": "R3", "name": "N3v3r89", "thp": "76.2M", "hq": "30"}, {"rank": "R3", "name": "Moltó17", "thp": "64.2M", "hq": "30"}, {"rank": "R3", "name": "Bumblebee222", "thp": "49.3M", "hq": "30"}, {"rank": "R3", "name": "Super Andy 3", "thp": "57.2M", "hq": "30"}, {"rank": "R3", "name": "Fenix 04", "thp": "58.1M", "hq": "30"}, {"rank": "R3", "name": "Kay433", "thp": "58.0M", "hq": "30"}, {"rank": "R3", "name": "Macvet", "thp": "70.5M", "hq": "30"}, {"rank": "R2", "name": "Matrat FC", "thp": "85.9M", "hq": "29"}, {"rank": "R2", "name": "Viking1970", "thp": "82.1M", "hq": "30"}, {"rank": "R2", "name": "OfficelAgnes", "thp": "75.0M", "hq": "30"}, {"rank": "R2", "name": "lavin hhh", "thp": "75.6M", "hq": "30"}, {"rank": "R2", "name": "margaros", "thp": "69.2M", "hq": "30"}, {"rank": "R2", "name": "mohsenjamaa", "thp": "72.0M", "hq": "30"}, {"rank": "R2", "name": "Apocalipto", "thp": "70.0M", "hq": "30"}, {"rank": "R2", "name": "Please Dont Bite", "thp": "64.1M", "hq": "30"}, {"rank": "R2", "name": "Jannettix", "thp": "64.9M", "hq": "30"}, {"rank": "R2", "name": "TREX9", "thp": "61.7M", "hq": "30"}, {"rank": "R2", "name": "Com Hannibal Smith", "thp": "66.2M", "hq": "30"}, {"rank": "R2", "name": "Constangeles", "thp": "64.3M", "hq": "30"}, {"rank": "R2", "name": "GroZ", "thp": "68.5M", "hq": "30"}, {"rank": "R2", "name": "Black pantherix", "thp": "54.5M", "hq": "30"}, {"rank": "R2", "name": "Loïc1791", "thp": "59.1M", "hq": "30"}, {"rank": "R2", "name": "IDK What Am I Doing", "thp": "66.9M", "hq": "30"}, {"rank": "R2", "name": "Ipieyoh", "thp": "46.0M", "hq": "30"}, {"rank": "R2", "name": "Larry53", "thp": "48.8M", "hq": "29"}, {"rank": "R2", "name": "Ayrix62", "thp": "64.5M", "hq": "30"}, {"rank": "R2", "name": "NutyDuck", "thp": "59.6M", "hq": "30"}, {"rank": "R2", "name": "Grička vještica", "thp": "48.4M", "hq": "30"}, {"rank": "R1", "name": "Nadezhdaaa", "thp": "71.0M", "hq": "30"}, {"rank": "R1", "name": "مثالـي25", "thp": "66.8M", "hq": "30"}, {"rank": "R1", "name": "Thedarkknightt", "thp": "55.4M", "hq": "30"}, {"rank": "R1", "name": "BostonApp", "thp": "59.5M", "hq": "30"}, {"rank": "R1", "name": "PikABoo", "thp": "57.4M", "hq": "30"}, {"rank": "R1", "name": "ГоШа", "thp": "53.0M", "hq": "30"}, {"rank": "R1", "name": "IX BORSAN", "thp": "48.3M", "hq": "30"}, {"rank": "R1", "name": "Niklas78", "thp": "53.2M", "hq": "30"}, {"rank": "R1", "name": "Fab745", "thp": "63.9M", "hq": "30"}, {"rank": "R1", "name": "Crystall", "thp": "57.5M", "hq": "29"}, {"rank": "R1", "name": "ElCoudou", "thp": "57.8M", "hq": "30"}, {"rank": "R1", "name": "Álvaro97", "thp": "49.1M", "hq": "29"}, {"rank": "R1", "name": "Lmario313", "thp": "46.9M", "hq": "30"}, {"rank": "R1", "name": "FuryAmsterdam", "thp": "32.6M", "hq": "28"}, {"rank": "R1", "name": "Mia Miu", "thp": "48.4M", "hq": "30"}, {"rank": "R1", "name": "ℒoℒα", "thp": "33.0M", "hq": "30"}, {"rank": "R1", "name": "Gosamyr", "thp": "31.6M", "hq": "30"}];
 let members=baseRoster.map(x=>({...x,survey:null}));
 const groupsEl=document.getElementById("groups"), statusEl=document.getElementById("status");
 const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"");
@@ -146,3 +178,113 @@ async function load(){
 load();
 </script>
 </body></html>
+<script>
+(function(){
+  const gear=document.getElementById("editPlayersBtn");
+  const modal=document.getElementById("editPlayersModal");
+  const close=document.getElementById("closeEditPlayers");
+  const select=document.getElementById("editPlayerSelect");
+  const form=document.getElementById("editPlayerForm");
+  const newBtn=document.getElementById("newPlayerBtn");
+  if(!gear||!modal||!select||!form) return;
+
+  function getPlayers(){
+    const candidates=[
+      window.members, window.memberNames, window.players, window.membersData
+    ];
+    for(const c of candidates){
+      if(Array.isArray(c) && c.length){
+        return c.map(x=>typeof x==="string"?{name:x}:x);
+      }
+    }
+    // Fallback: collect likely member names from visible cards.
+    const names=[];
+    document.querySelectorAll('[data-member], .member-name, .player-name, .member-card h3, .member-card h4').forEach(el=>{
+      const n=(el.dataset.member||el.textContent||"").trim();
+      if(n && n.length<80 && !names.some(x=>x.name===n)) names.push({name:n});
+    });
+    return names;
+  }
+
+  let players=[];
+  function refreshSelect(selected){
+    players=getPlayers();
+    select.innerHTML='<option value="">Selecciona un jugador</option>'+
+      players.map((p,i)=>`<option value="${i}" ${String(i)===String(selected)?'selected':''}>${p.name||p.nickname||'Jugador '+(i+1)}</option>`).join('');
+  }
+
+  function renderEditor(player,index){
+    if(!player){form.innerHTML='';return;}
+    const name=player.name||player.nickname||'';
+    const rank=player.rank||player.role||'';
+    const power=player.power||player.thp||'';
+    form.innerHTML=`
+      <label>Nombre<input id="editName" value="${String(name).replace(/"/g,'&quot;')}"></label>
+      <div class="edit-row">
+        <label>Rango<input id="editRank" value="${String(rank).replace(/"/g,'&quot;')}" placeholder="R1"></label>
+        <label>Poder<input id="editPower" value="${String(power).replace(/"/g,'&quot;')}" placeholder="66.8M"></label>
+      </div>
+      <button class="edit-save" id="savePlayerBtn" type="button">GUARDAR CAMBIOS</button>
+      <button class="edit-delete" id="deletePlayerBtn" type="button">ELIMINAR JUGADOR</button>`;
+    document.getElementById("savePlayerBtn").onclick=async()=>{
+      const newName=document.getElementById("editName").value.trim();
+      const newRank=document.getElementById("editRank").value.trim();
+      const newPower=document.getElementById("editPower").value.trim();
+      if(!newName) return alert("El nombre es obligatorio.");
+      const target=players[index];
+      Object.assign(target,{name:newName,rank:newRank,power:newPower});
+      // Update known arrays so the page changes immediately.
+      [window.members,window.memberNames,window.players,window.membersData].forEach(arr=>{
+        if(Array.isArray(arr)){
+          const i=arr.indexOf(player);
+          if(i>=0 && typeof arr[i]==="object") Object.assign(arr[i],target);
+          else if(i>=0 && typeof arr[i]==="string") arr[i]=newName;
+        }
+      });
+      // Try Supabase update if the page exposes a client/table.
+      try{
+        const sb=window.supabaseClient||window.supabase;
+        if(sb && typeof sb.from==="function"){
+          await sb.from("members").update({name:newName,rank:newRank,power:newPower}).eq("name",name);
+        }
+      }catch(e){console.warn("Supabase edit:",e);}
+      refreshSelect(index);
+      alert("Jugador actualizado. Recarga la página si alguna tarjeta no se actualiza al instante.");
+    };
+    document.getElementById("deletePlayerBtn").onclick=async()=>{
+      if(!confirm(`¿Eliminar a ${name}?`)) return;
+      try{
+        const sb=window.supabaseClient||window.supabase;
+        if(sb && typeof sb.from==="function") await sb.from("members").delete().eq("name",name);
+      }catch(e){console.warn("Supabase delete:",e);}
+      players.splice(index,1);
+      refreshSelect("");
+      form.innerHTML="";
+      alert("Jugador eliminado.");
+    };
+  }
+
+  gear.onclick=()=>{modal.classList.add("show");modal.setAttribute("aria-hidden","false");refreshSelect("");};
+  close.onclick=()=>modal.classList.remove("show");
+  modal.addEventListener("click",e=>{if(e.target===modal)modal.classList.remove("show")});
+  select.onchange=()=>renderEditor(players[Number(select.value)],select.value);
+  newBtn.onclick=()=>{
+    const p={name:"",rank:"R1",power:""};
+    players.push(p);
+    form.innerHTML=`<label>Nombre<input id="editName"></label><div class="edit-row"><label>Rango<input id="editRank" value="R1"></label><label>Poder<input id="editPower"></label></div><button class="edit-save" id="savePlayerBtn" type="button">CREAR JUGADOR</button>`;
+    document.getElementById("savePlayerBtn").onclick=async()=>{
+      const newName=document.getElementById("editName").value.trim(), newRank=document.getElementById("editRank").value.trim(), newPower=document.getElementById("editPower").value.trim();
+      if(!newName) return alert("El nombre es obligatorio.");
+      const obj={name:newName,rank:newRank,power:newPower};
+      try{
+        const sb=window.supabaseClient||window.supabase;
+        if(sb && typeof sb.from==="function") await sb.from("members").insert(obj);
+      }catch(e){console.warn("Supabase insert:",e);}
+      if(Array.isArray(window.members)) window.members.push(obj);
+      else if(Array.isArray(window.memberNames)) window.memberNames.push(newName);
+      refreshSelect("");
+      alert("Jugador creado.");
+    };
+  };
+})();
+</script>
