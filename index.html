@@ -122,16 +122,57 @@ body{
  .guide-list{grid-template-columns:1fr}
 }
 
-.vs-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.vs-controls label{font-size:12px;font-weight:900;color:var(--muted);letter-spacing:.6px;display:grid;gap:7px}
-.vs-controls select{background:#0b1724;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:13px;font-weight:800}
-.vs-table{width:100%;border-collapse:collapse;margin-top:8px}
-.vs-table th,.vs-table td{padding:13px 10px;border-bottom:1px solid rgba(49,70,93,.65);text-align:left}
-.vs-table th{font-size:11px;color:var(--muted);letter-spacing:.8px}
-.vs-table td:last-child,.vs-table th:last-child{text-align:right}
-.vs-rank{font-weight:900;width:58px}.vs-name{font-weight:800}.vs-points{font-weight:900;color:var(--gold)}
-.vs-empty{padding:25px;text-align:center;color:var(--muted)}
-@media(max-width:620px){.vs-controls{grid-template-columns:1fr}.vs-table th,.vs-table td{padding:11px 7px}}
+.vs-controls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+.vs-control{display:grid;gap:7px}
+.vs-control span{font-size:11px;font-weight:900;color:var(--muted);letter-spacing:1px}
+.vs-control select{width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#0b1726;color:var(--text);font-weight:800}
+.vs-status{padding:12px 0;color:var(--muted);font-weight:700}
+.vs-table{width:100%;border-collapse:collapse;background:rgba(10,24,39,.55);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.vs-table th,.vs-table td{padding:14px 12px;border-bottom:1px solid rgba(49,70,93,.65);text-align:left}
+.vs-table th{font-size:11px;color:var(--muted);letter-spacing:1px}
+.vs-table th:last-child,.vs-table td:last-child{text-align:right}
+.vs-points{color:var(--gold);font-weight:900}
+.vs-empty{text-align:center;padding:28px;color:var(--muted)}
+@media(max-width:650px){.vs-controls{grid-template-columns:1fr}}
+
+
+/* MENÚ RÁPIDO: 5 botones equilibrados y sin solaparse */
+.nav{
+  display:flex !important;
+  justify-content:center !important;
+  width:100% !important;
+  height:84px !important;
+  padding:0 4px !important;
+}
+.nav-inner{
+  width:100% !important;
+  max-width:900px !important;
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  gap:2px !important;
+}
+.nav button{
+  min-width:0 !important;
+  padding:8px 2px 7px !important;
+  font-size:10px !important;
+  line-height:1.12 !important;
+  white-space:normal !important;
+  word-break:normal !important;
+  overflow-wrap:break-word !important;
+  letter-spacing:0 !important;
+}
+.nav button .icon{
+  font-size:28px !important;
+  line-height:1 !important;
+  margin-bottom:5px !important;
+  display:block !important;
+}
+@media(max-width:480px){
+  .nav{height:78px !important;padding:0 2px !important;}
+  .nav-inner{gap:1px !important;}
+  .nav button{font-size:9px !important;padding:7px 1px 6px !important;}
+  .nav button .icon{font-size:25px !important;margin-bottom:4px !important;}
+}
 
 </style>
 </head>
@@ -202,6 +243,19 @@ body{
     <a class="big-btn" style="margin-top:20px" href="statistics.html">📊 ABRIR ESTADÍSTICAS COMPLETAS</a>
   </section>
 
+
+  <section id="vsPanel" class="guides-panel">
+    <div class="section-title">⚔️ VS POINTS</div>
+    <div class="vs-controls">
+      <div class="vs-control">
+        <span>📅 DÍA / FECHA</span>
+        <select id="vsPeriodSelect"><option value="">Cargando puntuaciones...</option></select>
+      </div>
+    </div>
+    <div id="vsStatus" class="vs-status">Cargando datos de Supabase...</div>
+    <div id="vsTableWrap"></div>
+  </section>
+
   <section id="guidesPanel" class="guides-panel">
     <div class="section-title">GUÍAS</div>
     <div class="guide-list">
@@ -210,31 +264,6 @@ body{
     </div>
     <a class="big-btn" style="margin-top:20px" href="guides.html">📖 ABRIR GUÍAS</a>
   </section>
-
-<section id="vsPanel" class="center-panel">
-  <div class="section-title">VS POINTS</div>
-  <div class="panel">
-    <div class="vs-controls">
-      <label>📅 FECHA
-        <select id="vsDateSelect"><option value="">Cargando fechas...</option></select>
-      </label>
-      <label>⚔️ VISTA
-        <select id="vsDaySelect">
-          <option value="0">TOTAL SEMANAL</option>
-          <option value="1">DÍA 1</option>
-          <option value="2">DÍA 2</option>
-          <option value="3">DÍA 3</option>
-          <option value="4">DÍA 4</option>
-          <option value="5">DÍA 5</option>
-          <option value="6">DÍA 6</option>
-        </select>
-      </label>
-    </div>
-    <div id="vsStatus" class="loading">Cargando puntuaciones...</div>
-    <div id="vsTableWrap"></div>
-  </div>
-</section>
-
 </main>
 
 <nav class="nav">
@@ -242,6 +271,7 @@ body{
     <button class="active" data-panel="homePanel" data-title="INICIO" data-sub="Panel principal de la alianza"><span class="icon">⌂</span>INICIO</button>
     <button data-panel="centerPanel" data-title="CENTRO DE ALIANZA" data-sub="Herramientas y actividades de HOLa"><span class="icon">♜</span>CENTRO DE ALIANZA</button>
     <button data-panel="statsPanel" data-title="ESTADÍSTICAS" data-sub="Datos recopilados desde Supabase"><span class="icon">▮▮▮</span>ESTADÍSTICAS</button>
+    <button data-panel="vsPanel" data-title="VS POINTS" data-sub="Puntuaciones guardadas del VS"><span class="icon">⚔</span>VS</button>
     <button data-panel="guidesPanel" data-title="GUÍAS" data-sub="Información y recursos de la alianza"><span class="icon">▱</span>GUÍAS</button>
   </div>
 </nav>
@@ -305,6 +335,195 @@ async function load(){
   }
 }
 
+
+async function loadVsScores(){
+  const period=document.getElementById("vsPeriodSelect").value;
+  const status=document.getElementById("vsStatus");
+  const wrap=document.getElementById("vsTableWrap");
+
+  if(!period){
+    status.textContent="No hay puntuaciones guardadas.";
+    wrap.innerHTML="";
+    return;
+  }
+
+  const [type,dayText,date]=period.split("|");
+  const selectedDay=Number(dayText);
+  status.textContent="Cargando puntuaciones...";
+
+  try{
+    const {data,error}=await supabase.from("vs_scores")
+      .select("player_name,points,day,week_type,vs_date")
+      .eq("vs_date",date);
+
+    if(error) throw error;
+
+    let ranking=[];
+    let title="";
+
+    if(type==="day"){
+      ranking=(data||[]).filter(x=>Number(x.day)===selectedDay);
+      title=`Día ${selectedDay} · ${formatVsDate(date)}`;
+    }else{
+      // TOTAL SEMANAL: suma todos los días ya registrados hasta esa fecha.
+      const weekStart=getWeekStart(date);
+      const {data:weekData,error:weekError}=await supabase.from("vs_scores")
+        .select("player_name,points,day,week_type,vs_date")
+        .gte("vs_date",weekStart)
+        .lte("vs_date",date);
+
+      if(weekError) throw weekError;
+
+      const sums=new Map();
+      (weekData||[]).forEach(x=>{
+        const d=Number(x.day);
+        // Solo sumamos los días reales 1-6; no duplicamos totales guardados.
+        if(d>=1 && d<=6 && x.player_name){
+          sums.set(x.player_name,(sums.get(x.player_name)||0)+(Number(x.points)||0));
+        }
+      });
+
+      ranking=[...sums.entries()].map(([player_name,points])=>({player_name,points}));
+      title=`Total semanal · ${formatVsDate(date)}`;
+    }
+
+    ranking.sort((a,b)=>(Number(b.points)||0)-(Number(a.points)||0));
+    status.textContent=`✓ ${ranking.length} jugadores · ${title}`;
+
+    if(!ranking.length){
+      wrap.innerHTML='<div class="vs-empty">No hay puntuaciones para esta selección.</div>';
+      return;
+    }
+
+    wrap.innerHTML='<table class="vs-table"><thead><tr><th>#</th><th>JUGADOR</th><th>PUNTOS</th></tr></thead><tbody></tbody></table>';
+    const tbody=wrap.querySelector("tbody");
+
+    ranking.forEach((x,i)=>{
+      const tr=document.createElement("tr");
+      const rank=i===0?"🥇":i===1?"🥈":i===2?"🥉":String(i+1);
+      tr.innerHTML=`<td>${rank}</td><td></td><td class="vs-points">${Number(x.points||0).toLocaleString("en-US")}</td>`;
+      tr.children[1].textContent=x.player_name||"Sin nombre";
+      tbody.appendChild(tr);
+    });
+
+  }catch(err){
+    console.error("VS scores error",err);
+    status.textContent="⚠ Error: "+(err.message||String(err));
+    wrap.innerHTML="";
+  }
+}
+
+function formatVsDate(date){
+  return new Date(date+"T12:00:00").toLocaleDateString("es-ES",{
+    day:"2-digit",month:"2-digit",year:"numeric"
+  });
+}
+
+function getWeekStart(date){
+  const d=new Date(date+"T12:00:00");
+  const day=d.getDay(); // domingo=0
+  const diff=(day===0?-6:1-day); // lunes
+  d.setDate(d.getDate()+diff);
+  return d.toISOString().slice(0,10);
+}
+
+async function loadVsPeriods(){
+  const sel=document.getElementById("vsPeriodSelect");
+  const status=document.getElementById("vsStatus");
+
+  try{
+    const {data,error}=await supabase.from("vs_scores")
+      .select("vs_date,day")
+      .not("vs_date","is",null);
+
+    if(error) throw error;
+
+    const rows=(data||[]).filter(x=>{
+      const d=Number(x.day);
+      return d>=1 && d<=6 && x.vs_date;
+    });
+
+    const unique=[...new Map(rows.map(x=>[`${x.day}|${x.vs_date}`,x])).values()]
+      .sort((a,b)=>{
+        const dateCompare=String(a.vs_date).localeCompare(String(b.vs_date));
+        return dateCompare || Number(a.day)-Number(b.day);
+      });
+
+    const options=[];
+    unique.forEach(x=>{
+      options.push({
+        value:`day|${x.day}|${x.vs_date}`,
+        label:`Día ${x.day} · ${formatVsDate(x.vs_date)}`
+      });
+    });
+
+    // Total semanal: se crea por semana usando la fecha más reciente registrada.
+    const weeks=new Map();
+    unique.forEach(x=>{
+      const start=getWeekStart(x.vs_date);
+      const current=weeks.get(start);
+      if(!current || String(x.vs_date)>String(current)){
+        weeks.set(start,x.vs_date);
+      }
+    });
+
+    [...weeks.entries()]
+      .sort((a,b)=>String(a[1]).localeCompare(String(b[1])))
+      .forEach(([_,endDate])=>{
+        options.push({
+          value:`total|0|${endDate}`,
+          label:`Total · ${formatVsDate(endDate)}`
+        });
+      });
+
+    // Orden cronológico con el total después del último día de cada semana.
+    const grouped=[];
+    const byWeek=new Map();
+    unique.forEach(x=>{
+      const key=getWeekStart(x.vs_date);
+      if(!byWeek.has(key)) byWeek.set(key,[]);
+      byWeek.get(key).push({
+        value:`day|${x.day}|${x.vs_date}`,
+        label:`Día ${x.day} · ${formatVsDate(x.vs_date)}`,
+        date:x.vs_date
+      });
+    });
+
+    [...byWeek.entries()].sort((a,b)=>String(a[0]).localeCompare(String(b[0]))).forEach(([week,items])=>{
+      items.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+      const endDate=weeks.get(week);
+      // Mostrar el Total primero para que el desplegable abra directamente en el total semanal.
+      if(endDate){
+        grouped.push({
+          value:`total|0|${endDate}`,
+          label:`Total · ${formatVsDate(endDate)}`,
+          date:endDate
+        });
+      }
+      grouped.push(...items);
+    });
+
+    // Si hay varias semanas, abrir por defecto en el Total de la semana más reciente.
+    const latestTotalIndex=grouped.map((o,i)=>o.value.startsWith("total|")?i:-1).filter(i=>i>=0).pop();
+    if(latestTotalIndex!=null && latestTotalIndex>0){
+      const latestTotal=grouped.splice(latestTotalIndex,1)[0];
+      grouped.unshift(latestTotal);
+    }
+
+    sel.innerHTML=grouped.length
+      ? grouped.map(o=>`<option value="${o.value}">${o.label}</option>`).join("")
+      : '<option value="">No hay puntuaciones guardadas</option>';
+
+    await loadVsScores();
+
+  }catch(err){
+    console.error("VS periods error",err);
+    status.textContent="⚠ Error al cargar: "+(err.message||String(err));
+  }
+}
+
+document.getElementById("vsPeriodSelect").addEventListener("change",loadVsScores);
+
 document.querySelectorAll(".nav button").forEach(btn=>{
   btn.addEventListener("click",()=>{
     document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
@@ -318,97 +537,7 @@ document.querySelectorAll(".nav button").forEach(btn=>{
 });
 document.getElementById("refreshBtn").addEventListener("click",load);
 load();
+loadVsPeriods();
 </script>
-
-<script>
-(function(){
-  const dateSel=document.getElementById("vsDateSelect");
-  const daySel=document.getElementById("vsDaySelect");
-  const status=document.getElementById("vsStatus");
-  const wrap=document.getElementById("vsTableWrap");
-  if(!dateSel||!daySel||!status||!wrap) return;
-
-  function sbClient(){
-    if(window.supabaseClient?.from) return window.supabaseClient;
-    if(window.sb?.from) return window.sb;
-    if(window.supabase?.from) return window.supabase;
-    return null;
-  }
-
-  async function loadScores(){
-    const sb=sbClient(), date=dateSel.value, day=Number(daySel.value);
-    if(!sb){status.textContent="⚠ No se encontró la conexión con Supabase.";return;}
-    if(!date){status.textContent="No hay puntuaciones guardadas.";wrap.innerHTML="";return;}
-    status.textContent="Cargando puntuaciones...";
-    try{
-      const {data,error}=await sb.from("vs_scores")
-        .select("player_name,points,day,week_type,vs_date")
-        .eq("vs_date",date);
-      if(error) throw error;
-
-      let ranking;
-      if(day===0){
-        const totals=(data||[]).filter(x=>Number(x.day)===7 || String(x.week_type||"").toLowerCase().includes("total"));
-        if(totals.length){
-          ranking=totals;
-        }else{
-          const sums=new Map();
-          (data||[]).filter(x=>Number(x.day)>=1&&Number(x.day)<=6).forEach(x=>{
-            sums.set(x.player_name,(sums.get(x.player_name)||0)+(Number(x.points)||0));
-          });
-          ranking=[...sums].map(([player_name,points])=>({player_name,points}));
-        }
-      }else{
-        ranking=(data||[]).filter(x=>Number(x.day)===day);
-      }
-
-      ranking.sort((a,b)=>(Number(b.points)||0)-(Number(a.points)||0));
-      status.textContent=`✓ ${ranking.length} jugadores · ${day===0?"Total semanal":"Día "+day}`;
-
-      if(!ranking.length){
-        wrap.innerHTML='<div class="vs-empty">No hay puntuaciones para esta selección.</div>';
-        return;
-      }
-
-      wrap.innerHTML='<table class="vs-table"><thead><tr><th>#</th><th>JUGADOR</th><th>PUNTOS</th></tr></thead><tbody></tbody></table>';
-      const tbody=wrap.querySelector("tbody");
-      ranking.forEach((x,i)=>{
-        const tr=document.createElement("tr");
-        const medal=i===0?"🥇":i===1?"🥈":i===2?"🥉":String(i+1);
-        tr.innerHTML=`<td class="vs-rank">${medal}</td><td class="vs-name"></td><td class="vs-points">${Number(x.points||0).toLocaleString("en-US")}</td>`;
-        tr.querySelector(".vs-name").textContent=x.player_name||"Sin nombre";
-        tbody.appendChild(tr);
-      });
-    }catch(e){
-      console.error("VS:",e);
-      status.textContent="⚠ Error al cargar: "+(e.message||String(e));
-      wrap.innerHTML="";
-    }
-  }
-
-  async function loadDates(){
-    const sb=sbClient();
-    if(!sb){status.textContent="⚠ No se encontró la conexión con Supabase.";return;}
-    try{
-      const {data,error}=await sb.from("vs_scores").select("vs_date").not("vs_date","is",null);
-      if(error) throw error;
-      const dates=[...new Set((data||[]).map(x=>x.vs_date).filter(Boolean))]
-        .sort((a,b)=>String(b).localeCompare(String(a)));
-      dateSel.innerHTML=dates.length
-        ? dates.map(d=>`<option value="${d}">${new Date(d+"T12:00:00").toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"})}</option>`).join("")
-        : '<option value="">No hay fechas guardadas</option>';
-      await loadScores();
-    }catch(e){
-      console.error("VS dates:",e);
-      status.textContent="⚠ Error cargando fechas: "+(e.message||String(e));
-    }
-  }
-
-  dateSel.addEventListener("change",loadScores);
-  daySel.addEventListener("change",loadScores);
-  loadDates();
-})();
-</script>
-
 </body>
 </html>
