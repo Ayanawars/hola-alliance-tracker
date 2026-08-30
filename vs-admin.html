@@ -46,7 +46,7 @@ body{margin:0;background:linear-gradient(180deg,#06111d,#0a1420);color:var(--t);
 import{createClient}from"https://esm.sh/@supabase/supabase-js@2";
 const sb=createClient("https://ovybstpiomphrouvqxmf.supabase.co","sb_publishable_gU5Wgy2NhdXcy23_TotF9g_LKthVmKV");
 const OCR_API_KEY="K88248924688957";
-const rows=document.getElementById("rows"),img=document.getElementById("img"),fileLabel=document.getElementById("file"),ocrBtn=document.getElementById("ocrBtn"),ocrStatus=document.getElementById("ocrStatus"),arabicImg=document.getElementById("arabicImg"),arabicFileLabel=document.getElementById("arabicFile"),arabicOcrBtn=document.getElementById("arabicOcrBtn"),arabicOcrStatus=document.getElementById("arabicOcrStatus"),vsDate=document.getElementById("vsDate"),dateLabel=document.getElementById("dateLabel");
+const rows=document.getElementById("rows"),img=document.getElementById("img"),fileLabel=document.getElementById("file"),ocrBtn=document.getElementById("ocrBtn"),ocrStatus=document.getElementById("ocrStatus"),arabicImg=document.getElementById("arabicImg"),arabicFileLabel=document.getElementById("arabicFile"),arabicOcrBtn=document.getElementById("arabicOcrBtn"),arabicOcrStatus=document.getElementById("arabicOcrStatus"),vsDate=document.getElementById("vsDate"),dateLabel=document.getElementById("dateLabel"),status=document.getElementById("status");
 
 const baseMemberNames=["Rey Excalibur", "colludo", "atEr", "N6C6R6", "dAndrei20", "Frizante", "Kinedaniii", "Ayana wars", "Naranjitox82", "RIKIp", "IonuțBogdan", "ENIGMA31415", "TurboCat93", "Sergio endwar", "ASSASSIN428", "naVia", "Bola7ad", "whiteshii", "SilentBG", "jimmyjingjog", "crachy", "Pippins 2nd breakfst", "Aspackad", "Arturlion", "PDub87", "Jhaizel", "iR4UL", "Ucigăltoaca", "Bassline187", "PaTToNeiToR", "txipi", "Metropolitano C", "Andriy0601", "OSASUNAa", "jack daniels g", "Lil Niño", "Fiexter", "guerra ANDR", "silviu maya", "Cristina1106", "Dimon02", "JamesLLD", "N3v3r89", "Moltó17", "Bumblebee222", "Super Andy 3", "Fenix 04", "Kay433", "Macvet", "Matrat FC", "Viking1970", "OfficelAgnes", "lavin hhh", "margaros", "mohsenjamaa", "Apocalipto", "Please Dont Bite", "Jannettix", "TREX9", "Com Hannibal Smith", "Constangeles", "GroZ", "Black pantherix", "Loïc1791", "IDK What Am I Doing", "Ipieyoh", "Larry53", "Ayrix62", "NutyDuck", "Grička vještica", "Nadezhdaaa", "مثالـي25", "Thedarkknightt", "BostonApp", "PikABoo", "ГоШа", "IX BORSAN", "Niklas78", "Fab745", "Crystall", "ElCoudou", "Álvaro97", "Lmario313", "FuryAmsterdam", "Mia Miu", "ℒoℒα", "Gosamyr"];
 let memberNames=[...baseMemberNames];
@@ -658,73 +658,60 @@ add();
 document.getElementById("add").onclick=()=>add();
 document.getElementById("save").onclick=async()=>{
   const saveBtn=document.getElementById("save");
-  const day=+document.getElementById("day").value;
+  const day=Number(document.getElementById("day").value);
   const week_type=document.getElementById("weekType").value;
   const vs_date=vsDate.value;
 
   if(!vs_date){
-    status.textContent="⚠ Selecciona una fecha.";
+    status.textContent="⚠ Selecciona una fecha del VS.";
     return;
   }
 
   const data=[...rows.children].map(r=>{
-    const detected=r.querySelector(".n")?.value.trim()||"";
-    const official=r.querySelector(".member-select")?.value.trim()||"";
-    return {
-      player_name:official||detected,
-      day,
-      week_type,
-      vs_date,
-      points:Number((r.querySelector(".p")?.value||"").replace(/[^0-9]/g,""))||0
-    };
+    const detected=r.querySelector(".n")?.value?.trim()||"";
+    const official=r.querySelector(".member-select")?.value?.trim()||"";
+    const points=Number((r.querySelector(".p")?.value||"").replace(/[^0-9]/g,""))||0;
+    return {player_name:official||detected,day,week_type,vs_date,points};
   }).filter(x=>x.player_name);
 
   if(!data.length){
-    status.textContent="⚠ Añade jugadores antes de guardar.";
+    status.textContent="⚠ No hay jugadores para guardar.";
     return;
   }
 
   saveBtn.disabled=true;
   saveBtn.textContent="⏳ GUARDANDO...";
-  status.textContent=`Guardando ${data.length} jugadores...`;
+  status.textContent=`Conectando con Supabase... (${data.length} jugadores)`;
 
   try{
     for(let i=0;i<data.length;i++){
       const x=data[i];
       status.textContent=`Guardando ${i+1}/${data.length}: ${x.player_name}`;
 
-      // No dependemos de una columna "id". Algunas tablas vs_scores no la tienen.
-      const {data: existing,error: checkError}=await sb
+      // Primero intentamos actualizar el registro existente usando la clave real
+      // de la puntuación. No dependemos de que exista una columna "id".
+      const {data: updated,error:updateError}=await sb
         .from("vs_scores")
-        .select("player_name")
+        .update({points:x.points})
         .eq("player_name",x.player_name)
         .eq("day",x.day)
         .eq("week_type",x.week_type)
         .eq("vs_date",x.vs_date)
-        .limit(1);
+        .select("player_name");
 
-      if(checkError) throw new Error(checkError.message);
+      if(updateError) throw new Error(`Supabase: ${updateError.message}`);
 
-      let result;
-      if(existing && existing.length){
-        result=await sb
-          .from("vs_scores")
-          .update({points:x.points})
-          .eq("player_name",x.player_name)
-          .eq("day",x.day)
-          .eq("week_type",x.week_type)
-          .eq("vs_date",x.vs_date);
-      }else{
-        result=await sb.from("vs_scores").insert(x);
+      // Si no existía, lo insertamos.
+      if(!updated || updated.length===0){
+        const {error:insertError}=await sb.from("vs_scores").insert(x);
+        if(insertError) throw new Error(`Supabase: ${insertError.message}`);
       }
-
-      if(result.error) throw new Error(result.error.message);
     }
 
-    status.textContent=`✓ Guardado correctamente: ${data.length} jugadores en Supabase.`;
+    status.textContent=`✓ Guardado correctamente en Supabase: ${data.length} jugadores.`;
   }catch(e){
-    console.error("Error guardando VS:",e);
-    status.textContent="⚠ Error al guardar: "+(e?.message||String(e));
+    console.error("Error guardando en Supabase:",e);
+    status.textContent="⚠ "+(e?.message||String(e));
   }finally{
     saveBtn.disabled=false;
     saveBtn.textContent="💾 GUARDAR EN SUPABASE";
