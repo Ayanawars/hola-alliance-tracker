@@ -657,47 +657,77 @@ arabicOcrBtn.onclick=async()=>{
 add();
 document.getElementById("add").onclick=()=>add();
 document.getElementById("save").onclick=async()=>{
-  let day=+document.getElementById("day").value,
-      week_type=document.getElementById("weekType").value,
-      vs_date=vsDate.value;
+  const saveBtn=document.getElementById("save");
+  const day=+document.getElementById("day").value;
+  const week_type=document.getElementById("weekType").value;
+  const vs_date=vsDate.value;
 
-  if(!vs_date)return status.textContent="Selecciona una fecha.";
+  if(!vs_date){
+    status.textContent="⚠ Selecciona una fecha.";
+    return;
+  }
 
   const data=[...rows.children].map(r=>{
-    const detected=r.querySelector(".n").value.trim();
-    const official=r.querySelector(".member-select").value.trim();
+    const detected=r.querySelector(".n")?.value.trim()||"";
+    const official=r.querySelector(".member-select")?.value.trim()||"";
     return {
       player_name:official||detected,
       day,
       week_type,
       vs_date,
-      points:Number(r.querySelector(".p").value.replace(/[^0-9]/g,""))||0
+      points:Number((r.querySelector(".p")?.value||"").replace(/[^0-9]/g,""))||0
     };
   }).filter(x=>x.player_name);
 
-  if(!data.length)return status.textContent="Añade jugadores.";
+  if(!data.length){
+    status.textContent="⚠ Añade jugadores antes de guardar.";
+    return;
+  }
 
-  status.textContent="Guardando...";
+  saveBtn.disabled=true;
+  saveBtn.textContent="⏳ GUARDANDO...";
+  status.textContent=`Guardando ${data.length} jugadores...`;
+
   try{
-    for(let x of data){
-      let q=await sb.from("vs_scores").select("id")
+    for(let i=0;i<data.length;i++){
+      const x=data[i];
+      status.textContent=`Guardando ${i+1}/${data.length}: ${x.player_name}`;
+
+      // No dependemos de una columna "id". Algunas tablas vs_scores no la tienen.
+      const {data: existing,error: checkError}=await sb
+        .from("vs_scores")
+        .select("player_name")
         .eq("player_name",x.player_name)
-        .eq("day",day)
-        .eq("week_type",week_type)
-        .eq("vs_date",vs_date)
+        .eq("day",x.day)
+        .eq("week_type",x.week_type)
+        .eq("vs_date",x.vs_date)
         .limit(1);
 
-      if(q.error)throw q.error;
+      if(checkError) throw new Error(checkError.message);
 
-      let e=q.data?.length
-        ?await sb.from("vs_scores").update({points:x.points}).eq("id",q.data[0].id)
-        :await sb.from("vs_scores").insert(x);
+      let result;
+      if(existing && existing.length){
+        result=await sb
+          .from("vs_scores")
+          .update({points:x.points})
+          .eq("player_name",x.player_name)
+          .eq("day",x.day)
+          .eq("week_type",x.week_type)
+          .eq("vs_date",x.vs_date);
+      }else{
+        result=await sb.from("vs_scores").insert(x);
+      }
 
-      if(e.error)throw e.error;
+      if(result.error) throw new Error(result.error.message);
     }
-    status.textContent="✓ Guardado correctamente con los nombres oficiales seleccionados.";
+
+    status.textContent=`✓ Guardado correctamente: ${data.length} jugadores en Supabase.`;
   }catch(e){
-    status.textContent="⚠ "+e.message;
+    console.error("Error guardando VS:",e);
+    status.textContent="⚠ Error al guardar: "+(e?.message||String(e));
+  }finally{
+    saveBtn.disabled=false;
+    saveBtn.textContent="💾 GUARDAR EN SUPABASE";
   }
 };
 </script></body></html>
