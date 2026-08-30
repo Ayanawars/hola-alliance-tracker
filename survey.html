@@ -87,7 +87,14 @@
       header{flex-direction:column}.lang-select{width:100%}.grid{grid-template-columns:1fr}
       .full{grid-column:auto}.wrap{width:min(100% - 20px,900px);padding-top:16px}form{padding:16px;border-radius:18px}
     }
-  </style>
+  
+/* Global bottom navigation */
+.bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:1200;width:min(950px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px;background:rgba(8,11,18,.96);border-top:1px solid #263047;backdrop-filter:blur(12px)}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;padding:6px 4px;border-radius:12px;text-decoration:none;color:#9ba7bd;font-size:10px;font-weight:900;text-align:center;letter-spacing:.2px}
+.bottom-nav a .nav-icon{font-size:20px;line-height:1}
+.bottom-nav a.active{color:#fff;background:linear-gradient(135deg,#5b8cff,#9b5cff);box-shadow:0 6px 20px rgba(91,140,255,.22)}
+@media(max-width:560px){.bottom-nav{padding:7px 5px}.bottom-nav a{font-size:9px;min-height:56px}.bottom-nav a .nav-icon{font-size:19px}body{padding-bottom:78px}}
+</style>
 </head>
 <body class="welcome-open survey-hidden">
   <div class="welcome-screen" id="welcomeScreen" aria-label="Survey preparation">
@@ -296,12 +303,20 @@
   </div>
 
 <script type="module">
-  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
-  // HOLa Alliance Tracker — Supabase database
-  const supabaseUrl = "https://ovybstpiomphrouvqxmf.supabase.co";
-  const supabaseKey = "sb_publishable_gU5Wgy2NhdXcy23_TotF9g_LKthVmKV";
-  const supabase = createClient(supabaseUrl, supabaseKey);
+  const firebaseConfig = {
+    apiKey: "AIzaSyDxipuHjcf0EI5aMjM7534asdtq03AlQzQ",
+    authDomain: "hola-alliance-tracker.firebaseapp.com",
+    projectId: "hola-alliance-tracker",
+    storageBucket: "hola-alliance-tracker.firebasestorage.app",
+    messagingSenderId: "843941636060",
+    appId: "1:843941636060:web:f8f059f72ccff0eaabd119"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
   const T = {
     en:{title:"Alliance Player Survey",subtitle:"Fill in your current game information. You can submit again later to update your data.",name:"In-Game Name",namePlaceholder:"Enter your exact in-game name",thp:"THP (Total Hero Power)",t10:"T10 Unlocked",yes:"Yes",profession:"Profession",selectProfession:"Select your profession",engineer:"Engineer",warlord:"Warlord",squads:"Squads",squad1:"Squad 1",squad2:"Squad 2",squad3:"Squad 3",power:"Power",powerPlaceholder:"Example: 120M",squadType:"Squad Type",selectType:"Select type",tank:"Tank",aircraft:"Aircraft",missile:"Missile",mixed:"Mixed",submit:"Save / Update",saving:"Saving...",saved:"Saved successfully!",error:"Something went wrong. Please try again.",thpHelpTitle:"Where to find THP",thpHelpText:"Open your profile in the game. Go to the Rankings section. Look for the Total Hero Power ranking/category to see your actual value.",close:"Close",welcomeTitle:"BEFORE YOU START",welcomeLead:"Please have everything ready before starting the survey.",welcomeSquadsTitle:"Your 3 Squads – Type or Upload",welcomeSquadsText:"You can type the power of each squad manually, or upload a screenshot and the OCR will automatically detect the power. Keep your screenshots ready if you want to use automatic detection.",squadImage:"Or upload a squad screenshot to detect the power automatically (optional)",scanPower:"Detect power automatically",ocrWorking:"Scanning screenshot...",ocrFound:"Power detected: ",ocrNotFound:"Power not detected. Try a clearer screenshot.",ocrImageFirst:"Upload a screenshot first.",welcomeAvatarTitle:"An Avatar Image",welcomeAvatarText:"Have an image ready if you want to upload an avatar to your player card.",welcomeThpTitle:"A Screenshot of Your THP",welcomeThpText:"You will need a screenshot of your Total Hero Power (THP).",welcomeFindTitle:"Where to find your THP",welcomeStep1:"Tap your profile picture in the top-left corner.",welcomeStep2:"Tap Rankings.",welcomeStep3:"Select Total Hero Power.",welcomeOptional:"ℹ️ All fields are optional. You can update your information later without deleting the data you do not change.",startSurvey:"I’M READY – START SURVEY"},
@@ -506,21 +521,23 @@
 
     btn.disabled=true; status.className=""; status.textContent=d.saving;
     try{
-      // Keep the same behaviour as before: only fields filled in by the player
-      // are sent, so a later partial update does not erase existing information.
-      const update = { name };
+      const ref = doc(db,"players",docId);
+      const update = {
+        name,
+        updatedAt:serverTimestamp()
+      };
 
       const fields = {
         flag: document.getElementById("playerFlag").value,
         avatar: avatarData,
         thp: document.getElementById("thp").value.trim(),
         profession: document.getElementById("profession").value,
-        squad1_power: document.getElementById("s1power").value.trim(),
-        squad1_type: document.getElementById("s1type").value,
-        squad2_power: document.getElementById("s2power").value.trim(),
-        squad2_type: document.getElementById("s2type").value,
-        squad3_power: document.getElementById("s3power").value.trim(),
-        squad3_type: document.getElementById("s3type").value
+        squad1Power: document.getElementById("s1power").value.trim(),
+        squad1Type: document.getElementById("s1type").value,
+        squad2Power: document.getElementById("s2power").value.trim(),
+        squad2Type: document.getElementById("s2type").value,
+        squad3Power: document.getElementById("s3power").value.trim(),
+        squad3Type: document.getElementById("s3type").value
       };
 
       Object.entries(fields).forEach(([key,value]) => {
@@ -529,12 +546,7 @@
 
       if (document.getElementById("t10").checked) update.t10 = true;
 
-      const { error } = await supabase
-        .from("players")
-        .upsert(update, { onConflict: "name" });
-
-      if (error) throw error;
-
+      await setDoc(ref, update, { merge:true });
       status.className="success"; status.textContent=d.saved;
     }catch(err){
       console.error(err);
@@ -542,5 +554,5 @@
     }finally{btn.disabled=false}
   });
 </script>
-</body>
+<nav class="bottom-nav" aria-label="Navegación principal"><a href="index.html" class="active"><span class="nav-icon">⌂</span><span>Inicio</span></a><a href="alliance.html" class=""><span class="nav-icon">🏰</span><span>Centro de Alianza</span></a><a href="statistics.html" class=""><span class="nav-icon">📊</span><span>Estadísticas</span></a><a href="guides.html" class=""><span class="nav-icon">📚</span><span>Guías</span></a></nav></body>
 </html>
