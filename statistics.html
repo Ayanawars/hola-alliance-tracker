@@ -61,6 +61,27 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.4;
 @media(max-width:800px){
  body{padding-bottom:76px}.header{min-height:106px;padding:13px 16px;gap:12px}.brand{display:none}.title{border-left:0;padding-left:0}.title h1{font-size:26px}.title p{font-size:13px}.updated{min-width:118px;font-size:11px}.updated strong{font-size:14px}.wrap{padding:0 8px}.section{padding:58px 9px 10px;border-radius:14px}.section-tab{left:7px;top:7px;min-width:250px;font-size:18px;padding:12px 15px 12px 58px}.section-tab:before{left:13px;top:8px;font-size:30px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.card-top{grid-template-columns:1fr;min-height:116px;padding:8px 6px 0;text-align:center}.big-icon{font-size:42px;line-height:1}.card-head h2{font-size:15px}.card-head .count{font-size:34px;margin:2px 0}.card-head .players{font-size:11px}.total-power{font-size:9px;margin-top:2px}.total-power b{font-size:11px}.list-title{font-size:10px;padding:7px 5px}.player-list{padding:2px 5px 0}.player{font-size:11px;gap:4px;padding:6px 1px;grid-template-columns:1fr auto}.player:before{display:none}.more{font-size:11px;padding:7px 3px}.more span{font-size:16px}.stat-card{min-height:0}.bottom-nav{height:68px}.nav-item{font-size:10px;padding-top:7px}.nav-item .ni{font-size:25px;line-height:27px}}
 @media(max-width:390px){.section{padding-left:6px;padding-right:6px}.section-tab{min-width:220px;font-size:16px}.title h1{font-size:23px}.updated{display:none}.card-head h2{font-size:14px}.card-head .count{font-size:31px}.player{font-size:10px}.list-title{font-size:9px}.grid.three{gap:4px}}
+
+.vs-section-card{
+  --accent:#24669d;
+  display:grid;grid-template-columns:120px 1fr auto;gap:18px;align-items:center;
+  text-decoration:none;color:var(--ink);border:1px solid #7da8c3;border-radius:16px;
+  background:linear-gradient(135deg,#f8fbfd,#e2edf4);padding:18px 20px;
+  box-shadow:inset 0 1px #fff;transition:.18s ease;
+}
+.vs-section-card:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,0,0,.16),inset 0 1px #fff}
+.vs-section-icon{font-size:72px;text-align:center;filter:drop-shadow(0 5px 3px rgba(0,0,0,.2))}
+.vs-section-info h2{margin:0;color:#24669d;font-size:30px;text-transform:uppercase}
+.vs-section-info p{margin:8px 0 0;color:#566273;font-size:16px;line-height:1.45}
+.vs-section-action{background:linear-gradient(135deg,#24669d,#38a8df);color:white;border-radius:12px;padding:14px 18px;font-weight:900;text-transform:uppercase;white-space:nowrap}
+@media(max-width:800px){
+  .vs-section-card{grid-template-columns:70px 1fr;gap:10px;padding:13px}
+  .vs-section-icon{font-size:42px}
+  .vs-section-info h2{font-size:19px}
+  .vs-section-info p{font-size:12px}
+  .vs-section-action{grid-column:1/-1;text-align:center;padding:10px 12px;font-size:11px}
+}
+
 </style>
 </head>
 <body>
@@ -81,6 +102,19 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.4;
     <div id="squadGrid" class="grid three"><div class="loading">Cargando datos de Firebase...</div></div>
   </section>
 
+
+  <section class="section">
+    <div class="section-tab" data-icon="⚔️">VS</div>
+    <a class="vs-section-card" href="vs.html#estadisticas">
+      <div class="vs-section-icon">⚔️</div>
+      <div class="vs-section-info">
+        <h2>ESTADÍSTICAS DE VS</h2>
+        <p>Consulta el ranking semanal, puntos diarios, participación y cumplimiento de Push Week y Save Week.</p>
+      </div>
+      <div class="vs-section-action">ABRIR ESTADÍSTICAS →</div>
+    </a>
+  </section>
+
   <section class="section">
     <div class="section-tab" data-icon="💼">PROFESIÓN</div>
     <div id="professionGrid" class="grid two"><div class="loading">Cargando datos de Firebase...</div></div>
@@ -95,11 +129,19 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.4;
 </nav>
 
 <script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const supabaseUrl = "https://ovybstpiomphrouvqxmf.supabase.co";
-const supabaseKey = "sb_publishable_gU5Wgy2NhdXcy23_TotF9g_LKthVmKV";
-const supabase = createClient(supabaseUrl, supabaseKey);
+const firebaseConfig = {
+      apiKey:"AIzaSyDxipuHjcf0EI5aMjM7534asdtq03AlQzQ",
+      authDomain:"hola-alliance-tracker.firebaseapp.com",
+      projectId:"hola-alliance-tracker",
+      storageBucket:"hola-alliance-tracker.firebasestorage.app",
+      messagingSenderId:"843941636060",
+      appId:"1:843941636060:web:f8f059f72ccff0eaabd119"
+    };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 
 function norm(v){return String(v ?? '').trim().toLowerCase()}
@@ -158,24 +200,11 @@ function card({title,count,icon,accent,players,listTitle,valueKey='thp',valueLab
 async function load(){
   document.getElementById('updatedAt').textContent='Actualizando...';
   try{
-    const { data: rows, error } = await supabase
-      .from("players")
-      .select("*");
-    if (error) throw error;
-
+    const snap=await getDocs(collection(db, "players"));
     const all=[];
-    (rows || []).forEach(dbRow=>{
-      const raw={
-        ...dbRow,
-        squad1Type: dbRow.squad1_type || dbRow.squad1Type || "",
-        squad1Power: dbRow.squad1_power || dbRow.squad1Power || "",
-        squad2Type: dbRow.squad2_type || dbRow.squad2Type || "",
-        squad2Power: dbRow.squad2_power || dbRow.squad2Power || "",
-        squad3Type: dbRow.squad3_type || dbRow.squad3Type || "",
-        squad3Power: dbRow.squad3_power || dbRow.squad3Power || ""
-      };
-      const name=String(raw.name||raw.playerName||'').trim();
-      if (!name) return;
+    snap.forEach(d=>{
+      const raw=d.data()||{};
+      const name=String(raw.name||raw.playerName||d.id||'').trim();
       all.push(player(name,raw));
       all[all.length-1].raw=raw;
     });
@@ -203,13 +232,12 @@ async function load(){
     document.getElementById('updatedAt').textContent=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
   }catch(err){
     console.error(err);
-    document.querySelectorAll('.grid').forEach(g=>g.innerHTML='<div class="empty">No se pudieron cargar los datos de Supabase.</div>');
+    document.querySelectorAll('.grid').forEach(g=>g.innerHTML='<div class="empty">No se pudieron cargar los datos de Firebase.</div>');
     document.getElementById('updatedAt').textContent='Error al cargar';
   }
 }
 document.getElementById('refreshBtn').addEventListener('click',load);
 load();
 </script>
-
 </body>
 </html>
