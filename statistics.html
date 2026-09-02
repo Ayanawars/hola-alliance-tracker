@@ -1039,7 +1039,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 </script>
 <script>
 const HOLA_I18N={
-es:{"Cumplió":"Cumplió","No cumplió":"No cumplió","CUMPLIMIENTO VS":"CUMPLIMIENTO VS","Semana 24–29":"Semana 24–29","cumplieron":"cumplieron","no llegaron":"no llegaron","Mínimo diario":"Mínimo diario","cumplieron los 6 días":"cumplieron los 6 días","no cumplieron":"no cumplieron","CUMPLIERON":"CUMPLIERON","NO LLEGARON":"NO LLEGARON","Sin jugadores":"Sin jugadores","Poder total":"Poder total","Poder medio":"Poder medio","Mayor Squad 1":"Mayor Squad 1","Jugadores":"Jugadores","TOP SQUAD 1":"TOP SQUAD 1","THP total":"THP total","THP medio":"THP medio","THP máximo":"THP máximo","THP mínimo":"THP mínimo","TOP 10 THP":"TOP 10 THP","DISTRIBUCIÓN DE PODER":"DISTRIBUCIÓN DE PODER","SQUAD 1":"SQUAD 1","THP":"THP","Total power heroe":"Total power heroe","Ingenieros":"Ingenieros","Warlords":"Warlords","Misiles":"Misiles","Tanques":"Tanques","Aéreos":"Aéreos","Sin datos":"Sin datos","DONACIONES":"DONACIONES","TREN":"TREN","MIEMBROS":"MIEMBROS",
+es:{"Cumplió":"Cumplió","No cumplió":"No cumplió","CUMPLIMIENTO VS":"CUMPLIMIENTO VS","Semana 24–29":"Semana 24–29","cumplieron":"cumplieron","no llegaron":"no llegaron","Mínimo diario":"Mínimo diario","SAVE: exactamente 7,2M cada día":"SAVE: exactamente 7,2M cada día","cumplieron los 6 días":"cumplieron los 6 días","no cumplieron":"no cumplieron","CUMPLIERON":"CUMPLIERON","NO LLEGARON":"NO LLEGARON","Sin jugadores":"Sin jugadores","Poder total":"Poder total","Poder medio":"Poder medio","Mayor Squad 1":"Mayor Squad 1","Jugadores":"Jugadores","TOP SQUAD 1":"TOP SQUAD 1","THP total":"THP total","THP medio":"THP medio","THP máximo":"THP máximo","THP mínimo":"THP mínimo","TOP 10 THP":"TOP 10 THP","DISTRIBUCIÓN DE PODER":"DISTRIBUCIÓN DE PODER","SQUAD 1":"SQUAD 1","THP":"THP","Total power heroe":"Total power heroe","Ingenieros":"Ingenieros","Warlords":"Warlords","Misiles":"Misiles","Tanques":"Tanques","Aéreos":"Aéreos","Sin datos":"Sin datos","DONACIONES":"DONACIONES","TREN":"TREN","MIEMBROS":"MIEMBROS",
 "ESTADÍSTICAS":"ESTADÍSTICAS","Datos recopilados desde las encuestas de la alianza":"Datos actualizados de los jugadores de la alianza",
 "Última actualización":"Última actualización","MIEMBROS":"MIEMBROS","Total":"Total","JUGADORES VS":"JUGADORES VS","Registros de VS":"Registros de VS",
 "REGISTROS COMPLETOS":"REGISTROS COMPLETOS","PERFILES COMPLETOS":"PERFILES COMPLETOS","THP MEDIO":"THP MEDIO","Poder de héroes":"Poder de héroes",
@@ -1185,12 +1185,16 @@ function makeHQCard(title,list){
 }
 
 function makeVSComplianceCard(title,list){
+  const type=window.vsWeeklyWeekType||"push";
+  const range=window.vsWeeklyRangeLabel||"";
+  const isSave=type==="save";
   return `<article class="card vs-compliance-card accent-blue" data-card="vscompliance" tabindex="0" role="button">
     <div class="cardhead"><div class="vs-compliance-summary">
       <div class="squadtypes-title">⚔️ ${esc(title)}</div>
-      <div class="vs-week-label">${esc(t("Semana 24–29"))}</div>
-      <div class="vs-compliance-counts"><span>✅ <b id="vsCoverMet">—</b> ${esc(t("cumplieron"))}</span><span>❌ <b id="vsCoverMissed">—</b> ${esc(t("no llegaron"))}</span></div>
-      <small class="vs-minimum">${esc(t("Mínimo diario"))}: 7,2M</small>
+      <div class="vs-week-label">${esc(range)} · ${isSave?"🛡️ SAVE WEEK":"🚀 PUSH WEEK"}</div>
+      ${isSave
+        ? `<div class="vs-compliance-counts"><span>🛡️ <b>—</b> SAVE WEEK</span></div><small class="vs-minimum">Sin requisito de 7,2M de PUSH</small>`
+        : `<div class="vs-compliance-counts"><span>✅ <b id="vsCoverMet">—</b> ${esc(t("cumplieron"))}</span><span>❌ <b id="vsCoverMissed">—</b> ${esc(t("no llegaron"))}</span></div><small class="vs-minimum">${esc(t("Mínimo diario"))}: 7,2M</small>`}
     </div><span class="card-open">›</span></div>
   </article>`;
 }
@@ -1292,11 +1296,29 @@ async function load(){
     players=await r.json();
     // VS is loaded separately so it can never prevent the other cards from rendering.
     try {
-    // VS: contar jugadores únicos de la tabla histórica, no filas de puntos.
-    const vr=await fetch(`${SUPABASE_URL}/rest/v1/vs_scores?select=player_name,day,points,week_type,vs_date&week_type=eq.push&vs_date=eq.2026-08-24&day=gte.1&day=lte.6&limit=10000`,{headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`}});
+    // VS: detectar automáticamente la semana actual y su tipo.
+    // 24/08/2026 fue PUSH; las semanas de VS alternan PUSH/SAVE cada 7 días.
+    // Por tanto 31/08/2026 y 07/09/2026 se calculan como SAVE y PUSH respectivamente.
+    const mondayVS=new Date();
+    mondayVS.setHours(0,0,0,0);
+    const weekday=mondayVS.getDay()||7;
+    mondayVS.setDate(mondayVS.getDate()-weekday+1);
+    const anchorPush=new Date("2026-08-24T00:00:00");
+    const weeksFromAnchor=Math.round((mondayVS-anchorPush)/(7*24*60*60*1000));
+    const week_type=(Math.abs(weeksFromAnchor)%2===0)?"push":"save";
+    const pad=n=>String(n).padStart(2,"0");
+    const vsDate=`${mondayVS.getFullYear()}-${pad(mondayVS.getMonth()+1)}-${pad(mondayVS.getDate())}`;
+    const sundayVS=new Date(mondayVS);
+    sundayVS.setDate(sundayVS.getDate()+5);
+    const rangeLabel=`${pad(mondayVS.getDate())}/${pad(mondayVS.getMonth()+1)} – ${pad(sundayVS.getDate())}/${pad(sundayVS.getMonth()+1)}`;
+
+    const vr=await fetch(`${SUPABASE_URL}/rest/v1/vs_scores?select=player_name,day,points,week_type,vs_date&week_type=eq.${week_type}&vs_date=eq.${vsDate}&day=gte.1&day=lte.6&limit=10000`,{headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`}});
     if(!vr.ok) throw new Error("VS HTTP "+vr.status);
     const vsRows=await vr.json();
-    const days=[1,2,3,4,5,6], minimum=7200000;
+    const days=[1,2,3,4,5,6];
+
+    // PUSH: requisito de 7,2M diarios. SAVE: no se aplica el requisito PUSH.
+    const minimum=week_type==="push"?7200000:null;
     const daily=new Map();
     for(const row of vsRows){
       const name=String(row.player_name||"").trim();
@@ -1305,18 +1327,25 @@ async function load(){
       if(!daily.has(name)) daily.set(name,{});
       daily.get(name)[day]=(daily.get(name)[day]||0)+(Number(row.points)||0);
     }
-    // Include every current player from players; missing VS record = 0 for that day.
+
     const playerMap=new Map(players.map(p=>[String(p.name||"").trim(),p]));
     for(const name of playerMap.keys()) if(!daily.has(name)) daily.set(name,{});
+
     const compliance=[...daily.entries()].map(([name,vals])=>({
       name, vals, thp:playerMap.get(name)?.thp||0,
-      met:days.every(d=>(vals[d]||0)>=minimum)
+      met: exactSave
+         ? days.every(d=>(vals[d]||0)===minimum)
+         : days.every(d=>(vals[d]||0)>=minimum)
     }));
+
+    window.vsWeeklyWeekType=week_type;
+    window.vsWeeklyDate=vsDate;
+    window.vsWeeklyRangeLabel=rangeLabel;
     window.vsWeeklyCompliance=compliance;
     window.vsWeeklyMinimum=minimum;
     window.vsWeeklyDays=days;
-    window.vsWeeklyMet=compliance.filter(x=>x.met);
-    window.vsWeeklyMissed=compliance.filter(x=>!x.met);
+    window.vsWeeklyMet=minimum===null ? [] : compliance.filter(x=>x.met);
+    window.vsWeeklyMissed=minimum===null ? [] : compliance.filter(x=>x.met===false);
     window.holaVSPlayers=compliance.filter(x=>days.some(d=>(x.vals[d]||0)>0)).length;
     window.holaVSRows=vsRows.length;
     } catch(vsErr) {
@@ -1369,14 +1398,16 @@ function openStatModal(card){if(card.dataset.card==="vscompliance"){
       </div>`).join("")
     : `<div class="empty-state">${esc(t("Sin jugadores"))}</div>`;
 
+  const isSaveWeek=window.vsWeeklyWeekType==="save";
   statModalTitle.textContent=t("CUMPLIMIENTO VS");
-  statModalCount.textContent=`${met.length} / ${rows.length}`;
+  statModalCount.textContent=isSaveWeek ? "SAVE" : `${met.length} / ${rows.length}`;
   statModalRows.innerHTML=`<div class="vs-compliance-modal">
     <div class="vs-modal-summary">
-      <div><span>📅</span><strong>${esc(t("Semana 24–29"))}</strong><small>${esc(t("Mínimo diario"))}: 7,2M</small></div>
-      <div><span>✅</span><strong>${met.length}</strong><small>${esc(t("cumplieron los 6 días"))}</small></div>
-      <div><span>❌</span><strong>${missed.length}</strong><small>${esc(t("no cumplieron"))}</small></div>
+      <div><span>📅</span><strong>${esc(window.vsWeeklyRangeLabel||"")}</strong><small>${isSaveWeek?"🛡️ SAVE WEEK":esc(t("Mínimo diario"))+": 7,2M"}</small></div>
+      <div><span>${isSaveWeek?"🛡️":"✅"}</span><strong>${met.length}</strong><small>${isSaveWeek?"Sin requisito PUSH":esc(t("cumplieron los 6 días"))}</small></div>
+      <div><span>${isSaveWeek?"📦":"❌"}</span><strong>${missed.length}</strong><small>${isSaveWeek?"Semana de ahorro":esc(t("no cumplieron"))}</small></div>
     </div>
+    ${isSaveWeek ? `<section class="vs-compliance-section"><h3>🛡️ SAVE WEEK</h3><div class="vs-player-detail simple"><span class="vs-player-status">🛡️</span><span class="vs-player-name">Esta semana no se aplica el mínimo diario de 7,2M de PUSH.</span><strong>AHORRO</strong></div></section>` : `
     <section class="vs-compliance-section">
       <h3>✅ ${esc(t("CUMPLIERON"))} <b>${met.length}</b></h3>
       ${playerList(met,true)}
@@ -1384,7 +1415,7 @@ function openStatModal(card){if(card.dataset.card==="vscompliance"){
     <section class="vs-compliance-section">
       <h3>❌ ${esc(t("NO LLEGARON"))} <b>${missed.length}</b></h3>
       ${playerList(missed,false)}
-    </section>
+    </section>`}
   </div>`;
 
   statModal.hidden=false;
