@@ -459,12 +459,16 @@ const getSurveyPower=m=>m.survey?.thp||m.survey?.THP||m.thp||"—";
 const surveyDone=m=>!!m.survey;
 const avatar=m=>m.survey?.avatar||"";
 const flag=m=>m.survey?.flag||"";
+const getHQ=m=>m.survey?.hq_level ?? m.survey?.hqLevel ?? m.hq_level ?? m.hq ?? "—";
 
 // Fecha en la que se completó la encuesta. Se prueban varios nombres de campo
 // para mantener compatibilidad con registros antiguos y actuales.
 function surveyDateValue(m){
  const s=m.survey||{};
- return s.surveyCompletedAt||s.completedAt||s.submittedAt||s.created_at||s.createdAt||s.updatedAt||s.updated_at||null;
+ // La encuesta actualiza updated_at al volver a enviarse.
+ // Por eso debe tener prioridad sobre created_at, que solo indica
+ // cuándo se creó el registro por primera vez.
+ return s.surveyCompletedAt||s.completedAt||s.submittedAt||s.updated_at||s.updatedAt||s.created_at||s.createdAt||null;
 }
 function formatSurveyDate(m){
  const value=surveyDateValue(m);
@@ -487,7 +491,7 @@ function row(m){
    <div><div class="member-name">${esc(m.name)} ${flag(m)?`<span style="font-size:14px">${esc(flag(m))}</span>`:""}</div>
    <div class="member-meta">${surveyDone(m)?`<span class="check">✓</span><span>${window.HOLaLang().completed}${formatSurveyDate(m)?` · ${formatSurveyDate(m)}`:""}</span>`:`<span>${window.HOLaLang().none}</span>`}</div></div>
    <strong class="thp">${esc(fmtPower(getSurveyPower(m)))}</strong>
-   <span class="hq">HQ ${esc(m.hq)}</span>
+   <span class="hq">HQ ${esc(getHQ(m))}</span>
  </article>`;
 }
 
@@ -533,7 +537,7 @@ function showProfile(m){
 
      <div class="profile-values-new">
        <div class="profile-value-new"><span>THP</span><b>${esc(fmtPower(getSurveyPower(m)))}</b></div>
-       <div class="profile-value-new"><span>HQ</span><b>HQ ${esc(m.hq)}</b></div>
+       <div class="profile-value-new"><span>HQ</span><b>HQ ${esc(getHQ(m))}</b></div>
        <div class="profile-value-new"><span>T10</span><b>${s.t10===true?window.HOLaLang().yes:s.t10===false?window.HOLaLang().no:"—"}</b></div>
        <div class="profile-value-new"><span>${window.HOLaLang().profession}</span><b>${esc(s.profession||"—")}</b></div>
      </div>
@@ -555,7 +559,7 @@ async function load(){
   const map=new Map((data||[]).filter(x=>x.name).map(x=>[norm(x.name),x]));
   members=baseRoster.map(m=>({...m,survey:map.get(norm(m.name))||null}));
   // Jugadores que hayan rellenado la encuesta pero no estén en la lista base.
-  (data||[]).forEach(s=>{if(s.name&&!members.some(m=>norm(m.name)===norm(s.name)))members.push({rank:s.rank||"R1",name:s.name,thp:s.thp||"—",hq:s.hq||"—",survey:s})});
+  (data||[]).forEach(s=>{if(s.name&&!members.some(m=>norm(m.name)===norm(s.name)))members.push({rank:s.rank||"R1",name:s.name,thp:s.thp||"—",hq:s.hq_level ?? s.hq ?? "—",survey:s})});
   window.HOLaMembers=members;statusEl.style.display="none";render();
  }catch(err){console.error(err);statusEl.textContent=window.HOLaLang().supabase;statusEl.style.display="block";render();}
 }
@@ -629,7 +633,7 @@ load();
     const name=player?.name||survey.name||"";
     const rank=player?.rank||survey.rank||"R1";
     const power=player?.thp||survey.thp||survey.power||"";
-    const hq=player?.hq||survey.hq||"30";
+    const hq=player?.hq_level ?? player?.hq ?? survey.hq_level ?? survey.hqLevel ?? survey.hq ?? "30";
     const flag=survey.flag||"";
     const avatar=survey.avatar||"";
     const t10=!!survey.t10;
@@ -690,7 +694,7 @@ load();
       const payload={
         name:newName,
         rank:document.getElementById("editRank").value,
-        hq:document.getElementById("editHQ").value.trim(),
+        hq_level:parseInt(document.getElementById("editHQ").value.trim(),10) || null,
         thp:document.getElementById("editPower").value.trim(),
         flag:document.getElementById("editFlag").value,
         avatar:avatarData||"",
