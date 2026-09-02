@@ -15,8 +15,8 @@ body{margin:0;color:var(--text);font-family:Arial,Helvetica,sans-serif;backgroun
 .brand .world{font-size:30px;vertical-align:middle}.brand small{display:block;margin-top:9px;font-size:10px;letter-spacing:2px;color:#cbd5df}
 .title{flex:1;border-left:1px solid #31465d;padding-left:24px}.title h1{margin:0;font-size:31px;letter-spacing:.5px}.title h1 span{color:var(--blue);margin-right:9px}.title p{margin:8px 0 0;color:var(--muted);font-size:15px}
 .back{display:inline-flex;align-items:center;gap:7px;color:#dbe9f7;text-decoration:none;border:1px solid #3a526a;background:#102033;padding:11px 14px;border-radius:12px;font-weight:900}
-.wrap{max-width:1250px;margin:auto;padding:22px 18px 42px}
-.toolbar{display:grid;grid-template-columns:1fr 180px;gap:12px;margin-bottom:14px}
+.wrap{max-width:1250px;margin:auto;padding:4px 18px 42px}
+.toolbar{display:grid;grid-template-columns:minmax(0,1fr) 180px;gap:12px;margin-bottom:18px}
 .search,.filter{height:48px;border-radius:13px;border:1px solid var(--line);background:#101d2c;color:var(--text);font:inherit;padding:0 14px;outline:none}
 .search:focus,.filter:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,185,255,.08)}
 .summary{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px}
@@ -37,67 +37,412 @@ body{margin:0;color:var(--text);font-family:Arial,Helvetica,sans-serif;backgroun
 .modal-box{width:min(620px,100%);max-height:90vh;overflow:auto;background:linear-gradient(145deg,#152437,#0b1725);border:1px solid #45627d;border-radius:22px;padding:22px;box-shadow:0 25px 80px rgba(0,0,0,.55);position:relative}.close{position:absolute;right:12px;top:12px;border:0;background:#1d3044;color:white;width:38px;height:38px;border-radius:10px;font-size:24px;cursor:pointer}
 .profile-head{display:flex;align-items:center;gap:15px;padding-right:48px;margin-bottom:18px}.profile-head .avatar{width:78px;height:78px;border-radius:18px;font-size:26px}.profile-head h2{margin:0;font-size:28px}.profile-head p{margin:6px 0 0;color:var(--muted)}.profile-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.info-card{border:1px solid #314b63;border-radius:14px;background:#0b1623;padding:14px}.info-card span{display:block;color:#91a4b8;font-size:10px;font-weight:900;letter-spacing:.8px}.info-card b{display:block;font-size:18px;margin-top:6px}.squad-title{font-size:18px;font-weight:900;margin:20px 0 9px}.squad-row{display:grid;grid-template-columns:60px 1fr 90px;gap:10px;align-items:center;padding:13px;border:1px solid #314b63;border-radius:13px;background:#0b1623;margin-bottom:8px}.squad-row strong:last-child{text-align:right;color:#67d2ff}
 @media(max-width:900px){.summary{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:620px){.header{padding:14px 16px}.header-inner{display:grid;grid-template-columns:92px 1fr;gap:14px}.brand{font-size:28px;letter-spacing:-2px;min-width:0}.brand .world{font-size:19px}.brand small{font-size:7px;letter-spacing:1px;margin-top:5px}.title{padding-left:14px}.title h1{font-size:21px}.title p{font-size:11px}.back{grid-column:1/-1;justify-content:center}.wrap{padding:14px 10px}.toolbar{grid-template-columns:1fr 105px;gap:8px}.summary{grid-template-columns:repeat(3,1fr);gap:6px}.summary-card{padding:7px 8px;min-height:48px;gap:6px}.summary-card b{font-size:19px}.summary-card span{font-size:7px;letter-spacing:.3px}.group-toggle{padding:13px 12px}.group-title{font-size:18px}.member{grid-template-columns:42px 40px minmax(0,1fr) 70px;gap:7px;padding:10px 8px}.avatar{width:36px;height:36px;border-radius:10px}.thp{font-size:14px}.hq{display:none}.profile-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.header{padding:14px 16px}.header-inner{display:grid;grid-template-columns:92px 1fr;gap:14px}.brand{font-size:28px;letter-spacing:-2px;min-width:0}.brand .world{font-size:19px}.brand small{font-size:7px;letter-spacing:1px;margin-top:5px}.title{padding-left:14px}.title h1{font-size:21px}.title p{font-size:11px}.back{grid-column:1/-1;justify-content:center}.wrap{padding:4px 10px}.toolbar{grid-template-columns:minmax(0,1fr) 96px;gap:8px}.summary{grid-template-columns:repeat(3,1fr);gap:6px}.summary-card{padding:7px 8px;min-height:48px;gap:6px}.summary-card b{font-size:19px}.summary-card span{font-size:7px;letter-spacing:.3px}.group-toggle{padding:13px 12px}.group-title{font-size:18px}.member{grid-template-columns:42px 40px minmax(0,1fr) 70px;gap:7px;padding:10px 8px}.avatar{width:36px;height:36px;border-radius:10px}.thp{font-size:14px}.hq{display:none}.profile-grid{grid-template-columns:1fr 1fr}}
 </style>
-</head>
+
+
+
+
+
+<style id="profile-card-avatar-1x1">
+/* SOLO el avatar dentro de la tarjeta/ficha del miembro */
+.profile-head .avatar{
+  width:96px !important;
+  height:96px !important;
+  min-width:96px !important;
+  aspect-ratio:1 / 1 !important;
+  border-radius:20px !important;
+  overflow:hidden !important;
+}
+.profile-head .avatar img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center !important;
+  display:block !important;
+}
+@media(max-width:620px){
+  .profile-head .avatar{
+    width:92px !important;
+    height:92px !important;
+    min-width:92px !important;
+  }
+}
+</style>
+
+
+<style id="profile-card-alignment-only">
+/* SOLO la tarjeta/ficha que se abre al pulsar un miembro */
+.profile-head{
+  display:grid !important;
+  grid-template-columns:96px minmax(0,1fr) !important;
+  align-items:center !important;
+  gap:18px !important;
+  padding-right:54px !important;
+  margin-bottom:18px !important;
+}
+.profile-head-info{min-width:0;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.profile-main-line{display:flex;align-items:center;gap:12px;min-width:0;white-space:nowrap}
+.profile-main-line .rank{flex:0 0 auto}
+.profile-name{font-size:30px;font-weight:900;line-height:1.05;overflow:hidden;text-overflow:ellipsis}
+.profile-flag{font-size:28px;line-height:1;flex:0 0 auto}
+.profile-survey-line{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:18px;line-height:1.15}
+.profile-survey-line .check{width:28px;height:28px;flex:0 0 28px;font-size:16px}
+.profile-date-line{color:var(--muted);font-size:16px;line-height:1.2;padding-left:36px}
+.profile-date-line.no-survey{padding-left:0}
+@media(max-width:620px){
+  .profile-head{grid-template-columns:96px minmax(0,1fr) !important;gap:16px !important;padding-right:48px !important}
+  .profile-name{font-size:27px}
+  .profile-flag{font-size:25px}
+  .profile-survey-line{font-size:17px}
+  .profile-date-line{font-size:15px}
+}
+</style>
+
+<style id="profile-card-new-design">
+/* NUEVO DISEÑO: solo la ficha que se abre al pulsar un miembro */
+.modal-box{width:min(640px,100%)!important;padding:18px!important;border-radius:24px!important}
+.profile-card-new{display:block}
+.profile-hero-new{display:grid;grid-template-columns:94px minmax(0,1fr) auto;gap:14px;align-items:center;padding:8px 48px 10px 2px}
+.profile-avatar-new{width:94px;height:94px;aspect-ratio:1/1;border-radius:18px;overflow:hidden;border:1px solid #3b5872;background:#132236;display:grid;place-items:center;color:#aabdd0;font-size:28px;box-shadow:0 10px 24px rgba(0,0,0,.22)}
+.profile-avatar-new img{width:100%;height:100%;object-fit:cover;display:block}
+.profile-identity-new{min-width:0}
+.profile-name-row-new{display:flex;align-items:center;gap:8px;min-width:0;margin-bottom:8px}
+.profile-name-new{font-size:23px;line-height:1.08;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-flag-new{font-size:23px;line-height:1;flex:0 0 auto}
+.profile-status-new{display:flex;align-items:center;gap:8px;color:#b8c8d8;font-size:14px;font-weight:700}
+.profile-status-check-new{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;flex:0 0 25px;font-size:15px;font-weight:900;background:linear-gradient(145deg,#39d5ff,#1997db);color:#07111e;box-shadow:0 0 0 4px rgba(37,185,255,.12),0 6px 16px rgba(37,185,255,.22)}
+.profile-status-new.is-empty .profile-status-check-new{background:#1b2b3d;color:#9fb0c4;box-shadow:none}
+.profile-date-new{margin:7px 0 0 33px;color:#8fa4b8;font-size:13px}
+.profile-rank-new{align-self:start;margin-top:2px;min-width:42px;padding:8px 10px;border-radius:12px;text-align:center;font-size:14px;font-weight:900;background:#17263a}
+.profile-divider-new{height:1px;background:linear-gradient(90deg,transparent,rgba(80,116,148,.72),transparent);margin:10px 0 14px}
+.profile-values-new{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.profile-value-new{min-height:74px;padding:12px 14px;border:1px solid #304b65;border-radius:14px;background:linear-gradient(145deg,rgba(14,28,43,.98),rgba(9,20,32,.98));display:flex;flex-direction:column;justify-content:center}
+.profile-value-new span{color:#8fa4b8;font-size:10px;font-weight:900;letter-spacing:1px}
+.profile-value-new b{margin-top:6px;font-size:19px;line-height:1.1;color:#eef5ff;overflow-wrap:anywhere}
+.profile-value-new:first-child b{color:#72d6ff}
+.squads-title-new{font-size:16px;font-weight:900;letter-spacing:.6px;margin:18px 0 9px;color:#dce7f2}
+.squads-list-new{display:grid;gap:8px}
+.squad-row-new{display:grid;grid-template-columns:32px 74px minmax(0,1fr) auto;align-items:center;gap:8px;padding:12px 13px;border:1px solid #304b65;border-radius:13px;background:#0b1623}
+.squad-number-new{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:#172a3e;color:#75d6ff;font-weight:900;font-size:13px}
+.squad-label-new{font-size:11px;font-weight:900;color:#aebdcd;letter-spacing:.4px}
+.squad-type-new{font-size:14px;color:#dce7f2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.squad-row-new strong{font-size:15px;color:#6ed4ff;white-space:nowrap}
+@media(max-width:620px){
+ .modal{padding:12px!important}.modal-box{padding:16px!important;border-radius:22px!important}
+ .profile-hero-new{grid-template-columns:78px minmax(0,1fr) auto;gap:12px;padding-right:44px}
+ .profile-avatar-new{width:78px;height:78px;border-radius:16px}
+ .profile-name-new{font-size:20px}.profile-flag-new{font-size:20px}
+ .profile-status-new{font-size:13px}.profile-status-check-new{width:23px;height:23px;flex-basis:23px}
+ .profile-date-new{font-size:12px;margin-left:31px}.profile-rank-new{min-width:38px;padding:7px 8px;font-size:13px}
+ .profile-values-new{gap:8px}.profile-value-new{min-height:68px;padding:11px 12px}.profile-value-new b{font-size:17px}
+ .squad-row-new{grid-template-columns:30px 64px minmax(0,1fr) auto;padding:11px 10px}.squad-label-new{font-size:10px}.squad-type-new{font-size:13px}.squad-row-new strong{font-size:14px}
+}
+</style>
+
+<style id="hola-lang-css">
+#hola-language-selector{position:static;display:block;margin-top:10px;z-index:100}
+#hola-language-selector select{background:#101d2c;color:#eef5ff;border:1px solid #31465d;border-radius:10px;padding:8px 11px;font-weight:700;font-size:13px;outline:none;max-width:100%;cursor:pointer}
+#hola-language-selector select:focus{border-color:#25b9ff;box-shadow:0 0 0 3px rgba(37,185,255,.08)}
+@media(max-width:620px){
+  #hola-language-selector{margin-top:7px}
+  #hola-language-selector select{font-size:11px;padding:7px 8px;max-width:150px}
+}
+</style>
+<style id="members-header-compact">
+/* Compacta el espacio entre encabezado y búsqueda */
+.epic-header{min-height:128px}
+.epic-header .header-inner{padding-top:10px;padding-bottom:10px}
+.members-main,.page-main{margin-top:10px!important}
+.search,.filter{margin-top:0}
+@media(max-width:760px){
+  .epic-header{min-height:118px}
+  .epic-header .header-inner{padding-top:7px;padding-bottom:7px}
+  .members-main,.page-main{margin-top:6px!important}
+}
+</style><style id="members-remove-header-gap">
+.epic-header + main,
+.epic-header + .main,
+main.members-main,
+main.page-main{
+  margin-top:0!important;
+  padding-top:0!important;
+}
+@media(max-width:760px){
+  .epic-header + main,
+  .epic-header + .main,
+  main.members-main,
+  main.page-main{
+    margin-top:0!important;
+    padding-top:0!important;
+  }
+}
+</style></head>
 <body>
-<header class="header"><div class="header-inner">
-  <div class="brand">H<span class="world">🌍</span>La<small>ALLIANCE TRACKER</small></div>
-  <div class="title"><h1><span>👥</span> MIEMBROS</h1><p>Lista de miembros · datos de encuesta sincronizados con Supabase</p></div>
-  <a class="back" href="index.html">← INICIO</a>
+<header class="header epic-header"><div class="header-scan"></div><div class="header-inner">
+  <div class="brand brand-epic">
+    <div class="brand-main">H<span class="world">🌍</span>La</div>
+    <small>ALLIANCE TRACKER</small>
+    <div id="hola-language-selector">
+      <select id="languageSelect" aria-label="Idioma">
+        <option value="es">🇪🇸 Español</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="pt">🇵🇹 Português</option>
+        <option value="ro">🇷🇴 Română</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="uk">🇺🇦 Українська</option>
+      </select>
+    </div>
+  </div>
+  <div class="title epic-title">
+    <div class="title-kicker">⚔ ALLIANCE COMMAND</div>
+    <h1><span>👥</span> <span data-i18n-members-title>MIEMBROS</span></h1>
+    <p data-i18n-members-sub>Base central de la alianza · roster, rangos y perfiles sincronizados</p>
+  </div>
+  <div class="header-badges"><div class="command-badge">🛡<span>HOLa</span><small>UNITED</small></div></div>
 </div></header>
 
 
-<button id="editPlayersBtn" class="edit-players-gear" type="button" title="Editar jugadores">⚙</button>
+<button id="editPlayersBtn" class="edit-players-gear" type="button" title="Administrar miembros">⚙</button>
 <div id="editPlayersModal" class="edit-players-modal" aria-hidden="true">
   <div class="edit-players-box">
+    <div class="admin-topline"></div>
     <div class="edit-players-head">
-      <div>
-        <h2>⚙ EDITAR JUGADORES</h2>
-        <p>Selecciona un jugador y cambia sus datos.</p>
+      <div class="admin-title-wrap">
+        <div class="admin-icon">⚙</div>
+        <div><div class="admin-eyebrow">ALLIANCE MANAGEMENT</div><h2>ADMINISTRAR MIEMBROS</h2><p>Gestiona el roster de HOLa desde un único panel.</p></div>
       </div>
-      <button id="closeEditPlayers" class="edit-close" type="button">✕</button>
+      <button id="closeEditPlayers" class="edit-close" type="button" aria-label="Cerrar">✕</button>
     </div>
+    <div class="admin-summary"><div><b id="adminMemberCount">0</b><span>MIEMBROS</span></div><div><b>R1–R5</b><span>RANGOS</span></div><div><b>LIVE</b><span>SUPABASE</span></div></div>
     <div class="edit-players-toolbar">
-      <select id="editPlayerSelect"></select>
-      <button id="newPlayerBtn" class="edit-action" type="button">＋ NUEVO</button>
+      <div class="admin-select-wrap"><span>👤</span><select id="editPlayerSelect"></select></div>
+      <button id="newPlayerBtn" class="edit-action" type="button">＋ AÑADIR</button>
     </div>
-    <div id="editPlayerForm" class="edit-player-form"></div>
+    <div class="admin-divider"><span>FICHA DEL JUGADOR</span></div>
+    <div id="editPlayerForm" class="edit-player-form"><div class="editor-empty"><div>👥</div><strong>Selecciona un miembro</strong><span>Elige un jugador de la lista para editar su ficha.</span></div></div>
   </div>
 </div>
 <style>
-.edit-players-gear{position:fixed;right:18px;bottom:18px;width:52px;height:52px;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:linear-gradient(135deg,#27334a,#101723);color:#fff;font-size:25px;cursor:pointer;z-index:1000;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-.edit-players-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:18px;z-index:1100}
-.edit-players-modal.show{display:flex}
-.edit-players-box{width:min(680px,100%);max-height:90vh;overflow:auto;background:#111a28;border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:20px;color:#fff;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.edit-players-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}
-.edit-players-head h2{margin:0;font-size:20px}.edit-players-head p{margin:5px 0 0;opacity:.7}
-.edit-close{background:transparent;border:0;color:#fff;font-size:24px;cursor:pointer}
-.edit-players-toolbar{display:flex;gap:10px;margin-bottom:14px}.edit-players-toolbar select{flex:1}
-.edit-players-toolbar select,.edit-player-form input,.edit-player-form select{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:#0b111b;color:#fff}
-.edit-action{padding:10px 14px;border:0;border-radius:10px;background:#d8a72f;color:#16100a;font-weight:800;cursor:pointer}
-.edit-player-form{display:grid;gap:12px}.edit-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.edit-player-form label{display:grid;gap:6px;font-size:13px;opacity:.9}.edit-save{background:#2e8b57;color:#fff;border:0;padding:13px;border-radius:10px;font-weight:800;cursor:pointer}.edit-delete{background:#a33;color:#fff;border:0;padding:13px;border-radius:10px;font-weight:800;cursor:pointer}
-@media(max-width:600px){.edit-row{grid-template-columns:1fr}.edit-players-toolbar{flex-direction:column}}
+.epic-header{min-height:156px;background:linear-gradient(115deg,#06111d 0%,#0a1828 46%,#10263b 100%);border-bottom:1px solid rgba(88,153,205,.45);box-shadow:inset 0 -1px 0 rgba(255,255,255,.03),0 18px 45px rgba(0,0,0,.22)}
+.epic-header:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 9%,rgba(78,194,255,.10) 9.2%,transparent 9.5% 100%),radial-gradient(circle at 85% 20%,rgba(42,190,255,.18),transparent 28%),radial-gradient(circle at 94% 70%,rgba(228,181,72,.10),transparent 24%);pointer-events:none}
+.header-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.012) 4px);opacity:.5;pointer-events:none}
+.brand-epic{position:relative;padding:14px 20px 14px 0}.brand-epic:after{content:"";position:absolute;right:0;top:16%;bottom:16%;width:1px;background:linear-gradient(transparent,rgba(91,194,255,.65),transparent)}
+.brand-main{font-size:46px;font-weight:950;letter-spacing:-4px;text-shadow:0 0 24px rgba(67,185,255,.18),0 3px 0 #07101a}.brand-epic small{font-size:9px;letter-spacing:3px;color:#a9c4da}
+.epic-title{border-left:0;padding-left:26px}.title-kicker{font-size:10px;letter-spacing:2.2px;color:#61c9ff;font-weight:900;margin-bottom:6px}.epic-title h1{font-size:38px;letter-spacing:1px;text-shadow:0 2px 0 #06101b,0 0 24px rgba(61,180,255,.12)}.epic-title h1 span{filter:drop-shadow(0 0 12px rgba(78,200,255,.35))}.epic-title p{font-size:14px;color:#a9b9c9}
+.header-badges{display:flex;align-items:center}.command-badge{width:86px;height:86px;border-radius:24px;border:1px solid rgba(101,191,255,.35);background:linear-gradient(145deg,rgba(30,76,111,.8),rgba(10,27,43,.95));display:grid;place-items:center;align-content:center;gap:2px;font-size:25px;box-shadow:0 0 0 5px rgba(52,150,215,.06),inset 0 1px 0 rgba(255,255,255,.08)}.command-badge span{font-weight:950;font-size:14px;letter-spacing:1px}.command-badge small{font-size:7px;letter-spacing:2px;color:#78c9f7}
+.edit-players-gear{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:18px;border:1px solid rgba(89,191,255,.35);background:linear-gradient(145deg,#163653,#0c1724);color:#d9f3ff;font-size:26px;cursor:pointer;z-index:1000;box-shadow:0 12px 30px rgba(0,0,0,.42),0 0 0 4px rgba(37,185,255,.06);transition:.2s}.edit-players-gear:hover{transform:translateY(-3px) rotate(18deg);border-color:#63ceff}
+.edit-players-modal{position:fixed;inset:0;background:rgba(1,6,12,.82);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:18px;z-index:1100}.edit-players-modal.show{display:flex}
+.edit-players-box{width:min(760px,100%);max-height:92vh;overflow:auto;background:radial-gradient(circle at 100% 0%,rgba(31,104,155,.16),transparent 30%),linear-gradient(145deg,#142337,#09131f);border:1px solid rgba(105,178,229,.38);border-radius:26px;padding:24px;color:#fff;box-shadow:0 30px 100px rgba(0,0,0,.65);position:relative}.admin-topline{height:3px;margin:-24px -24px 22px;background:linear-gradient(90deg,#29b9ff,#b069ff,#e4b548);box-shadow:0 0 18px rgba(41,185,255,.35)}
+.edit-players-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px}.admin-title-wrap{display:flex;gap:14px;align-items:center}.admin-icon{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:25px;background:linear-gradient(145deg,#215071,#0c1c2b);border:1px solid rgba(93,187,241,.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}.admin-eyebrow{font-size:9px;letter-spacing:2px;color:#68c9ff;font-weight:900;margin-bottom:5px}.edit-players-head h2{margin:0;font-size:23px;letter-spacing:.4px}.edit-players-head p{margin:6px 0 0;color:#98aec1;font-size:13px}.edit-close{width:42px;height:42px;border-radius:13px;border:1px solid rgba(255,255,255,.12);background:#1b2b3c;color:#fff;font-size:18px;cursor:pointer}
+.admin-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0 18px}.admin-summary>div{border:1px solid rgba(91,130,163,.34);border-radius:14px;background:rgba(6,16,27,.55);padding:12px 14px}.admin-summary b{display:block;font-size:18px;color:#e9f4ff}.admin-summary span{display:block;margin-top:4px;font-size:9px;letter-spacing:1.2px;color:#7891a8;font-weight:900}
+.edit-players-toolbar{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:18px}.admin-select-wrap{position:relative}.admin-select-wrap span{position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none}.edit-players-toolbar select{width:100%;height:50px;padding:0 14px 0 42px;border-radius:14px;border:1px solid rgba(91,157,203,.4);background:#0b1724;color:#fff;font-weight:800;outline:none}.edit-players-toolbar select:focus{border-color:#42c3ff;box-shadow:0 0 0 3px rgba(66,195,255,.1)}.edit-action{padding:0 18px;border:1px solid rgba(228,181,72,.5);border-radius:14px;background:linear-gradient(135deg,#e5b94d,#b98019);color:#171005;font-weight:950;cursor:pointer;box-shadow:0 8px 18px rgba(180,126,25,.18)}
+.admin-divider{display:flex;align-items:center;gap:10px;margin:4px 0 14px;color:#66839a;font-size:9px;font-weight:950;letter-spacing:1.8px}.admin-divider:before,.admin-divider:after{content:"";height:1px;background:#294156;flex:1}.admin-divider:before{flex:.25}
+.edit-player-form{display:grid;gap:14px}.editor-empty{min-height:210px;border:1px dashed rgba(90,143,181,.45);border-radius:18px;background:rgba(7,17,28,.45);display:grid;place-items:center;align-content:center;text-align:center;padding:28px;color:#8fa7bb}.editor-empty div{font-size:42px;margin-bottom:8px;filter:grayscale(.3)}.editor-empty strong{font-size:18px;color:#d9e7f4}.editor-empty span{font-size:13px;margin-top:6px}
+.editor-player-banner{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid rgba(86,144,186,.35);border-radius:17px;background:linear-gradient(90deg,rgba(22,55,81,.8),rgba(9,20,32,.8))}.editor-player-avatar{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#1a3044;border:1px solid rgba(111,175,220,.28);font-size:21px}.editor-player-banner b{display:block;font-size:18px}.editor-player-banner span{display:block;color:#7892a7;font-size:11px;margin-top:3px}.editor-status{margin-left:auto;padding:7px 10px;border-radius:999px;background:rgba(64,185,128,.12);border:1px solid rgba(99,218,156,.25);color:#8ce7b7;font-size:10px;font-weight:900}
+.field-grid{display:grid;grid-template-columns:1.4fr .7fr .7fr;gap:10px}.edit-field{display:grid;gap:7px}.edit-field>span{font-size:9px;letter-spacing:1px;color:#8199ad;font-weight:900}.edit-field input,.edit-field select{width:100%;height:50px;padding:0 13px;border-radius:13px;border:1px solid rgba(84,126,158,.42);background:#091520;color:#fff;font:inherit;font-weight:700;outline:none}.edit-field input:focus,.edit-field select:focus{border-color:#4cc7ff;box-shadow:0 0 0 3px rgba(76,199,255,.08)}
+.edit-section{padding:15px;border:1px solid rgba(77,133,171,.28);border-radius:18px;background:rgba(7,17,28,.38);display:grid;gap:13px}.edit-section-title{display:flex;align-items:center;gap:8px;font-size:10px;letter-spacing:1.6px;color:#77cef8;font-weight:950}.edit-section-title:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgba(90,165,210,.35),transparent)}.avatar-editor{display:grid;grid-template-columns:100px 1fr;gap:14px;align-items:center}.avatar-preview-admin{width:96px;height:96px;border-radius:22px;overflow:hidden;display:grid;place-items:center;background:#0a1723;border:1px dashed rgba(101,178,225,.5);color:#7790a5;font-size:28px}.avatar-preview-admin img{width:100%;height:100%;object-fit:cover}.edit-file{font-size:12px;color:#aabac8}.edit-file input{height:auto!important;padding:10px!important;font-weight:600!important}.checkbox-field{display:flex;align-items:center;gap:10px;min-height:50px;padding:0 13px;border:1px solid rgba(84,126,158,.42);border-radius:13px;background:#091520;color:#dbe9f4;font-weight:800}.checkbox-field input{width:20px;height:20px;accent-color:#27bf82}.squads-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.squad-admin-card{padding:13px;border:1px solid rgba(84,126,158,.3);border-radius:15px;background:rgba(8,20,31,.58);display:grid;gap:10px}.squad-admin-card b{font-size:11px;letter-spacing:1px;color:#dceaf5}.squad-admin-card .edit-field input,.squad-admin-card .edit-field select{height:44px}
+.editor-actions{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:2px}.edit-save{height:52px;background:linear-gradient(135deg,#1fb979,#168b59);color:#fff;border:1px solid rgba(117,239,180,.35);padding:0 18px;border-radius:14px;font-weight:950;cursor:pointer;box-shadow:0 10px 20px rgba(20,135,85,.18)}.edit-delete{height:52px;background:#361b22;color:#ffb7bf;border:1px solid rgba(229,103,117,.28);padding:0 16px;border-radius:14px;font-weight:900;cursor:pointer}.admin-message{padding:11px 13px;border-radius:12px;background:rgba(32,125,82,.12);border:1px solid rgba(83,205,135,.24);color:#9ce5bc;font-size:12px;font-weight:800}
+/* Alineación visual del encabezado: logo + traductor a la izquierda,
+   título perfectamente alineado a la derecha y sin alterar el resto de la página. */
+.epic-header .header-inner{
+  display:grid;
+  grid-template-columns:190px minmax(0,1fr) auto;
+  align-items:center;
+  gap:26px;
+}
+.epic-header .brand-epic{
+  width:190px;
+  min-width:190px;
+  padding:8px 20px 8px 0;
+}
+.epic-header .brand-main{
+  line-height:.95;
+  white-space:nowrap;
+}
+.epic-header #hola-language-selector{
+  margin-top:10px;
+}
+.epic-header .epic-title{
+  min-width:0;
+  align-self:center;
+  padding-left:0;
+}
+.epic-header .epic-title h1{
+  margin:0;
+  line-height:1.08;
+}
+.epic-header .epic-title p{
+  margin:7px 0 0;
+  line-height:1.35;
+}
+.epic-header .header-badges{
+  justify-self:end;
+}
+
+@media(max-width:760px){
+  .epic-header .header-inner{
+    grid-template-columns:140px minmax(0,1fr);
+    align-items:center;
+    gap:18px;
+  }
+  .epic-header .brand-epic{
+    width:140px;
+    min-width:140px;
+    padding:5px 14px 5px 0;
+  }
+  .epic-header .brand-main{
+    font-size:36px;
+    letter-spacing:-3px;
+  }
+  .epic-header .brand-epic small{
+    font-size:7px;
+    letter-spacing:2px;
+  }
+  .epic-header #hola-language-selector{
+    margin-top:8px;
+  }
+  .epic-header #hola-language-selector select{
+    font-size:11px;
+    padding:7px 9px;
+    max-width:138px;
+  }
+  .epic-header .header-badges{
+    display:none;
+  }
+  .epic-header .epic-title{
+    padding-left:0;
+  }
+  .epic-header .title-kicker{
+    font-size:8px;
+    letter-spacing:1.5px;
+    margin-bottom:5px;
+  }
+  .epic-header .epic-title h1{
+    font-size:26px;
+    line-height:1.08;
+  }
+  .epic-header .epic-title p{
+    font-size:11px;
+    line-height:1.3;
+    margin-top:6px;
+  }
+  .edit-players-box{
+    padding:18px;
+  }
+  .admin-topline{
+    margin:-18px -18px 18px;
+  }
+  .field-grid{
+    grid-template-columns:1fr 1fr;
+  }
+  .field-grid .edit-field:first-child{
+    grid-column:1/-1;
+  }
+  .squads-grid{
+    grid-template-columns:1fr;
+  }
+  .avatar-editor{
+    grid-template-columns:86px 1fr;
+  }
+  .avatar-preview-admin{
+    width:86px;
+    height:86px;
+  }
+}
+@media(max-width:600px){
+  .epic-header .header-inner{
+    grid-template-columns:128px minmax(0,1fr);
+    gap:14px;
+  }
+  .epic-header .brand-epic{
+    width:128px;
+    min-width:128px;
+  }
+  .epic-header .brand-main{
+    font-size:33px;
+  }
+  .epic-header .epic-title h1{
+    font-size:23px;
+  }
+  .epic-header .epic-title p{
+    font-size:10px;
+  }
+  .admin-summary{
+    gap:7px;
+  }
+  .admin-summary>div{
+    padding:10px;
+  }
+  .admin-summary b{
+    font-size:15px;
+  }
+  .edit-players-toolbar{
+    grid-template-columns:1fr;
+  }
+  .edit-action{
+    height:48px;
+  }
+  .editor-actions{
+    grid-template-columns:1fr;
+  }
+  .edit-delete{
+    width:100%;
+  }
+}
 </style>
 <main class="wrap">
   <div class="toolbar">
     <input id="search" class="search" type="search" placeholder="🔎 Buscar miembro...">
-    <select id="filter" class="filter"><option value="ALL">Todos los rangos</option><option value="R5">R5</option><option value="R4">R4</option><option value="R3">R3</option><option value="R2">R2</option><option value="R1">R1</option></select>
+    <select id="filter" class="filter" aria-label="Filtrar por rango"><option value="ALL">ALL</option><option value="R1">R1</option><option value="R2">R2</option><option value="R3">R3</option><option value="R4">R4</option><option value="R5">R5</option></select>
   </div>
-
-  <section class="summary">
-    <article class="summary-card"><b id="total">—</b><span>MIEMBROS</span></article>
-    <article class="summary-card"><b id="r45">—</b><span>R5 + R4</span></article>
-    <article class="summary-card"><b id="r3">—</b><span>R3</span></article>
-    <article class="summary-card"><b id="r2">—</b><span>R2</span></article>
-    <article class="summary-card"><b id="r1">—</b><span>R1</span></article>
-  </section>
 
   <div id="status" class="empty">Cargando miembros...</div>
   <div id="groups"></div>
 </main>
 
 <div id="modal" class="modal"><div class="modal-box"><button id="close" class="close">×</button><div id="profile"></div></div></div>
+
+
+<script>
+window.HOLaI18n={
+ es:{members:"miembros",completed:"Encuesta completada",none:"Sin encuesta todavía",notfound:"No se encontraron miembros.",loading:"Cargando miembros...",supabase:"No se pudieron cargar los datos de Supabase.",squads:"SQUADS",profession:"PROFESIÓN",yes:"Sí",no:"No",type:{Tank:"Tanque",Aircraft:"Aire",Missile:"Misiles",Mixed:"Mixto"}},
+ en:{members:"members",completed:"Survey completed",none:"No survey yet",notfound:"No members found.",loading:"Loading members...",supabase:"Could not load Supabase data.",squads:"SQUADS",profession:"PROFESSION",yes:"Yes",no:"No",type:{Tank:"Tank",Aircraft:"Aircraft",Missile:"Missile",Mixed:"Mixed"}},
+ pt:{members:"membros",completed:"Pesquisa concluída",none:"Ainda sem pesquisa",notfound:"Nenhum membro encontrado.",loading:"A carregar membros...",supabase:"Não foi possível carregar os dados do Supabase.",squads:"SQUADS",profession:"PROFISSÃO",yes:"Sim",no:"Não",type:{Tank:"Tanque",Aircraft:"Aéreo",Missile:"Mísseis",Mixed:"Misto"}},
+ ro:{members:"membri",completed:"Chestionar completat",none:"Încă fără chestionar",notfound:"Nu au fost găsiți membri.",loading:"Se încarcă membrii...",supabase:"Datele Supabase nu au putut fi încărcate.",squads:"ECHIPE",profession:"PROFESIE",yes:"Da",no:"Nu",type:{Tank:"Tanc",Aircraft:"Aer",Missile:"Rachete",Mixed:"Mixt"}},
+ fr:{members:"membres",completed:"Sondage terminé",none:"Aucun sondage pour l’instant",notfound:"Aucun membre trouvé.",loading:"Chargement des membres...",supabase:"Impossible de charger les données Supabase.",squads:"ESCOUADES",profession:"PROFESSION",yes:"Oui",no:"Non",type:{Tank:"Char",Aircraft:"Aérien",Missile:"Missiles",Mixed:"Mixte"}},
+ it:{members:"membri",completed:"Sondaggio completato",none:"Nessun sondaggio",notfound:"Nessun membro trovato.",loading:"Caricamento membri...",supabase:"Impossibile caricare i dati Supabase.",squads:"SQUADRE",profession:"PROFESSIONE",yes:"Sì",no:"No",type:{Tank:"Carri",Aircraft:"Aerei",Missile:"Missili",Mixed:"Misto"}},
+ de:{members:"Mitglieder",completed:"Umfrage abgeschlossen",none:"Noch keine Umfrage",notfound:"Keine Mitglieder gefunden.",loading:"Mitglieder werden geladen...",supabase:"Supabase-Daten konnten nicht geladen werden.",squads:"SQUADS",profession:"BERUF",yes:"Ja",no:"Nein",type:{Tank:"Panzer",Aircraft:"Luft",Missile:"Raketen",Mixed:"Gemischt"}},
+ uk:{members:"учасників",completed:"Опитування завершено",none:"Опитування ще немає",notfound:"Учасників не знайдено.",loading:"Завантаження учасників...",supabase:"Не вдалося завантажити дані Supabase.",squads:"ЗАГОНИ",profession:"ПРОФЕСІЯ",yes:"Так",no:"Ні",type:{Tank:"Танк",Aircraft:"Повітря",Missile:"Ракети",Mixed:"Змішаний"}}
+};
+window.HOLaLang=()=>window.HOLaI18n[localStorage.getItem("hola-language")||"es"]||window.HOLaI18n.es;
+window.HOLaTranslateStatic=function(){
+  const d=window.HOLaLang();
+  const exact={
+    "MIEMBROS":d.members.toUpperCase(),
+    "Encuesta completada":d.completed,"Sin encuesta todavía":d.none,
+    "No se encontraron miembros.":d.notfound,"Cargando miembros...":d.loading,
+    "No se pudieron cargar los datos de Supabase.":d.supabase,
+    "SQUADS":d.squads,"PROFESIÓN":d.profession
+  };
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  const nodes=[]; while(walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(n=>{const v=n.nodeValue.trim(); if(exact[v]) n.nodeValue=n.nodeValue.replace(v,exact[v]);});
+  const s=document.getElementById("search"); if(s){
+    const ph={es:"🔎 Buscar miembro...",en:"🔎 Search member...",pt:"🔎 Procurar membro...",ro:"🔎 Caută membru...",fr:"🔎 Rechercher un membre...",it:"🔎 Cerca membro...",de:"🔎 Mitglied suchen...",uk:"🔎 Пошук учасника..."}[localStorage.getItem("hola-language")||"es"];
+    s.placeholder=ph;
+  }
+  document.documentElement.lang=localStorage.getItem("hola-language")||"es";
+};
+document.addEventListener("DOMContentLoaded",()=>{
+  const sel=document.getElementById("languageSelect");
+  const lang=localStorage.getItem("hola-language")||"es";
+  if(sel) { sel.value=lang; sel.addEventListener("change",()=>{localStorage.setItem("hola-language",sel.value); location.reload();}); }
+  window.HOLaTranslateStatic();
+});
+</script>
 
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -115,13 +460,23 @@ const surveyDone=m=>!!m.survey;
 const avatar=m=>m.survey?.avatar||"";
 const flag=m=>m.survey?.flag||"";
 
-function updateSummary(){
-  const c=r=>members.filter(m=>m.rank===r).length;
-  document.getElementById("total").textContent=members.length;
-  document.getElementById("r45").textContent=c("R5")+c("R4");
-  document.getElementById("r3").textContent=c("R3");
-  document.getElementById("r2").textContent=c("R2");
-  document.getElementById("r1").textContent=c("R1");
+// Fecha en la que se completó la encuesta. Se prueban varios nombres de campo
+// para mantener compatibilidad con registros antiguos y actuales.
+function surveyDateValue(m){
+ const s=m.survey||{};
+ return s.surveyCompletedAt||s.completedAt||s.submittedAt||s.created_at||s.createdAt||s.updatedAt||s.updated_at||null;
+}
+function formatSurveyDate(m){
+ const value=surveyDateValue(m);
+ if(!value)return "";
+ try{
+   let d;
+   if(value?.toDate) d=value.toDate();
+   else if(value?.seconds!=null) d=new Date(value.seconds*1000);
+   else d=new Date(value);
+   if(Number.isNaN(d.getTime())) return "";
+   return d.toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"});
+ }catch(e){return "";}
 }
 
 function row(m){
@@ -130,7 +485,7 @@ function row(m){
    <span class="rank ${m.rank.toLowerCase()}">${m.rank}</span>
    <span class="avatar">${img?`<img src="${esc(img)}" alt="">`:"👤"}</span>
    <div><div class="member-name">${esc(m.name)} ${flag(m)?`<span style="font-size:14px">${esc(flag(m))}</span>`:""}</div>
-   <div class="member-meta">${surveyDone(m)?'<span class="check">✓</span><span>Encuesta completada</span>':'<span>Sin encuesta todavía</span>'}</div></div>
+   <div class="member-meta">${surveyDone(m)?`<span class="check">✓</span><span>${window.HOLaLang().completed}${formatSurveyDate(m)?` · ${formatSurveyDate(m)}`:""}</span>`:`<span>${window.HOLaLang().none}</span>`}</div></div>
    <strong class="thp">${esc(fmtPower(getSurveyPower(m)))}</strong>
    <span class="hq">HQ ${esc(m.hq)}</span>
  </article>`;
@@ -146,17 +501,46 @@ function render(){
   {key:"R2",title:`<span class="rank r2">R2</span>`,ranks:["R2"]},
   {key:"R1",title:`<span class="rank r1">R1</span>`,ranks:["R1"]}
  ];
- groupsEl.innerHTML=defs.map(d=>{const list=byRank(d.ranks);if(!list.length)return "";return `<section class="group" data-key="${d.key}"><button class="group-toggle"><span class="group-title">${d.title} <small class="group-count">${list.length} miembros</small></span><span class="chev">⌄</span></button><div class="group-body">${list.map(row).join("")}</div></section>`}).join("")||'<div class="empty">No se encontraron miembros.</div>';
+ groupsEl.innerHTML=defs.map(d=>{const list=byRank(d.ranks);if(!list.length)return "";return `<section class="group" data-key="${d.key}"><button class="group-toggle"><span class="group-title">${d.title} <small class="group-count">${list.length} ${window.HOLaLang().members}</small></span><span class="chev">⌄</span></button><div class="group-body">${list.map(row).join("")}</div></section>`}).join("")||`<div class="empty">${window.HOLaLang().notfound}</div>`;
  groupsEl.querySelectorAll(".group-toggle").forEach(b=>b.addEventListener("click",()=>b.closest(".group").classList.toggle("collapsed")));
  groupsEl.querySelectorAll(".member").forEach((el,i)=>el.addEventListener("click",()=>{const name=el.querySelector(".member-name").textContent.trim();const m=members.find(x=>x.name===name||name.startsWith(x.name+" "));if(m)showProfile(m)}));
 }
 
+window.renderMembers=render;
 function showProfile(m){
  const s=m.survey||{};
  const img=avatar(m), squads=[1,2,3].map(i=>({type:s[`squad${i}_type`]||s[`squad${i}Type`]||"",power:s[`squad${i}_power`]||s[`squad${i}Power`]||""}));
- document.getElementById("profile").innerHTML=`<div class="profile-head"><span class="avatar">${img?`<img src="${esc(img)}" alt="">`:"👤"}</span><div><h2>${esc(m.name)} ${flag(m)?esc(flag(m)):""}</h2><p><span class="rank ${m.rank.toLowerCase()}">${m.rank}</span> ${surveyDone(m)?"<span class='check' style='margin-left:8px'>✓</span> Encuesta completada":"Sin encuesta"}</p></div></div>
- <div class="profile-grid"><div class="info-card"><span>THP</span><b>${esc(fmtPower(getSurveyPower(m)))}</b></div><div class="info-card"><span>HQ</span><b>HQ ${esc(m.hq)}</b></div><div class="info-card"><span>T10</span><b>${s.t10===true?"Sí":s.t10===false?"No":"—"}</b></div><div class="info-card"><span>PROFESIÓN</span><b>${esc(s.profession||"—")}</b></div></div>
- <div class="squad-title">SQUADS</div>${squads.map((q,i)=>`<div class="squad-row"><strong>SQUAD ${i+1}</strong><span>${esc(q.type||"—")}</span><strong>${esc(fmtPower(q.power||"—"))}</strong></div>`).join("")}`;
+ const completed=surveyDone(m);
+ const date=formatSurveyDate(m);
+ document.getElementById("profile").innerHTML=`
+   <section class="profile-card-new">
+     <div class="profile-hero-new">
+       <div class="profile-avatar-new">${img?`<img src="${esc(img)}" alt="">`:"👤"}</div>
+       <div class="profile-identity-new">
+         <div class="profile-name-row-new">
+           <span class="profile-name-new">${esc(m.name)}</span>${flag(m)?`<span class="profile-flag-new">${esc(flag(m))}</span>`:""}
+         </div>
+         <div class="profile-status-new ${completed?'is-done':'is-empty'}">
+           <span class="profile-status-check-new">${completed?'✓':'!'}</span>
+           <span>${completed?window.HOLaLang().completed:window.HOLaLang().none}</span>
+         </div>
+         ${date?`<div class="profile-date-new">${date}</div>`:""}
+       </div>
+       <span class="profile-rank-new ${m.rank.toLowerCase()}">${m.rank}</span>
+     </div>
+
+     <div class="profile-divider-new"></div>
+
+     <div class="profile-values-new">
+       <div class="profile-value-new"><span>THP</span><b>${esc(fmtPower(getSurveyPower(m)))}</b></div>
+       <div class="profile-value-new"><span>HQ</span><b>HQ ${esc(m.hq)}</b></div>
+       <div class="profile-value-new"><span>T10</span><b>${s.t10===true?window.HOLaLang().yes:s.t10===false?window.HOLaLang().no:"—"}</b></div>
+       <div class="profile-value-new"><span>${window.HOLaLang().profession}</span><b>${esc(s.profession||"—")}</b></div>
+     </div>
+
+     <div class="squads-title-new">${window.HOLaLang().squads}</div>
+     <div class="squads-list-new">${squads.map((q,i)=>`<div class="squad-row-new"><span class="squad-number-new">${i+1}</span><span class="squad-label-new">SQUAD ${i+1}</span><span class="squad-type-new">${esc(window.HOLaLang().type[q.type]||q.type||"—")}</span><strong>${esc(fmtPower(q.power||"—"))}</strong></div>`).join("")}</div>
+   </section>`;
  document.getElementById("modal").classList.add("show");
 }
 
@@ -172,11 +556,52 @@ async function load(){
   members=baseRoster.map(m=>({...m,survey:map.get(norm(m.name))||null}));
   // Jugadores que hayan rellenado la encuesta pero no estén en la lista base.
   (data||[]).forEach(s=>{if(s.name&&!members.some(m=>norm(m.name)===norm(s.name)))members.push({rank:s.rank||"R1",name:s.name,thp:s.thp||"—",hq:s.hq||"—",survey:s})});
-  statusEl.style.display="none";updateSummary();render();
- }catch(err){console.error(err);statusEl.textContent="No se pudieron cargar los datos de Supabase.";statusEl.style.display="block";updateSummary();render();}
+  window.HOLaMembers=members;statusEl.style.display="none";render();
+ }catch(err){console.error(err);statusEl.textContent=window.HOLaLang().supabase;statusEl.style.display="block";render();}
 }
+window.HOLaMembers=members;
+window.HOLaSupabase=supabase;
 load();
 </script>
+
+<script>
+(function(){
+ const S={
+ es:["MIEMBROS","Base central de la alianza · roster, rangos y perfiles sincronizados"],
+ en:["MEMBERS","Alliance central base · roster, ranks and synchronized profiles"],
+ pt:["MEMBROS","Base central da aliança · roster, patentes e perfis sincronizados"],
+ ro:["MEMBRI","Baza centrală a alianței · listă, ranguri și profiluri sincronizate"],
+ fr:["MEMBRES","Base centrale de l’alliance · roster, rangs et profils synchronisés"],
+ it:["MEMBRI","Base centrale dell’alleanza · roster, ranghi e profili sincronizzati"],
+ de:["MITGLIEDER","Zentrale Allianz-Basis · Roster, Ränge und synchronisierte Profile"],
+ uk:["УЧАСНИКИ","Центральна база альянсу · список, ранги та синхронізовані профілі"]
+ };
+ const A={
+ es:{add:"＋ AÑADIR",manage:"ADMINISTRAR MIEMBROS",card:"FICHA DEL JUGADOR",select:"Selecciona un miembro"},
+ en:{add:"＋ ADD",manage:"MANAGE MEMBERS",card:"PLAYER PROFILE",select:"Select a member"},
+ pt:{add:"＋ ADICIONAR",manage:"GERIR MEMBROS",card:"FICHA DO JOGADOR",select:"Seleciona um membro"},
+ ro:{add:"＋ ADAUGĂ",manage:"GESTIONEAZĂ MEMBRII",card:"FIȘA JUCĂTORULUI",select:"Selectează un membru"},
+ fr:{add:"＋ AJOUTER",manage:"GÉRER LES MEMBRES",card:"FICHE DU JOUEUR",select:"Sélectionnez un membre"},
+ it:{add:"＋ AGGIUNGI",manage:"GESTISCI MEMBRI",card:"SCHEDA DEL GIOCATORE",select:"Seleziona un membro"},
+ de:{add:"＋ HINZUFÜGEN",manage:"MITGLIEDER VERWALTEN",card:"SPIELERPROFIL",select:"Mitglied auswählen"},
+ uk:{add:"＋ ДОДАТИ",manage:"КЕРУВАТИ УЧАСНИКАМИ",card:"ПРОФІЛЬ ГРАВЦЯ",select:"Виберіть учасника"}
+ };
+ window.HOLaAdminTranslate=function(){
+   const l=localStorage.getItem("hola-language")||"es", a=A[l]||A.es, s=S[l]||S.es;
+   const title=document.querySelector("[data-i18n-members-title]"), sub=document.querySelector("[data-i18n-members-sub]");
+   if(title) title.textContent=s[0]; if(sub) sub.textContent=s[1];
+   const byText={
+    "＋ AÑADIR":a.add,"ADMINISTRAR MIEMBROS":a.manage,"FICHA DEL JUGADOR":a.card,
+    "Selecciona un miembro":a.select
+   };
+   const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT),nodes=[];
+   while(walker.nextNode())nodes.push(walker.currentNode);
+   nodes.forEach(n=>{const v=n.nodeValue.trim();if(byText[v])n.nodeValue=n.nodeValue.replace(v,byText[v]);});
+ };
+ window.HOLaAdminTranslate();
+})();
+</script>
+
 </body></html>
 <script>
 (function(){
@@ -186,105 +611,118 @@ load();
   const select=document.getElementById("editPlayerSelect");
   const form=document.getElementById("editPlayerForm");
   const newBtn=document.getElementById("newPlayerBtn");
+  const count=document.getElementById("adminMemberCount");
   if(!gear||!modal||!select||!form) return;
 
-  function getPlayers(){
-    const candidates=[
-      window.members, window.memberNames, window.players, window.membersData
-    ];
-    for(const c of candidates){
-      if(Array.isArray(c) && c.length){
-        return c.map(x=>typeof x==="string"?{name:x}:x);
-      }
-    }
-    // Fallback: collect likely member names from visible cards.
-    const names=[];
-    document.querySelectorAll('[data-member], .member-name, .player-name, .member-card h3, .member-card h4').forEach(el=>{
-      const n=(el.dataset.member||el.textContent||"").trim();
-      if(n && n.length<80 && !names.some(x=>x.name===n)) names.push({name:n});
-    });
-    return names;
-  }
+  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
+  const getPlayers=()=>Array.isArray(window.HOLaMembers)?window.HOLaMembers:[];
+  const msg=t=>form.insertAdjacentHTML("afterbegin",`<div class="admin-message">✓ ${esc(t)}</div>`);
 
-  let players=[];
-  function refreshSelect(selected){
-    players=getPlayers();
-    select.innerHTML='<option value="">Selecciona un jugador</option>'+
-      players.map((p,i)=>`<option value="${i}" ${String(i)===String(selected)?'selected':''}>${p.name||p.nickname||'Jugador '+(i+1)}</option>`).join('');
+  function refreshSelect(selected=""){
+    const players=getPlayers().slice().sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+    select.innerHTML='<option value="">Selecciona un jugador...</option>'+players.map(p=>`<option value="${esc(p.name)}" ${p.name===selected?'selected':''}>${esc(p.name)} · ${esc(p.rank||'R1')}</option>`).join('');
+    count.textContent=players.length;
   }
-
-  function renderEditor(player,index){
-    if(!player){form.innerHTML='';return;}
-    const name=player.name||player.nickname||'';
-    const rank=player.rank||player.role||'';
-    const power=player.power||player.thp||'';
-    form.innerHTML=`
-      <label>Nombre<input id="editName" value="${String(name).replace(/"/g,'&quot;')}"></label>
-      <div class="edit-row">
-        <label>Rango<input id="editRank" value="${String(rank).replace(/"/g,'&quot;')}" placeholder="R1"></label>
-        <label>Poder<input id="editPower" value="${String(power).replace(/"/g,'&quot;')}" placeholder="66.8M"></label>
+  function find(name){return getPlayers().find(p=>p.name===name);}
+  function playerForm(player,isNew=false){
+    const survey=player?.survey||player||{};
+    const name=player?.name||survey.name||"";
+    const rank=player?.rank||survey.rank||"R1";
+    const power=player?.thp||survey.thp||survey.power||"";
+    const hq=player?.hq||survey.hq||"30";
+    const flag=survey.flag||"";
+    const avatar=survey.avatar||"";
+    const t10=!!survey.t10;
+    const profession=survey.profession||"";
+    const s1p=survey.squad1Power||"", s1t=survey.squad1Type||"";
+    const s2p=survey.squad2Power||"", s2t=survey.squad2Type||"";
+    const s3p=survey.squad3Power||"", s3t=survey.squad3Type||"";
+    const flagOptions=["🇪🇸","🇺🇦","🇬🇧","🇺🇸","🇩🇪","🇫🇷","🇮🇹","🇵🇹","🇵🇱","🇷🇴","🇧🇷","🇲🇽","🇦🇷","🇨🇴","🇨🇦","🇹🇷","🇮🇳","🇯🇵","🇰🇷","🇦🇺","🇳🇱","🇧🇪","🇸🇪","🇳🇴","🇩🇰","🇫🇮","🇨🇭","🇦🇹","🇬🇷","🇨🇿","🇸🇰","🇭🇺","🇧🇬","🇭🇷","🇷🇸","🇷🇺","🇪🇬","🇿🇦","🇸🇦","🇦🇪","🇨🇳","🇮🇩","🇵🇭"];
+    const flagSelect='<option value="">Selecciona bandera</option>'+flagOptions.map(f=>`<option value="${f}" ${f===flag?'selected':''}>${f}</option>`).join('');
+    const typeOptions=(value)=>'<option value="">Tipo</option>'+["Tank","Aircraft","Missile","Mixed"].map(v=>`<option value="${v}" ${v===value?'selected':''}>${v}</option>`).join('');
+    form.innerHTML=`${!isNew?`<div class="editor-player-banner"><div class="editor-player-avatar">${avatar?`<img src="${esc(avatar)}" style="width:100%;height:100%;object-fit:cover" alt="">`:"👤"}</div><div><b>${esc(name)}</b><span>Ficha completa del miembro de HOLa</span></div><div class="editor-status">ACTIVO</div></div>`:`<div class="editor-player-banner"><div class="editor-player-avatar">＋</div><div><b>NUEVO MIEMBRO</b><span>Completa manualmente la misma ficha que en la encuesta.</span></div></div>`}
+    <div class="edit-section">
+      <div class="edit-section-title">👤 DATOS PRINCIPALES</div>
+      <div class="field-grid">
+        <label class="edit-field"><span>NOMBRE</span><input id="editName" value="${esc(name)}" placeholder="Nombre del jugador"></label>
+        <label class="edit-field"><span>RANGO</span><select id="editRank">${["R1","R2","R3","R4","R5"].map(r=>`<option ${r===rank?'selected':''}>${r}</option>`).join('')}</select></label>
+        <label class="edit-field"><span>HQ</span><input id="editHQ" value="${esc(hq)}" placeholder="30"></label>
       </div>
-      <button class="edit-save" id="savePlayerBtn" type="button">GUARDAR CAMBIOS</button>
-      <button class="edit-delete" id="deletePlayerBtn" type="button">ELIMINAR JUGADOR</button>`;
+      <label class="edit-field"><span>THP · PODER TOTAL DE HÉROES</span><input id="editPower" value="${esc(power)}" placeholder="Ej. 66.8M"></label>
+    </div>
+    <div class="edit-section">
+      <div class="edit-section-title">🏳️ IDENTIDAD DEL JUGADOR</div>
+      <div class="avatar-editor">
+        <div class="avatar-preview-admin" id="editAvatarPreview">${avatar?`<img src="${esc(avatar)}" alt="Avatar">`:"👤"}</div>
+        <div class="edit-field"><span>AVATAR</span><input id="editAvatar" class="edit-file" type="file" accept="image/*"><small style="color:#7891a8">Puedes dejarlo vacío para conservar el avatar actual.</small></div>
+      </div>
+      <div class="field-grid">
+        <label class="edit-field"><span>BANDERA</span><select id="editFlag">${flagSelect}</select></label>
+        <label class="edit-field"><span>PROFESIÓN</span><select id="editProfession"><option value="">Selecciona</option><option value="Engineer" ${profession==="Engineer"?'selected':''}>Ingeniero</option><option value="Warlord" ${profession==="Warlord"?'selected':''}>Señor de guerra</option></select></label>
+        <div class="edit-field"><span>TROPAS</span><label class="checkbox-field"><input id="editT10" type="checkbox" ${t10?'checked':''}> T10 desbloqueado</label></div>
+      </div>
+    </div>
+    <div class="edit-section">
+      <div class="edit-section-title">⚔️ ESCUADRONES</div>
+      <div class="squads-grid">
+        <div class="squad-admin-card"><b>ESCUDRÓN 1</b><label class="edit-field"><span>PODER</span><input id="editS1Power" value="${esc(s1p)}" placeholder="Ej. 120M"></label><label class="edit-field"><span>TIPO</span><select id="editS1Type">${typeOptions(s1t)}</select></label></div>
+        <div class="squad-admin-card"><b>ESCUDRÓN 2</b><label class="edit-field"><span>PODER</span><input id="editS2Power" value="${esc(s2p)}" placeholder="Ej. 110M"></label><label class="edit-field"><span>TIPO</span><select id="editS2Type">${typeOptions(s2t)}</select></label></div>
+        <div class="squad-admin-card"><b>ESCUDRÓN 3</b><label class="edit-field"><span>PODER</span><input id="editS3Power" value="${esc(s3p)}" placeholder="Ej. 100M"></label><label class="edit-field"><span>TIPO</span><select id="editS3Type">${typeOptions(s3t)}</select></label></div>
+      </div>
+    </div>
+    <div class="editor-actions"><button class="edit-save" id="savePlayerBtn" type="button">💾 ${isNew?'CREAR MIEMBRO':'GUARDAR CAMBIOS'}</button>${!isNew?'<button class="edit-delete" id="deletePlayerBtn" type="button">🗑 ELIMINAR</button>':''}</div>`;
+
+    let avatarData=avatar;
+    const avatarInput=document.getElementById("editAvatar");
+    const avatarPreview=document.getElementById("editAvatarPreview");
+    async function resizeAvatar(file){
+      return await new Promise((resolve,reject)=>{
+        const img=new Image(), url=URL.createObjectURL(file);
+        img.onload=()=>{let w=img.width,h=img.height,max=256;if(w>h&&w>max){h=Math.round(h*max/w);w=max}else if(h>w&&h>max){w=Math.round(w*max/h);h=max}const c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(img,0,0,w,h);URL.revokeObjectURL(url);resolve(c.toDataURL("image/jpeg",.82));};
+        img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("No se pudo leer la imagen"));};img.src=url;
+      });
+    }
+    avatarInput?.addEventListener("change",async()=>{const file=avatarInput.files?.[0];if(!file)return;try{avatarData=await resizeAvatar(file);avatarPreview.innerHTML=`<img src="${avatarData}" alt="Avatar">`;}catch(e){console.error(e);alert("No se pudo leer el avatar.");}});
+
     document.getElementById("savePlayerBtn").onclick=async()=>{
       const newName=document.getElementById("editName").value.trim();
-      const newRank=document.getElementById("editRank").value.trim();
-      const newPower=document.getElementById("editPower").value.trim();
       if(!newName) return alert("El nombre es obligatorio.");
-      const target=players[index];
-      Object.assign(target,{name:newName,rank:newRank,power:newPower});
-      // Update known arrays so the page changes immediately.
-      [window.members,window.memberNames,window.players,window.membersData].forEach(arr=>{
-        if(Array.isArray(arr)){
-          const i=arr.indexOf(player);
-          if(i>=0 && typeof arr[i]==="object") Object.assign(arr[i],target);
-          else if(i>=0 && typeof arr[i]==="string") arr[i]=newName;
-        }
-      });
-      // Try Supabase update if the page exposes a client/table.
+      const payload={
+        name:newName,
+        rank:document.getElementById("editRank").value,
+        hq:document.getElementById("editHQ").value.trim(),
+        thp:document.getElementById("editPower").value.trim(),
+        flag:document.getElementById("editFlag").value,
+        avatar:avatarData||"",
+        t10:document.getElementById("editT10").checked,
+        profession:document.getElementById("editProfession").value,
+        squad1Power:document.getElementById("editS1Power").value.trim(),
+        squad1Type:document.getElementById("editS1Type").value,
+        squad2Power:document.getElementById("editS2Power").value.trim(),
+        squad2Type:document.getElementById("editS2Type").value,
+        squad3Power:document.getElementById("editS3Power").value.trim(),
+        squad3Type:document.getElementById("editS3Type").value
+      };
+      const sb=window.HOLaSupabase;
       try{
-        const sb=window.supabaseClient||window.supabase;
-        if(sb && typeof sb.from==="function"){
-          await sb.from("members").update({name:newName,rank:newRank,power:newPower}).eq("name",name);
+        if(isNew){
+          if(sb){const {error}=await sb.from("players").insert(payload);if(error)throw error;}
+          const obj={...payload,survey:{...payload}}; getPlayers().push(obj); window.HOLaMembers=getPlayers(); refreshSelect(newName); playerForm(obj); msg("Miembro creado correctamente.");
+        }else{
+          if(sb){const {error}=await sb.from("players").update(payload).eq("name",name);if(error)throw error;}
+          const target=find(name); if(target) Object.assign(target,{...payload,survey:{...(target.survey||{}),...payload}}); window.HOLaMembers=getPlayers(); refreshSelect(newName); if(typeof window.renderMembers==='function')window.renderMembers(); playerForm(find(newName)||{...payload,survey:payload}); msg("Ficha completa guardada correctamente.");
         }
-      }catch(e){console.warn("Supabase edit:",e);}
-      refreshSelect(index);
-      alert("Jugador actualizado. Recarga la página si alguna tarjeta no se actualiza al instante.");
+      }catch(e){console.error(e);alert("No se pudieron guardar los cambios: "+(e.message||e));}
     };
-    document.getElementById("deletePlayerBtn").onclick=async()=>{
-      if(!confirm(`¿Eliminar a ${name}?`)) return;
-      try{
-        const sb=window.supabaseClient||window.supabase;
-        if(sb && typeof sb.from==="function") await sb.from("members").delete().eq("name",name);
-      }catch(e){console.warn("Supabase delete:",e);}
-      players.splice(index,1);
-      refreshSelect("");
-      form.innerHTML="";
-      alert("Jugador eliminado.");
+    if(!isNew) document.getElementById("deletePlayerBtn").onclick=async()=>{
+      if(!confirm(`¿Eliminar a ${name}?`)) return; const sb=window.HOLaSupabase;
+      try{if(sb){const {error}=await sb.from("players").delete().eq("name",name);if(error)throw error;} const arr=getPlayers();const i=arr.findIndex(p=>p.name===name);if(i>=0)arr.splice(i,1);window.HOLaMembers=arr;refreshSelect();form.innerHTML='<div class="editor-empty"><div>👥</div><strong>Miembro eliminado</strong><span>Selecciona otro jugador para continuar.</span></div>';count.textContent=arr.length;if(typeof window.renderMembers==='function')window.renderMembers();}catch(e){console.error(e);alert("No se pudo eliminar: "+(e.message||e));}
     };
   }
-
-  gear.onclick=()=>{modal.classList.add("show");modal.setAttribute("aria-hidden","false");refreshSelect("");};
+  gear.onclick=()=>{modal.classList.add("show");modal.setAttribute("aria-hidden","false");refreshSelect();};
   close.onclick=()=>modal.classList.remove("show");
   modal.addEventListener("click",e=>{if(e.target===modal)modal.classList.remove("show")});
-  select.onchange=()=>renderEditor(players[Number(select.value)],select.value);
-  newBtn.onclick=()=>{
-    const p={name:"",rank:"R1",power:""};
-    players.push(p);
-    form.innerHTML=`<label>Nombre<input id="editName"></label><div class="edit-row"><label>Rango<input id="editRank" value="R1"></label><label>Poder<input id="editPower"></label></div><button class="edit-save" id="savePlayerBtn" type="button">CREAR JUGADOR</button>`;
-    document.getElementById("savePlayerBtn").onclick=async()=>{
-      const newName=document.getElementById("editName").value.trim(), newRank=document.getElementById("editRank").value.trim(), newPower=document.getElementById("editPower").value.trim();
-      if(!newName) return alert("El nombre es obligatorio.");
-      const obj={name:newName,rank:newRank,power:newPower};
-      try{
-        const sb=window.supabaseClient||window.supabase;
-        if(sb && typeof sb.from==="function") await sb.from("members").insert(obj);
-      }catch(e){console.warn("Supabase insert:",e);}
-      if(Array.isArray(window.members)) window.members.push(obj);
-      else if(Array.isArray(window.memberNames)) window.memberNames.push(newName);
-      refreshSelect("");
-      alert("Jugador creado.");
-    };
-  };
+  select.onchange=()=>{const p=find(select.value);if(p)playerForm(p);};
+  newBtn.onclick=()=>playerForm(null,true);
 })();
 </script>

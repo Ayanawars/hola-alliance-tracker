@@ -1,243 +1,1580 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HOLa Alliance Tracker · Statistics</title>
-<style>
-:root{
-  --bg:#07111d;--panel:#e8ebef;--panel2:#f3f4f6;--ink:#202938;--muted:#697385;
-  --line:#c8cdd5;--cyan:#38a8df;--blue:#24669d;--gold:#b78300;--purple:#7042ad;
-  --green:#1d6a2b;--red:#a71919;
-}
-*{box-sizing:border-box}
-html{background:#07111d}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:
- radial-gradient(circle at 72% 5%,rgba(255,113,33,.13),transparent 18%),
- linear-gradient(180deg,#08131f 0%,#0b1725 50%,#08111b 100%);
- color:white;min-height:100vh;padding-bottom:94px}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.4;
- background-image:radial-gradient(#3c88b8 1px,transparent 1px);background-size:80px 80px;
- mask-image:linear-gradient(180deg,#000,transparent 55%)}
-.header{position:relative;z-index:2;min-height:128px;padding:18px 28px;display:flex;align-items:center;gap:28px;border-bottom:1px solid #26364a;background:rgba(6,15,25,.72);backdrop-filter:blur(8px)}
-.brand{width:200px;min-width:200px;font-weight:1000;letter-spacing:-3px;line-height:.78;font-size:48px;color:#dce1e8;text-shadow:0 2px 0 #000}
-.brand small{display:block;font-size:15px;letter-spacing:1px;margin:11px 0 0 36px;color:#c7ced8;text-shadow:none}
-.brand .world{font-size:34px;vertical-align:middle;color:#2e9fd3;letter-spacing:0}
-.title{border-left:1px solid #1e6a91;padding-left:24px;flex:1}
-.title h1{margin:0;font-size:38px;letter-spacing:.5px;text-transform:uppercase}
-.title h1 span{color:#38a8df;margin-right:12px}
-.title p{margin:7px 0 0;color:#b7bec9;font-size:17px}
-.updated{min-width:210px;text-align:right;color:#d9dee7;font-size:14px;line-height:1.35}
-.updated strong{display:block;color:#d8a932;font-size:18px}
-.updated button{border:0;background:transparent;color:#36a6e0;font-size:30px;cursor:pointer;float:right;margin-left:12px}
-.wrap{position:relative;z-index:1;max-width:1180px;margin:14px auto;padding:0 14px}
-.section{position:relative;background:linear-gradient(135deg,rgba(246,247,249,.97),rgba(222,226,232,.98));color:var(--ink);border:1px solid #8d99a9;border-radius:18px;margin:18px 0;padding:66px 18px 18px;box-shadow:0 10px 28px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.9)}
-.section-tab{position:absolute;left:10px;top:10px;min-width:340px;padding:14px 25px 14px 80px;background:linear-gradient(135deg,#263d57,#10243a);color:#f2f4f7;border-radius:12px 4px 24px 4px;font-size:25px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;box-shadow:0 6px 10px rgba(0,0,0,.2)}
-.section-tab:before{content:attr(data-icon);position:absolute;left:19px;top:8px;font-size:38px;filter:drop-shadow(0 2px 1px #000)}
-.grid{display:grid;gap:18px}
-.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
-.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
-.stat-card{--accent:#2c6894;position:relative;overflow:hidden;border:1px solid color-mix(in srgb,var(--accent),#ffffff 55%);border-radius:14px;background:linear-gradient(135deg,#f7f7f7,#e6e9ee);box-shadow:inset 0 1px #fff;min-height:320px}
-.stat-card.green{--accent:#277333}.stat-card.red{--accent:#a61919}.stat-card.blue{--accent:#236a9d}.stat-card.gold{--accent:#a97900}.stat-card.purple{--accent:#7040a6}
-.card-top{display:grid;grid-template-columns:145px 1fr;align-items:center;min-height:155px;padding:10px 16px 0}
-.big-icon{font-size:82px;text-align:center;filter:drop-shadow(0 6px 4px rgba(0,0,0,.22))}
-.card-head h2{margin:0;color:var(--accent);font-size:27px;text-transform:uppercase;line-height:1.05}
-.card-head .count{font-size:55px;font-weight:1000;color:var(--accent);line-height:1;margin:6px 0}
-.card-head .players{font-size:17px;font-weight:700;color:#3d4653}.total-power{margin-top:5px;font-size:12px;font-weight:700;color:#586273}.total-power b{color:var(--accent);font-size:15px}
-.list-title{background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent),#ffffff 12%));color:white;font-weight:900;text-transform:uppercase;padding:9px 13px;font-size:14px;letter-spacing:.3px}
-.player-list{padding:3px 12px 0}
-.player{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:7px 4px;border-bottom:1px solid rgba(72,80,93,.23);font-size:16px;font-weight:800}
-.player:before{content:"🛡️";margin-right:7px;font-size:17px;float:left;filter:grayscale(.2)}
-.player .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.player .thp{color:#765b1f;font-weight:1000}
-.more{display:block;width:100%;border:0;background:transparent;color:#222d3a;font-size:16px;font-weight:900;padding:9px;cursor:pointer}
-.more:hover{background:rgba(0,0,0,.04)}
-.more span{float:right;font-size:20px}
-.empty{padding:20px;color:#78818e;text-align:center;font-style:italic}
-.loading{padding:25px;text-align:center;color:#6b7482}
-.bottom-nav{position:fixed;z-index:10;bottom:0;left:0;right:0;height:82px;background:linear-gradient(180deg,#102137,#091626);border-top:1px solid #315a79;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 -6px 20px rgba(0,0,0,.35)}
-.nav-item{color:#d9e0e8;text-decoration:none;text-align:center;padding:10px 4px;font-size:13px;font-weight:900;text-transform:uppercase;border-right:1px solid #23415b}
-.nav-item:last-child{border-right:0}.nav-item .ni{display:block;font-size:31px;line-height:34px}.nav-item.active{background:radial-gradient(circle at 50% 0,rgba(38,152,218,.4),transparent 60%);color:#fff;box-shadow:inset 0 0 18px rgba(38,152,218,.22)}
-@media(max-width:800px){
- body{padding-bottom:76px}.header{min-height:106px;padding:13px 16px;gap:12px}.brand{display:none}.title{border-left:0;padding-left:0}.title h1{font-size:26px}.title p{font-size:13px}.updated{min-width:118px;font-size:11px}.updated strong{font-size:14px}.wrap{padding:0 8px}.section{padding:58px 9px 10px;border-radius:14px}.section-tab{left:7px;top:7px;min-width:250px;font-size:18px;padding:12px 15px 12px 58px}.section-tab:before{left:13px;top:8px;font-size:30px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.card-top{grid-template-columns:1fr;min-height:116px;padding:8px 6px 0;text-align:center}.big-icon{font-size:42px;line-height:1}.card-head h2{font-size:15px}.card-head .count{font-size:34px;margin:2px 0}.card-head .players{font-size:11px}.total-power{font-size:9px;margin-top:2px}.total-power b{font-size:11px}.list-title{font-size:10px;padding:7px 5px}.player-list{padding:2px 5px 0}.player{font-size:11px;gap:4px;padding:6px 1px;grid-template-columns:1fr auto}.player:before{display:none}.more{font-size:11px;padding:7px 3px}.more span{font-size:16px}.stat-card{min-height:0}.bottom-nav{height:68px}.nav-item{font-size:10px;padding-top:7px}.nav-item .ni{font-size:25px;line-height:27px}}
-@media(max-width:390px){.section{padding-left:6px;padding-right:6px}.section-tab{min-width:220px;font-size:16px}.title h1{font-size:23px}.updated{display:none}.card-head h2{font-size:14px}.card-head .count{font-size:31px}.player{font-size:10px}.list-title{font-size:9px}.grid.three{gap:4px}}
+<title>HOLa · Player Intelligence</title>
 
-.vs-section-card{
-  --accent:#24669d;
-  display:grid;grid-template-columns:120px 1fr auto;gap:18px;align-items:center;
-  text-decoration:none;color:var(--ink);border:1px solid #7da8c3;border-radius:16px;
-  background:linear-gradient(135deg,#f8fbfd,#e2edf4);padding:18px 20px;
-  box-shadow:inset 0 1px #fff;transition:.18s ease;
+<style id="statistics-mockup-theme">
+:root{--bg:#030a12;--panel:#071522;--line:#18344b;--cyan:#24c7ff;--blue:#238cff;--green:#54d47b;--purple:#b879ff;--gold:#f2bd36;--red:#ff5360;--orange:#ff8c4a;--text:#eef6ff;--muted:#91a6bc}
+*{box-sizing:border-box}
+html,body{margin:0;background:radial-gradient(circle at 50% -10%,#102b40 0,#050d16 45%,#02070d 100%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+body{min-height:100vh;padding-bottom:78px}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 0 48%,rgba(24,96,145,.06) 49%,transparent 50%),radial-gradient(circle at 85% 0,rgba(255,117,40,.09),transparent 22%);z-index:-1}
+.topbar{border-bottom:1px solid #1b3b53;background:linear-gradient(180deg,rgba(4,12,20,.97),rgba(4,12,20,.86))}
+.topin{max-width:1200px;margin:auto;min-height:135px;padding:16px 18px 50px;display:flex;align-items:center;gap:20px;position:relative}
+.brand{width:205px;position:relative;line-height:.8}.brandmark{font-family:Georgia,serif;font-size:53px;font-weight:1000;letter-spacing:-6px;text-shadow:0 2px 0 #555,0 4px 12px #000}.brandmark span{font-size:35px}.brandsub{font-size:11px;letter-spacing:1.8px;font-weight:900;margin-left:48px;margin-top:7px}
+.heading{flex:1;border-left:1px solid #29455b;padding-left:20px}.heading h1{margin:0;font-size:31px;letter-spacing:-1px}.heading p{margin:6px 0 0;color:#9db0c3;font-size:13px}
+.update{min-width:155px;text-align:right}.update span{display:block;font-size:11px;color:#e7eef6}.update b{display:block;color:var(--gold);font-size:15px;margin-top:4px}.refresh{border:0;background:none;color:var(--cyan);font-size:39px;cursor:pointer;line-height:1}
+.wrap{max-width:1200px;margin:auto;padding:14px 18px 25px}
+.kpis{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid #1d3b52;border-radius:14px;background:rgba(7,18,29,.82);overflow:hidden}
+.kpi{min-height:100px;padding:15px 10px;display:flex;align-items:center;gap:10px;border-right:1px solid #1a3449}.kpi:last-child{border-right:0}.kpi small{display:block;color:#c3d0dc;font-size:9px;font-weight:900;line-height:1.15}.kpi b{display:block;font-size:25px;line-height:1.05;margin:5px 0}.kpi em{font-style:normal;color:#91a5b8;font-size:9px}.ico{width:36px;text-align:center;font-size:30px;font-weight:1000}.blue{color:#39aaff}.green{color:var(--green)}.purple{color:var(--purple)}.gold{color:var(--gold)}.cyan{color:var(--cyan)}
+.stat-section,.quick-section{margin-top:15px;border:1px solid #1b3b53;border-radius:15px;background:linear-gradient(180deg,rgba(10,23,36,.9),rgba(4,13,22,.9));padding:14px}
+.section-title{display:inline-flex;align-items:center;gap:8px;font-weight:1000;font-size:14px;letter-spacing:.3px;padding:8px 22px;background:linear-gradient(90deg,#142e47,#0d1d2e);border-radius:0 0 12px 0;margin:-14px 0 14px -14px;border-bottom:2px solid #39759b}
+.quick-section{padding-bottom:16px}.quick{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.quick-card{min-height:78px;text-decoration:none;color:var(--text);border:1px solid #21445e;border-radius:10px;background:#081521;display:grid;grid-template-columns:38px 1fr 18px;align-items:center;padding:9px 11px;gap:8px}.quick-card span{font-size:25px}.quick-card b{font-size:9px;line-height:1.2}.quick-card strong{font-size:14px}.quick-card i{font-style:normal;font-size:21px;color:#a9bdce}.quick-card.vs{border-color:#2185c4}.quick-card.vs strong{color:var(--cyan)}.quick-card.ds{border-color:#7e3040}.quick-card.ds strong{color:var(--red)}.quick-card.donations{border-color:#27734e}.quick-card.donations strong{color:var(--green)}.quick-card.train{border-color:#7a5b1d}.quick-card.train strong{color:var(--gold)}.accent-blue{border-top:2px solid var(--blue)}.quick-card.members{border-color:#7043a1}.quick-card.members strong{color:var(--purple)}
+.footer{position:fixed;z-index:30;bottom:0;left:0;right:0;height:72px;border-top:1px solid #214660;background:rgba(3,11,19,.96);display:grid;grid-template-columns:repeat(4,1fr)}.nav{color:#a8bacb;text-decoration:none;text-align:center;padding:8px 3px;font-size:10px;font-weight:900;border-right:1px solid #173449}.nav i{display:block;font-style:normal;font-size:25px;margin-bottom:2px}.nav.active{color:#fff;background:linear-gradient(180deg,rgba(0,173,255,.18),rgba(0,90,150,.08));box-shadow:inset 0 0 25px rgba(0,174,255,.16)}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(3,1fr)}.kpi:nth-child(3){border-right:0}.cards{grid-template-columns:repeat(2,1fr)}.quick{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:620px){.topin{min-height:78px;padding:10px}.brand{width:105px}.brandmark{font-size:33px}.brandsub{font-size:7px;margin-left:20px}.heading{padding-left:10px}.heading h1{font-size:19px}.heading p{font-size:9px}.update{display:none}.refresh{font-size:31px}.wrap{padding:10px 8px 18px}.kpis{grid-template-columns:repeat(2,1fr)}.kpi{min-height:82px}.kpi:nth-child(2),.kpi:nth-child(4),.kpi:nth-child(6){border-right:0}.kpi b{font-size:21px}.cards{grid-template-columns:1fr 1fr;gap:8px}.card{min-height:128px}.card .cardhead{padding:12px}.card .big{font-size:25px}.quick{grid-template-columns:1fr 1fr}.quick-card{min-height:67px}.section-title{font-size:12px}}
+
+.translator{position:absolute;left:18px;bottom:12px;z-index:20}
+.translator select{appearance:none;background:linear-gradient(180deg,#10283d,#0a1b2a);border:1px solid #285876;color:#dff5ff;border-radius:9px;padding:7px 30px 7px 11px;font-size:11px;font-weight:900;box-shadow:0 3px 12px rgba(0,0,0,.22);outline:none}
+.translator:after{content:"⌄";position:absolute;right:10px;top:5px;color:#69cfff;pointer-events:none}
+@media(max-width:620px){.topin{min-height:142px;padding-bottom:50px}.translator{left:10px;bottom:10px}}
+
+/* Compact statistic cards */
+.cards .card .cardhead{min-height:136px;padding:14px 14px 10px;align-items:flex-start;gap:8px}
+.cards .card h4{font-size:14px;line-height:1.12;letter-spacing:-.15px;max-width:68%}
+.cards .card .big{font-size:29px;line-height:1;margin-top:8px}
+.cards .card .small{font-size:10px;line-height:1.2;margin-top:5px}
+/* Detail modal: vertical scroll only */
+html, body{overflow-x:hidden!important;max-width:100%}
+.modal,.modal-overlay,.detail-modal,.details-modal,[role="dialog"]{
+  max-width:100vw!important;
+  overflow-x:hidden!important;
+  overscroll-behavior-x:none!important;
+  touch-action:pan-y!important;
 }
-.vs-section-card:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(0,0,0,.16),inset 0 1px #fff}
-.vs-section-icon{font-size:72px;text-align:center;filter:drop-shadow(0 5px 3px rgba(0,0,0,.2))}
-.vs-section-info h2{margin:0;color:#24669d;font-size:30px;text-transform:uppercase}
-.vs-section-info p{margin:8px 0 0;color:#566273;font-size:16px;line-height:1.45}
-.vs-section-action{background:linear-gradient(135deg,#24669d,#38a8df);color:white;border-radius:12px;padding:14px 18px;font-weight:900;text-transform:uppercase;white-space:nowrap}
-@media(max-width:800px){
-  .vs-section-card{grid-template-columns:70px 1fr;gap:10px;padding:13px}
-  .vs-section-icon{font-size:42px}
-  .vs-section-info h2{font-size:19px}
-  .vs-section-info p{font-size:12px}
-  .vs-section-action{grid-column:1/-1;text-align:center;padding:10px 12px;font-size:11px}
+.modal-content,.detail-content,.details-content{
+  max-width:100%!important;
+  overflow-x:hidden!important;
+  overscroll-behavior-x:none!important;
+  touch-action:pan-y!important;
+}
+.modal .rows,.detail-modal .rows,.details-modal .rows{
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-x:none!important;
+  touch-action:pan-y!important;
+}
+
+@media(max-width:620px){
+  .quick{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  .quick-card{
+    width:100%!important;
+    min-height:104px!important;
+    padding:12px 10px!important;
+    gap:8px!important;
+  }
+  .quick-card>span{
+    flex:0 0 48px!important;
+    width:48px!important;
+    font-size:38px!important;
+  }
+  .quick-card b{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    font-size:11px!important;
+    line-height:1.08!important;
+    white-space:normal!important;
+    overflow-wrap:break-word!important;
+    word-break:normal!important;
+  }
+  .quick-card b strong{
+    display:inline-block!important;
+    max-width:100%!important;
+    font-size:15px!important;
+    line-height:1.05!important;
+    white-space:normal!important;
+  }
+  .quick-card i{
+    flex:0 0 18px!important;
+    width:18px!important;
+    font-size:21px!important;
+  }
+}
+
+/* Quick access — compact, clean and language-safe */
+.quick{
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+.quick-card{
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+.quick-card b{
+  min-width:0!important;
+  max-width:none!important;
+  flex:1 1 auto!important;
+  overflow:hidden!important;
+  white-space:normal!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  line-height:1.1!important;
+}
+.quick-card b span{
+  display:block!important;
+  font-size:10px!important;
+  line-height:1.1!important;
+  white-space:normal!important;
+}
+.quick-card b strong{
+  display:block!important;
+  font-size:14px!important;
+  line-height:1.05!important;
+  white-space:normal!important;
+}
+.quick-card i{
+  flex:0 0 18px!important;
+  width:18px!important;
+  font-size:19px!important;
+  line-height:1!important;
+  text-align:center!important;
+}
+@media(max-width:620px){
+  .quick{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  .quick-card{
+    min-height:88px!important;
+    padding:10px 9px!important;
+    gap:7px!important;
+  }
+  .quick-card>span{
+    flex:0 0 39px!important;
+    width:39px!important;
+    font-size:31px!important;
+    line-height:1!important;
+  }
+  .quick-card b{
+    flex:1 1 0!important;
+    min-width:0!important;
+  }
+  .quick-card b span{
+    font-size:9px!important;
+    line-height:1.05!important;
+  }
+  .quick-card b strong{
+    font-size:13px!important;
+    line-height:1.05!important;
+    margin-top:2px!important;
+  }
+  .quick-card i{
+    flex:0 0 16px!important;
+    width:16px!important;
+    font-size:18px!important;
+  }
+}
+
+/* Main statistic cards — clean rectangular layout */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.cards .card{
+  position:relative;
+  min-width:0;
+  min-height:126px;
+  background:linear-gradient(145deg,#0b1c2c,#07121e);
+  border:1px solid var(--line);
+  border-radius:13px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:transform .18s,border-color .18s,box-shadow .18s;
+}
+.cards .card:hover{
+  transform:translateY(-2px);
+  border-color:#3a83ad;
+  box-shadow:0 10px 28px rgba(0,0,0,.28);
+}
+.cards .cardhead{
+  min-height:126px;
+  padding:14px 15px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.cards .card-main{
+  min-width:0;
+}
+.cards .card h4{
+  margin:0;
+  font-size:13px;
+  line-height:1.18;
+  max-width:100%;
+}
+.cards .card .big{
+  font-size:30px;
+  line-height:1;
+  margin-top:8px;
+}
+.cards .card .small{
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.2;
+  margin-top:5px;
+}
+.cards .card-open{
+  flex:0 0 22px;
+  width:22px;
+  height:22px;
+  border:1px solid #31536b;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#b9cad8;
+  font-size:20px;
+  line-height:1;
+}
+.cards .card .rows{display:none}
+
+/* Detail opened by tapping a card */
+.stat-modal{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(0,0,0,.68);
+  backdrop-filter:blur(4px);
+}
+.stat-modal-card{
+  width:min(680px,100%);
+  max-height:82vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  background:#091827;
+  border:1px solid var(--cyan);
+  border-radius:16px;
+  box-shadow:0 25px 100px rgba(0,0,0,.75);
+}
+.stat-modal-head{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 18px;
+  border-bottom:1px solid #1b3448;
+}
+.stat-modal-title{
+  min-width:0;
+  font-size:17px;
+  font-weight:900;
+  line-height:1.2;
+}
+.stat-modal-count{
+  color:var(--cyan);
+  font-size:25px;
+  font-weight:900;
+}
+.stat-modal-close{
+  flex:0 0 40px;
+  width:40px;
+  height:40px;
+  border:1px solid #31536b;
+  border-radius:10px;
+  background:#10263a;
+  color:#eef6ff;
+  font-size:22px;
+  cursor:pointer;
+}
+.stat-modal-rows{
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior-x:none;
+  touch-action:pan-y;
+  padding:0 14px 14px;
+}
+.stat-modal-row{
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr) auto;
+  gap:8px;
+  align-items:center;
+  padding:11px 6px;
+  border-bottom:1px solid #1b3448;
+}
+.stat-modal-row .name{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+.stat-modal-row .value{
+  white-space:nowrap;
+  color:#dceaf6;
+  font-weight:700;
+}
+@media(max-width:620px){
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .cards .card{min-height:118px}
+  .cards .cardhead{min-height:118px;padding:12px 11px}
+  .cards .card h4{font-size:11px;line-height:1.16}
+  .cards .card .big{font-size:27px;margin-top:7px}
+  .cards .card .small{font-size:9px}
+  .cards .card-open{width:20px;height:20px;font-size:18px}
+  .stat-modal{padding:12px}
+  .stat-modal-card{max-height:84vh;border-radius:14px}
+  .stat-modal-head{padding:13px 14px}
+  .stat-modal-title{font-size:15px}
+}
+
+/* Modal must stay closed on page load */
+#statModal[hidden]{display:none!important}
+#statModal:not([hidden]){display:flex!important}
+
+/* Statistic cards — compact rectangle matching the reference */
+.cards{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+.cards .card{
+  min-width:0!important;
+  height:112px!important;
+  min-height:112px!important;
+  border-radius:14px!important;
+}
+.cards .cardhead{
+  height:100%!important;
+  min-height:0!important;
+  box-sizing:border-box!important;
+  padding:12px 13px!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:7px!important;
+}
+.cards .card-main{
+  min-width:0!important;
+  flex:1 1 auto!important;
+}
+.cards .card h4{
+  margin:0!important;
+  font-size:12px!important;
+  line-height:1.12!important;
+  max-width:100%!important;
+}
+.cards .card .big{
+  font-size:29px!important;
+  line-height:1!important;
+  margin-top:7px!important;
+}
+.cards .card .small{
+  font-size:9px!important;
+  line-height:1.15!important;
+  margin-top:4px!important;
+}
+.cards .card-open{
+  flex:0 0 28px!important;
+  width:28px!important;
+  height:28px!important;
+  margin-top:0!important;
+  border-radius:50%!important;
+  font-size:21px!important;
+}
+@media(max-width:620px){
+  .cards{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+  }
+  .cards .card{
+    height:106px!important;
+    min-height:106px!important;
+  }
+  .cards .cardhead{
+    padding:11px 10px!important;
+    gap:5px!important;
+  }
+  .cards .card h4{
+    font-size:10.5px!important;
+    line-height:1.1!important;
+  }
+  .cards .card .big{
+    font-size:27px!important;
+    margin-top:6px!important;
+  }
+  .cards .card .small{
+    font-size:8.5px!important;
+    line-height:1.12!important;
+  }
+  .cards .card-open{
+    flex-basis:27px!important;
+    width:27px!important;
+    height:27px!important;
+    font-size:20px!important;
+  }
+}
+
+/* Quick access — full-width vertical rectangles */
+.quick{
+  display:flex!important;
+  flex-direction:column!important;
+  width:100%!important;
+  max-width:100%!important;
+  gap:10px!important;
+  box-sizing:border-box!important;
+}
+.quick-card{
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  height:78px!important;
+  min-height:78px!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:16px!important;
+  padding:10px 16px!important;
+  overflow:hidden!important;
+}
+.quick-card>span{
+  flex:0 0 52px!important;
+  width:52px!important;
+  text-align:center!important;
+  font-size:39px!important;
+  line-height:1!important;
+}
+.quick-card b{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  text-align:left!important;
+  line-height:1.05!important;
+  overflow:hidden!important;
+  white-space:normal!important;
+}
+.quick-card b span{
+  display:block!important;
+  font-size:11px!important;
+  line-height:1.05!important;
+}
+.quick-card b strong{
+  display:block!important;
+  font-size:17px!important;
+  line-height:1.05!important;
+  margin-top:3px!important;
+}
+.quick-card i{
+  flex:0 0 28px!important;
+  width:28px!important;
+  text-align:center!important;
+  font-size:24px!important;
+}
+@media(max-width:620px){
+  .quick{
+    gap:9px!important;
+  }
+  .quick-card{
+    width:100%!important;
+    height:76px!important;
+    min-height:76px!important;
+    padding:9px 13px!important;
+    gap:13px!important;
+  }
+  .quick-card>span{
+    flex-basis:48px!important;
+    width:48px!important;
+    font-size:35px!important;
+  }
+  .quick-card b span{
+    font-size:10px!important;
+  }
+  .quick-card b strong{
+    font-size:16px!important;
+  }
+  .quick-card i{
+    flex-basis:25px!important;
+    width:25px!important;
+    font-size:22px!important;
+  }
+}
+
+main{padding-bottom:calc(92px + env(safe-area-inset-bottom))!important}
+
+/* Profession card: show both profession totals before opening */
+.profession-card .cardhead{
+  padding:11px 12px!important;
+}
+.profession-summary{
+  min-width:0;
+  flex:1 1 auto;
+}
+.profession-title{
+  font-size:11px;
+  font-weight:800;
+  line-height:1.1;
+  margin-bottom:8px;
+}
+.profession-types{
+  display:flex;
+  gap:8px;
+  width:100%;
+}
+.profession-type{
+  flex:1 1 0;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  padding:5px 6px;
+  border-radius:9px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.07);
+}
+.profession-icon{font-size:18px;line-height:1}
+.profession-type strong{
+  display:block;
+  font-size:20px;
+  line-height:1;
+}
+.profession-type small{
+  display:block;
+  font-size:7.5px;
+  line-height:1.1;
+  margin-top:2px;
+  opacity:.8;
+}
+.engineer-type strong{color:#55d77a}
+.warlord-type strong{color:#ff5d6c}
+.profession-card .profession-rows{
+  display:none;
+}
+.profession-group-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 12px;
+  font-weight:800;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.profession-group-row .group-name{flex:1}
+.profession-group-row .group-count{opacity:.85}
+@media(max-width:620px){
+  .profession-title{font-size:10.5px;margin-bottom:7px}
+  .profession-type{padding:4px 5px}
+  .profession-icon{font-size:16px}
+  .profession-type strong{font-size:18px}
+  .profession-type small{font-size:7px}
+}
+
+.stat-modal-group{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px 12px;
+  margin-top:6px;
+  border-bottom:1px solid rgba(255,255,255,.12);
+  font-weight:800;
+}
+.stat-modal-group span{font-size:20px}
+.stat-modal-group strong{flex:1}
+.stat-modal-group b{font-size:18px}
+
+/* Profession modal: two inner cards */
+.profession-modal-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  padding:12px 0 2px;
+}
+.profession-modal-card{
+  min-width:0;
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:14px;
+  overflow:hidden;
+  background:rgba(255,255,255,.025);
+}
+.profession-modal-card.engineer-modal{border-color:rgba(70,210,110,.55)}
+.profession-modal-card.warlord-modal{border-color:rgba(255,80,95,.55)}
+.profession-modal-head{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:11px;
+  background:rgba(255,255,255,.035);
+}
+.engineer-modal .profession-modal-head{background:rgba(50,190,90,.12)}
+.warlord-modal .profession-modal-head{background:rgba(230,55,70,.12)}
+.profession-modal-icon{font-size:22px;line-height:1}
+.profession-modal-head strong{
+  display:block;
+  font-size:13px;
+  line-height:1.1;
+}
+.profession-modal-head small{
+  display:block;
+  margin-top:3px;
+  font-size:9px;
+  opacity:.75;
+}
+.profession-modal-list{
+  max-height:52vh;
+  overflow-y:auto;
+  overflow-x:hidden;
+  touch-action:pan-y;
+}
+.profession-member-row{
+  display:grid;
+  grid-template-columns:30px minmax(0,1fr) auto;
+  align-items:center;
+  gap:5px;
+  min-height:38px;
+  padding:5px 9px;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.profession-member-row .rank{font-size:9px;opacity:.55}
+.profession-member-row .name{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:10px;
+}
+.profession-member-row .value{font-size:10px;font-weight:700}
+.profession-empty{padding:14px 10px;font-size:10px;opacity:.65}
+@media(max-width:620px){
+  .profession-modal-grid{grid-template-columns:1fr;gap:10px}
+  .profession-modal-list{max-height:34vh}
+}
+
+/* Squad 1 type summary and inner cards */
+.squadtypes-summary{min-width:0;flex:1}
+.squadtypes-title{font-size:11px;font-weight:800;line-height:1.1;margin-bottom:7px}
+.squad-types{display:flex;gap:6px;width:100%}
+.squad-type-box{
+  flex:1 1 0;min-width:0;display:flex;align-items:center;gap:4px;
+  padding:4px 5px;border-radius:8px;background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.07)
+}
+.squad-type-icon{font-size:17px;line-height:1}
+.squad-type-box strong{display:block;font-size:18px;line-height:1}
+.squad-type-box small{display:block;font-size:7px;line-height:1.05;margin-top:2px;opacity:.8}
+.squadtypes-card .squadtypes-rows{display:none}
+.squad-group-row{display:flex;align-items:center;gap:9px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.1)}
+.squad-group-row strong{flex:1}
+.squad-group-row b{font-size:17px}
+.squad-modal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:12px 0 2px}
+.squad-modal-card{min-width:0;border:1px solid rgba(255,255,255,.13);border-radius:13px;overflow:hidden;background:rgba(255,255,255,.025)}
+.squad-modal-card.missile-modal{border-color:rgba(255,160,55,.6)}
+.squad-modal-card.tank-modal{border-color:rgba(80,170,255,.55)}
+.squad-modal-card.air-modal{border-color:rgba(100,220,240,.55)}
+.squad-modal-head{display:flex;align-items:center;gap:8px;padding:10px;background:rgba(255,255,255,.04)}
+.squad-modal-icon{font-size:21px}
+.squad-modal-head strong{display:block;font-size:12px}
+.squad-modal-head small{display:block;font-size:8px;opacity:.7;margin-top:2px}
+.squad-modal-list{max-height:45vh;overflow-y:auto;overflow-x:hidden;touch-action:pan-y}
+.squad-member-row{display:grid;grid-template-columns:27px minmax(0,1fr) auto;gap:5px;align-items:center;padding:7px 8px;border-top:1px solid rgba(255,255,255,.07)}
+.squad-member-row .name{font-size:9px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.squad-member-row .value{font-size:9px;font-weight:700;white-space:nowrap}
+@media(max-width:620px){
+  .squad-type-box{padding:4px 3px}
+  .squad-type-icon{font-size:15px}
+  .squad-type-box strong{font-size:16px}
+  .squad-type-box small{font-size:6.5px}
+  .squad-modal-grid{grid-template-columns:1fr;gap:9px}
+  .squad-modal-list{max-height:28vh}
+}
+
+/* THP detail dashboard */
+.thp-dashboard{padding:12px 0 4px}
+.thp-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.thp-summary{min-width:0;padding:10px 8px;border:1px solid rgba(255,255,255,.1);border-radius:11px;background:rgba(255,255,255,.035);text-align:center}
+.thp-summary span{display:block;font-size:18px;line-height:1}
+.thp-summary small{display:block;margin-top:5px;font-size:7px;opacity:.7;line-height:1.1}
+.thp-summary strong{display:block;margin-top:4px;font-size:14px;line-height:1.05}
+.thp-section{margin-top:12px;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.02)}
+.thp-section-title{padding:10px 12px;font-size:11px;font-weight:900;border-bottom:1px solid rgba(255,255,255,.08)}
+.thp-top-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:7px;padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.06)}
+.thp-top-row:last-child{border-bottom:0}
+.thp-rank{font-size:12px;text-align:center}
+.thp-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px}
+.thp-top-row strong{font-size:10px;white-space:nowrap}
+.thp-ranges{padding:9px 12px 11px}
+.thp-range{margin:8px 0}
+.thp-range-label{display:flex;justify-content:space-between;align-items:center;font-size:9px;margin-bottom:4px}
+.thp-range-label strong{font-size:10px}
+.thp-bar{height:7px;border-radius:99px;background:#142b3c;overflow:hidden}
+.thp-bar span{display:block;height:100%;border-radius:99px;background:var(--cyan)}
+@media(max-width:620px){
+  .thp-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .thp-summary{padding:8px 6px}
+  .thp-summary strong{font-size:13px}
+  .thp-summary small{font-size:6.5px}
+}
+
+/* Squad 1 performance card */
+.squad-summary{min-width:0;flex:1}
+.squad-title{font-size:11px;font-weight:900;line-height:1.1;margin-bottom:7px}
+.squad-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.squad-stats>div{min-width:0;padding:5px 4px;border-radius:8px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);text-align:center}
+.squad-stats span{display:block;font-size:14px;line-height:1}
+.squad-stats strong{display:block;font-size:13px;line-height:1;margin-top:3px}
+.squad-stats small{display:block;font-size:6.5px;line-height:1.05;margin-top:2px;opacity:.7}
+.squad-card .squad-performance-rows{display:none}
+.squad-dashboard{padding:12px 0 4px}
+.squad-dashboard-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.squad-dashboard-summary>div{min-width:0;padding:9px 6px;text-align:center;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.035)}
+.squad-dashboard-summary span{display:block;font-size:17px}
+.squad-dashboard-summary small{display:block;font-size:7px;opacity:.7;margin-top:3px}
+.squad-dashboard-summary strong{display:block;font-size:11px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.squad-dashboard-section{margin-top:10px;border:1px solid rgba(255,255,255,.1);border-radius:11px;overflow:hidden}
+.squad-dashboard-title{padding:9px 11px;font-size:10px;font-weight:900;border-bottom:1px solid rgba(255,255,255,.08)}
+.squad-top-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:7px;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.06);font-size:9px}
+.squad-top-row span:nth-child(2){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.squad-top-row strong{font-size:9px;white-space:nowrap}
+.squad-ranges{padding:8px 11px}
+.squad-range{margin:7px 0}
+.squad-range>div{display:flex;justify-content:space-between;font-size:8px;margin-bottom:3px}
+.squad-range i{display:block;height:6px;background:#142b3c;border-radius:99px;overflow:hidden}
+.squad-range em{display:block;height:100%;background:var(--cyan);border-radius:99px}
+@media(max-width:620px){
+  .squad-stats{gap:4px}
+  .squad-stats strong{font-size:11px}
+  .squad-stats small{font-size:6px}
+  .squad-dashboard-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+.type-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.type-summary{min-width:0;padding:5px 4px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035)}
+.type-summary-head{display:flex;align-items:center;gap:3px}.type-summary-head span{font-size:14px}.type-summary-head strong{font-size:7px;flex:1;white-space:nowrap}.type-summary-head b{font-size:11px}
+.type-summary-power{font-size:9px;font-weight:800;margin-top:3px}.type-summary small{display:block;font-size:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.7;margin-top:2px}
+.type-detail-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:12px 0 2px}.type-detail-card{min-width:0;border:1px solid rgba(255,255,255,.13);border-radius:13px;overflow:hidden;background:rgba(255,255,255,.025)}
+.type-detail-head{display:flex;align-items:center;gap:8px;padding:10px;background:rgba(255,255,255,.04)}.type-detail-head>span{font-size:21px}.type-detail-head strong{display:block;font-size:12px}.type-detail-head small{display:block;font-size:8px;opacity:.7;margin-top:2px}
+.type-detail-stats{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:7px}.type-detail-stats div{text-align:center;padding:5px;border-radius:7px;background:rgba(255,255,255,.035);font-size:9px}.type-detail-stats b{display:block;font-size:10px}.type-detail-stats small{display:block;font-size:6px;opacity:.65;margin-top:2px}
+.type-detail-top{padding:7px 9px;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.type-detail-top strong{float:right}
+.type-detail-members{max-height:32vh;overflow-y:auto;overflow-x:hidden;touch-action:pan-y}.type-detail-members>div{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:5px;padding:7px 8px;border-bottom:1px solid rgba(255,255,255,.06);font-size:8px}.type-detail-members span:nth-child(2){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:620px){.type-summary-head strong{font-size:6.5px}.type-summary-power{font-size:8px}.type-summary small{font-size:5.5px}.type-detail-grid{grid-template-columns:1fr}.type-detail-members{max-height:22vh}}
+
+
+/* Final modal readability polish */
+.stat-modal-card{
+  width:min(680px,100%);
+}
+.stat-modal-head{
+  padding:10px 12px;
+}
+.stat-modal-close{
+  flex:0 0 32px;
+  width:32px;
+  height:32px;
+  border-radius:8px;
+  font-size:18px;
+  line-height:1;
+}
+.stat-modal-title{font-size:18px}
+.stat-modal-count{font-size:26px}
+
+.stat-modal-row{
+  grid-template-columns:34px minmax(0,1fr) auto;
+  gap:9px;
+  padding:12px 7px;
+  font-size:11px;
+}
+.stat-modal-row .value{font-size:11px}
+.stat-modal-group{
+  gap:9px;
+  padding:11px 12px;
+  font-size:13px;
+}
+.stat-modal-group span{font-size:22px}
+.stat-modal-group b{font-size:19px}
+
+/* Squad 1 type detail cards */
+.type-detail-head{padding:11px 10px}
+.type-detail-head>span{font-size:23px}
+.type-detail-head strong{font-size:14px}
+.type-detail-head small{font-size:9px}
+.type-detail-stats div{padding:6px;font-size:10px}
+.type-detail-stats b{font-size:12px}
+.type-detail-stats small{font-size:7px}
+.type-detail-top{padding:8px 9px;font-size:10px}
+.type-detail-members>div{
+  padding:8px 8px;
+  font-size:10px;
+}
+
+/* Keep the close button compact on phones while giving the content more room */
+@media(max-width:620px){
+  .stat-modal{padding:10px}
+  .stat-modal-card{max-height:86vh}
+  .stat-modal-head{padding:9px 10px}
+  .stat-modal-close{
+    flex-basis:30px;
+    width:30px;
+    height:30px;
+    font-size:17px;
+  }
+  .stat-modal-title{font-size:17px}
+  .stat-modal-row{font-size:10.5px;padding:11px 6px}
+  .stat-modal-row .value{font-size:10.5px}
+  .stat-modal-group{font-size:12px;padding:10px 10px}
+  .stat-modal-group span{font-size:21px}
+  .stat-modal-group b{font-size:18px}
+  .type-detail-head strong{font-size:13px}
+  .type-detail-head small{font-size:9px}
+  .type-detail-stats b{font-size:11px}
+  .type-detail-top{font-size:9.5px}
+  .type-detail-members>div{font-size:9.5px}
+}
+
+
+.hq-compact{display:flex;align-items:center;gap:10px;margin-top:6px}
+.hq-compact span{flex:1;text-align:center;font-size:9px;white-space:nowrap}
+.hq-compact b{font-size:14px;margin:0 2px}
+@media(max-width:620px){.hq-compact{gap:7px}.hq-compact span{font-size:8px}.hq-compact b{font-size:13px}}
+
+.vs-compliance-summary{min-width:0;flex:1}.vs-week-label{font-size:9px;font-weight:800;margin-top:2px;opacity:.8}.vs-compliance-counts{display:flex;gap:9px;margin-top:7px}.vs-compliance-counts span{font-size:9px;white-space:nowrap}.vs-compliance-counts b{font-size:14px}.vs-minimum{display:block;font-size:7px;opacity:.65;margin-top:3px}
+.vs-compliance-modal{padding:10px 0}.vs-modal-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.vs-modal-summary>div{padding:9px 6px;text-align:center;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.035)}.vs-modal-summary strong{display:block;font-size:15px}.vs-modal-summary small{display:block;font-size:7px;opacity:.7;margin-top:3px}.vs-compliance-section{margin-top:11px;border:1px solid rgba(255,255,255,.1);border-radius:11px;overflow:hidden}.vs-compliance-section h3{margin:0;padding:9px 11px;font-size:11px;border-bottom:1px solid rgba(255,255,255,.08)}.vs-player-detail{padding:8px 9px;border-bottom:1px solid rgba(255,255,255,.06)}.vs-player-name{font-size:10px;font-weight:800;margin-bottom:5px}.vs-player-days{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px}.vs-player-days span{padding:4px 2px;text-align:center;border-radius:6px;font-size:6px;background:rgba(255,255,255,.035)}.vs-player-days span.ok{border:1px solid rgba(80,210,130,.35)}.vs-player-days span.fail{border:1px solid rgba(240,100,100,.3)}.vs-player-days b{display:block;font-size:7px;margin-top:2px}
+@media(max-width:620px){.vs-compliance-counts{gap:6px}.vs-compliance-counts span{font-size:8px}.vs-modal-summary strong{font-size:14px}.vs-player-days{grid-template-columns:repeat(3,1fr)}}
+
+.vs-player-detail.simple{display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;gap:7px;padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.06)}
+.vs-player-detail.simple:last-child{border-bottom:0}
+.vs-player-detail.simple .vs-player-name{margin:0;font-size:10px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vs-player-detail.simple strong{font-size:9px;white-space:nowrap}
+.vs-player-status{font-size:13px}
+
+.vs-player-detail.simple{display:grid;grid-template-columns:22px minmax(0,1fr) auto;align-items:center;gap:7px;padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.06)}
+.vs-player-detail.simple:last-child{border-bottom:0}
+.vs-player-detail.simple .vs-player-name{margin:0;font-size:10px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vs-player-detail.simple strong{font-size:9px;white-space:nowrap}
+.vs-player-status{font-size:13px}
+.vs-compliance-section h3{display:flex;align-items:center;justify-content:space-between}
+.vs-compliance-section h3 b{font-size:9px;opacity:.7}
+
+/* Squad 1: mostrar claramente solo tipo y cantidad */
+.squadtypes-card .type-summary-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:6px!important;
+  width:100%!important;
+}
+.squadtypes-card .type-summary{
+  min-width:0!important;
+  padding:7px 5px!important;
+  border-radius:9px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:rgba(255,255,255,.045)!important;
+}
+.squadtypes-card .type-summary-head{
+  width:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:2px!important;
+  text-align:center!important;
+}
+.squadtypes-card .type-summary-head span{
+  font-size:19px!important;
+  line-height:1!important;
+}
+.squadtypes-card .type-summary-head strong{
+  display:block!important;
+  font-size:8px!important;
+  line-height:1.05!important;
+  white-space:nowrap!important;
+}
+.squadtypes-card .type-summary-head b{
+  display:block!important;
+  font-size:20px!important;
+  line-height:1!important;
+  margin-top:1px!important;
+}
+@media(max-width:620px){
+  .squadtypes-card .type-summary-grid{gap:5px!important}
+  .squadtypes-card .type-summary{padding:6px 3px!important}
+  .squadtypes-card .type-summary-head span{font-size:18px!important}
+  .squadtypes-card .type-summary-head strong{font-size:7.5px!important}
+  .squadtypes-card .type-summary-head b{font-size:19px!important}
 }
 
 </style>
+
 </head>
 <body>
-<header class="header">
-  <div class="brand">H<span class="world">🌍</span>La<small>ALLIANCE TRACKER</small></div>
-  <div class="title"><h1><span>▮▮▮</span> ESTADÍSTICAS</h1><p>Datos recopilados desde las encuestas de la alianza</p></div>
-  <div class="updated">Última actualización<strong id="updatedAt">Cargando...</strong><button id="refreshBtn" title="Actualizar">↻</button></div>
+<header class="topbar">
+  <div class="topin"><div class="translator"><select id="languageSelect" aria-label="Idioma" onchange="setLanguage(this.value)">
+<option value="es">🇪🇸 Español</option><option value="en">🇬🇧 English</option><option value="de">🇩🇪 Deutsch</option>
+<option value="fr">🇫🇷 Français</option><option value="ro">🇷🇴 Română</option><option value="pt">🇵🇹 Português</option><option value="uk">🇺🇦 Українська</option>
+</select></div>
+    <div class="brand"><div class="brandmark">H<span>🌍</span>La</div><div class="brandsub">ALLIANCE TRACKER</div></div>
+    <div class="heading"><h1>▮▮▮ ESTADÍSTICAS</h1><p data-i18n="Datos recopilados desde las encuestas de la alianza">Datos recopilados desde las encuestas de la alianza</p></div>
+    <div class="update"><span data-i18n="Última actualización">Última actualización</span><b id="updated">conectando…</b></div>
+    <button class="refresh" onclick="load()" aria-label="Actualizar">↻</button>
+  </div>
 </header>
 
 <main class="wrap">
-  <section class="section">
-    <div class="section-tab" data-icon="🪖">TROPAS NIVEL 10 (T10)</div>
-    <div id="t10Grid" class="grid two"><div class="loading">Cargando datos de Firebase...</div></div>
+  <section class="kpis">
+    <div class="kpi"><span class="ico blue">♟</span><div><small data-i18n="MIEMBROS">MIEMBROS</small><b id="kMembers">—</b><em data-i18n="Total">Total</em></div></div>
+    <div class="kpi"><span class="ico cyan">⚔️</span><div><small data-i18n="JUGADORES VS">JUGADORES VS</small><b id="kVSPlayers">—</b><em id="kVSDates" data-i18n="Registros de VS">Registros de VS</em></div></div>
+    <div class="kpi"><span class="ico green">●</span><div><small data-i18n="REGISTROS COMPLETOS">REGISTROS COMPLETOS</small><b id="kActive">—</b><em id="kActivePct">Con datos de poder</em></div></div>
+    <div class="kpi"><span class="ico purple">▣</span><div><small data-i18n="PERFILES COMPLETOS">PERFILES COMPLETOS</small><b id="kSurvey">—</b><em id="kSurveyPct">THP + Squad + profesión</em></div></div>
+    <div class="kpi"><span class="ico gold">ϟ</span><div><small data-i18n="THP MEDIO">THP MEDIO</small><b id="kAvg">—</b><em data-i18n="Poder de héroes">Poder de héroes</em></div></div>
+    <div class="kpi"><span class="ico gold">♛</span><div><small data-i18n="THP MÁXIMO">THP MÁXIMO</small><b id="kTop">—</b><em id="kTopName">—</em></div></div>
+    <div class="kpi"><span class="ico cyan">◈</span><div><small data-i18n="PODER MEDIO SQUAD 1">PODER MEDIO SQUAD 1</small><b id="kSquad">—</b><em data-i18n="Squad principal">Squad principal</em></div></div>
   </section>
 
-  <section class="section">
-    <div class="section-tab" data-icon="⚔️">SQUAD 1 PRINCIPAL</div>
-    <div id="squadGrid" class="grid three"><div class="loading">Cargando datos de Firebase...</div></div>
+  <section class="stat-section">
+    <div class="section-title"><span>📊</span> <span data-i18n="ESTADÍSTICAS PRINCIPALES">ESTADÍSTICAS PRINCIPALES</span></div>
+    <div id="rankGrid" class="cards"></div>
   </section>
 
-
-  <section class="section">
-    <div class="section-tab" data-icon="⚔️">VS</div>
-    <a class="vs-section-card" href="vs.html#estadisticas">
-      <div class="vs-section-icon">⚔️</div>
-      <div class="vs-section-info">
-        <h2>ESTADÍSTICAS DE VS</h2>
-        <p>Consulta el ranking semanal, puntos diarios, participación y cumplimiento de Push Week y Save Week.</p>
-      </div>
-      <div class="vs-section-action">ABRIR ESTADÍSTICAS →</div>
-    </a>
-  </section>
-
-  <section class="section">
-    <div class="section-tab" data-icon="💼">PROFESIÓN</div>
-    <div id="professionGrid" class="grid two"><div class="loading">Cargando datos de Firebase...</div></div>
+  <section class="quick-section">
+    <div class="section-title"><span>⚡</span> <span data-i18n="ACCESOS RÁPIDOS">ACCESOS RÁPIDOS</span></div>
+    <div class="quick">
+      <a href="vs.html#estadisticas" class="quick-card vs"><span>⚔️</span><b><span data-i18n="ESTADÍSTICAS">ESTADÍSTICAS</span><br><strong>VS</strong></b><i>→</i></a>
+      <a href="ds.html#estadisticas" class="quick-card ds"><span>🔥</span><b><span data-i18n="ESTADÍSTICAS">ESTADÍSTICAS</span><br><strong>DS</strong></b><i>→</i></a>
+      <a href="donations.html#estadisticas" class="quick-card donations"><span>🎁</span><b><span data-i18n="ESTADÍSTICAS">ESTADÍSTICAS</span><br><strong data-i18n="DONACIONES">DONACIONES</strong></b><i>→</i></a>
+      <a href="train.html#estadisticas" class="quick-card train"><span>🚂</span><b><span data-i18n="ESTADÍSTICAS">ESTADÍSTICAS</span><br><strong data-i18n="TREN">TREN</strong></b><i>→</i></a>
+      <a href="EstadisitcasMembers.html" class="quick-card members"><span>👥</span><b><span data-i18n="ESTADÍSTICAS">ESTADÍSTICAS</span><br><strong data-i18n="MIEMBROS">MIEMBROS</strong></b><i>→</i></a>
+    </div>
   </section>
 </main>
 
-<nav class="bottom-nav">
-  <a class="nav-item" href="index.html"><span class="ni">⌂</span>INICIO</a>
-  <a class="nav-item" href="members.html"><span class="ni">♜</span>CENTRO DE ALIANZA</a>
-  <a class="nav-item active" href="statistics.html"><span class="ni">▮▮▮</span>ESTADÍSTICAS</a>
-  <a class="nav-item" href="guides.html"><span class="ni">▱</span>GUÍAS</a>
+<div id="statModal" class="stat-modal" hidden>
+  <div class="stat-modal-card" role="dialog" aria-modal="true">
+    <div class="stat-modal-head">
+      <div>
+        <div id="statModalTitle" class="stat-modal-title"></div>
+        <div id="statModalCount" class="stat-modal-count"></div>
+      </div>
+      <button type="button" id="statModalClose" class="stat-modal-close" aria-label="Cerrar">×</button>
+    </div>
+    <div id="statModalRows" class="stat-modal-rows"></div>
+  </div>
+</div>
+
+<nav class="footer">
+<a class="nav" href="index.html"><i>⌂</i><span data-i18n="INICIO">INICIO</span></a>
+<a class="nav" href="members.html"><i>♜</i><span data-i18n="CENTRO DE ALIANZA">CENTRO DE ALIANZA</span></a>
+<a class="nav active" href="statistics.html"><i>▮▮▮</i><span>ESTADÍSTICAS</span></a>
+<a class="nav" href="guides.html"><i>▱</i><span data-i18n="GUÍAS">GUÍAS</span></a>
 </nav>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const firebaseConfig = {
-      apiKey:"AIzaSyDxipuHjcf0EI5aMjM7534asdtq03AlQzQ",
-      authDomain:"hola-alliance-tracker.firebaseapp.com",
-      projectId:"hola-alliance-tracker",
-      storageBucket:"hola-alliance-tracker.firebasestorage.app",
-      messagingSenderId:"843941636060",
-      appId:"1:843941636060:web:f8f059f72ccff0eaabd119"
-    };
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 
-function norm(v){return String(v ?? '').trim().toLowerCase()}
-function yesT10(raw){
-  const v = raw.t10 ?? raw.hasT10 ?? raw.troopsT10;
-  return v === true || ['true','yes','si','sí','t10','with t10','con t10'].includes(norm(v));
-}
-function squadType(raw){
-  return norm(raw.squad1Type ?? raw.squad1 ?? raw.primarySquad ?? raw.squad);
-}
-function profession(raw){
-  return norm(raw.profession ?? raw.role ?? raw.professionType);
-}
-function parseMillions(v){
-  if(v===null || v===undefined || v==='') return 0;
-  const text=String(v).trim().toUpperCase().replace(/\s/g,'');
-  const hasB=/B/.test(text), hasK=/K/.test(text);
-  let cleaned=text.replace(/[^0-9,.-]/g,'');
-  if(cleaned.includes(',') && cleaned.includes('.')) cleaned=cleaned.replace(/,/g,'');
-  else if(cleaned.includes(',')) cleaned=cleaned.replace(',','.');
-  const n=parseFloat(cleaned);
-  if(!Number.isFinite(n)) return 0;
-  if(hasB) return n*1000;
-  if(hasK) return n/1000;
-  return n;
-}
-function thp(raw){
-  const vals=[raw.thp,raw.THP,raw.totalHeroPower,raw.heroPower,raw.power];
-  for(const v of vals){const n=parseMillions(v);if(n) return n;}
-  return 0;
-}
-function squad1Power(raw){
-  const vals=[raw.squad1Power,raw.squad1power,raw.squadPower1,raw.squad1Total,raw.primarySquadPower];
-  for(const v of vals){const n=parseMillions(v);if(n) return n;}
-  return 0;
-}
-function formatPower(n){return Number.isFinite(n)&&n>0 ? n.toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1})+'M' : '—'}
-function player(name, raw){return {name:name||'Unknown', thp:thp(raw), squadPower:squad1Power(raw)}}
-function sortPlayers(a, valueKey='thp'){return [...a].sort((x,y)=>(y[valueKey]||0)-(x[valueKey]||0)||x.name.localeCompare(y.name))}
 
-function card({title,count,icon,accent,players,listTitle,valueKey='thp',valueLabel='THP'}){
-  const sorted=sortPlayers(players,valueKey);
-  const top=sorted.slice(0,5);
-  const rest=sorted.slice(5);
-  const total=sorted.reduce((sum,p)=>sum+(Number(p[valueKey])||0),0);
-  const id='c'+Math.random().toString(36).slice(2);
-  const value=p=>formatPower(p[valueKey]);
-  return `<article class="stat-card ${accent}">
-    <div class="card-top"><div class="big-icon">${icon}</div><div class="card-head"><h2>${esc(title)}</h2><div class="count">${count}</div><div class="players">jugadores</div><div class="total-power">Total ${esc(valueLabel)}: <b>${formatPower(total)}</b></div></div></div>
-    <div class="list-title">👥 ${esc(listTitle)}</div>
-    <div class="player-list">${top.length ? top.map(p=>`<div class="player"><span class="name">${esc(p.name)}</span><span class="thp">${value(p)}</span></div>`).join('') : '<div class="empty">Sin datos todavía</div>'}</div>
-    ${rest.length ? `<div id="${id}" hidden class="player-list">${rest.map(p=>`<div class="player"><span class="name">${esc(p.name)}</span><span class="thp">${value(p)}</span></div>`).join('')}</div><button class="more" onclick="const e=document.getElementById('${id}');e.hidden=!e.hidden;this.innerHTML=e.hidden?'Ver todos (${count}) <span>⌄</span>':'Ver menos <span>⌃</span>'">Ver todos (${count}) <span>⌄</span></button>`:''}
+<script>
+(function(){
+  function forceCloseStatModal(){
+    const m=document.getElementById("statModal");
+    if(m){
+      m.hidden=true;
+      m.style.display="none";
+      document.body.style.overflow="";
+    }
+  }
+
+  // Always start with the modal closed.
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",forceCloseStatModal,{once:true});
+  }else{
+    forceCloseStatModal();
+  }
+
+  document.addEventListener("click",function(e){
+    const close=e.target.closest("#statModalClose");
+    if(close){
+      e.preventDefault();
+      e.stopPropagation();
+      forceCloseStatModal();
+      return;
+    }
+
+    const modal=e.target.closest("#statModal");
+    if(modal && e.target===modal){
+      forceCloseStatModal();
+    }
+  },true);
+})();
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  const languageSelect=document.getElementById("languageSelect");
+  if(languageSelect){
+    languageSelect.value=localStorage.getItem("holaLang")||"es";
+    languageSelect.addEventListener("change",function(){
+      if(typeof setLanguage==="function") setLanguage(this.value);
+    });
+  }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  const lockHorizontal=()=>{
+    document.querySelectorAll(
+      ".modal,.modal-overlay,.detail-modal,.details-modal,[role='dialog'],.modal-content,.detail-content,.details-content,.rows"
+    ).forEach(el=>{
+      el.style.overflowX="hidden";
+      el.style.touchAction="pan-y";
+      el.style.overscrollBehaviorX="none";
+    });
+  };
+  lockHorizontal();
+  new MutationObserver(lockHorizontal).observe(document.body,{childList:true,subtree:true});
+});
+</script>
+<script>
+const HOLA_I18N={
+es:{"Cumplió":"Cumplió","No cumplió":"No cumplió","CUMPLIMIENTO VS":"CUMPLIMIENTO VS","Semana 24–29":"Semana 24–29","cumplieron":"cumplieron","no llegaron":"no llegaron","Mínimo diario":"Mínimo diario","cumplieron los 6 días":"cumplieron los 6 días","no cumplieron":"no cumplieron","CUMPLIERON":"CUMPLIERON","NO LLEGARON":"NO LLEGARON","Sin jugadores":"Sin jugadores","Poder total":"Poder total","Poder medio":"Poder medio","Mayor Squad 1":"Mayor Squad 1","Jugadores":"Jugadores","TOP SQUAD 1":"TOP SQUAD 1","THP total":"THP total","THP medio":"THP medio","THP máximo":"THP máximo","THP mínimo":"THP mínimo","TOP 10 THP":"TOP 10 THP","DISTRIBUCIÓN DE PODER":"DISTRIBUCIÓN DE PODER","SQUAD 1":"SQUAD 1","THP":"THP","Total power heroe":"Total power heroe","Ingenieros":"Ingenieros","Warlords":"Warlords","Misiles":"Misiles","Tanques":"Tanques","Aéreos":"Aéreos","Sin datos":"Sin datos","DONACIONES":"DONACIONES","TREN":"TREN","MIEMBROS":"MIEMBROS",
+"ESTADÍSTICAS":"ESTADÍSTICAS","Datos recopilados desde las encuestas de la alianza":"Datos actualizados de los jugadores de la alianza",
+"Última actualización":"Última actualización","MIEMBROS":"MIEMBROS","Total":"Total","JUGADORES VS":"JUGADORES VS","Registros de VS":"Registros de VS",
+"REGISTROS COMPLETOS":"REGISTROS COMPLETOS","PERFILES COMPLETOS":"PERFILES COMPLETOS","THP MEDIO":"THP MEDIO","Poder de héroes":"Poder de héroes",
+"THP MÁXIMO":"THP MÁXIMO","PODER MEDIO SQUAD 1":"PODER MEDIO SQUAD 1","Squad principal":"Squad principal",
+"ESTADÍSTICAS PRINCIPALES":"ESTADÍSTICAS PRINCIPALES","SQUAD":"SQUAD","PROFESIÓN":"PROFESIÓN","jugadores":"jugadores",
+"jugadores con profesión":"jugadores con profesión","VER DETALLE":"VER DETALLE","Ver detalle":"Ver detalle","PODER DE LA ALIANZA":"PODER DE LA ALIANZA",
+"DISTRIBUCIÓN POR RANGOS":"DISTRIBUCIÓN POR RANGOS","TIPO DE SQUAD 1":"TIPO DE SQUAD 1","ACTIVIDAD":"ACTIVIDAD",
+"encuestas completadas":"encuestas completadas","ACCESOS RÁPIDOS":"ACCESOS RÁPIDOS","ESTADÍSTICAS VS":"ESTADÍSTICAS VS","ESTADÍSTICAS DS":"ESTADÍSTICAS DS",
+"ESTADÍSTICAS DONACIONES":"ESTADÍSTICAS DONACIONES","ESTADÍSTICAS TREN":"ESTADÍSTICAS TREN","ESTADÍSTICAS MIEMBROS":"ESTADÍSTICAS MIEMBROS",
+"INICIO":"INICIO","CENTRO DE ALIANZA":"CENTRO DE ALIANZA","GUÍAS":"GUÍAS"},
+en:{"Cumplió":"Met","No cumplió":"Did not meet","CUMPLIMIENTO VS":"VS COMPLIANCE","Semana 24–29":"Week 24–29","cumplieron":"met","no llegaron":"did not meet","Mínimo diario":"Daily minimum","cumplieron los 6 días":"met all 6 days","no cumplieron":"did not meet","CUMPLIERON":"MET","NO LLEGARON":"DID NOT MEET","Sin jugadores":"No players","Poder total":"Total power","Poder medio":"Average power","Mayor Squad 1":"Highest Squad 1","Jugadores":"Players","TOP SQUAD 1":"TOP SQUAD 1","THP total":"Total THP","THP medio":"Average THP","THP máximo":"Maximum THP","THP mínimo":"Minimum THP","TOP 10 THP":"TOP 10 THP","DISTRIBUCIÓN DE PODER":"POWER DISTRIBUTION","SQUAD 1":"SQUAD 1","THP":"THP","Total power heroe":"Total hero power","Ingenieros":"Engineers","Warlords":"Warlords","Misiles":"Missiles","Tanques":"Tanks","Aéreos":"Aircraft","Sin datos":"No data","DONACIONES":"DONATIONS","TREN":"TRAIN","MIEMBROS":"MEMBERS",
+"ESTADÍSTICAS":"STATISTICS","Datos recopilados desde las encuestas de la alianza":"Updated alliance player data","Última actualización":"Last updated",
+"MIEMBROS":"MEMBERS","Total":"Total","JUGADORES VS":"VS PLAYERS","Registros de VS":"VS records","REGISTROS COMPLETOS":"COMPLETE RECORDS",
+"PERFILES COMPLETOS":"COMPLETE PROFILES","THP MEDIO":"AVERAGE THP","Poder de héroes":"Hero power","THP MÁXIMO":"MAX THP",
+"PODER MEDIO SQUAD 1":"AVERAGE SQUAD 1 POWER","Squad principal":"Main squad","ESTADÍSTICAS PRINCIPALES":"MAIN STATISTICS","SQUAD":"SQUAD",
+"PROFESIÓN":"PROFESSION","jugadores":"players","jugadores con profesión":"players with profession","VER DETALLE":"VIEW DETAILS","Ver detalle":"View details",
+"PODER DE LA ALIANZA":"ALLIANCE POWER","DISTRIBUCIÓN POR RANGOS":"POWER DISTRIBUTION","TIPO DE SQUAD 1":"SQUAD 1 TYPE","ACTIVIDAD":"ACTIVITY",
+"encuestas completadas":"completed surveys","ACCESOS RÁPIDOS":"QUICK ACCESS","ESTADÍSTICAS VS":"VS STATISTICS","ESTADÍSTICAS DS":"DS STATISTICS",
+"ESTADÍSTICAS DONACIONES":"DONATION STATISTICS","ESTADÍSTICAS TREN":"TRAIN STATISTICS","ESTADÍSTICAS MIEMBROS":"MEMBERS STATISTICS",
+"INICIO":"HOME","CENTRO DE ALIANZA":"ALLIANCE CENTER","GUÍAS":"GUIDES"},
+de:{"CUMPLIMIENTO VS":"VS-ERFÜLLUNG","Semana 24–29":"Woche 24–29","cumplieron":"erfüllt","no llegaron":"nicht erfüllt","Mínimo diario":"Tägliches Minimum","Cumplió":"Erfüllt","No cumplió":"Nicht erfüllt","Poder total":"Gesamtstärke","Poder medio":"Durchschnittliche Stärke","Mayor Squad 1":"Stärkstes Squad 1","Jugadores":"Spieler","TOP SQUAD 1":"TOP SQUAD 1","THP total":"THP gesamt","THP medio":"THP Durchschnitt","THP máximo":"THP Maximum","THP mínimo":"THP Minimum","TOP 10 THP":"TOP 10 THP","DISTRIBUCIÓN DE PODER":"KRAFTVERTEILUNG","SQUAD 1":"SQUAD 1","THP":"THP","Total power heroe":"Gesamte Heldenstärke","Ingenieros":"Ingenieure","Warlords":"Warlords","Misiles":"Raketen","Tanques":"Panzer","Aéreos":"Luft","Sin datos":"Keine Daten","DONACIONES":"SPENDEN","TREN":"ZUG","MIEMBROS":"MITGLIEDER",
+"ESTADÍSTICAS":"STATISTIKEN","Datos recopilados desde las encuestas de la alianza":"Aktualisierte Allianz-Spielerdaten","Última actualización":"Letzte Aktualisierung",
+"MIEMBROS":"MITGLIEDER","Total":"Gesamt","JUGADORES VS":"VS-SPIELER","Registros de VS":"VS-Einträge","REGISTROS COMPLETOS":"VOLLSTÄNDIGE EINTRÄGE",
+"PERFILES COMPLETOS":"VOLLSTÄNDIGE PROFILE","THP MEDIO":"DURCHSCHNITTLICHES THP","Poder de héroes":"Heldenstärke","THP MÁXIMO":"MAX. THP",
+"PODER MEDIO SQUAD 1":"DURCHSCHNITTLICHE SQUAD-1-STÄRKE","Squad principal":"Haupt-Squad","ESTADÍSTICAS PRINCIPALES":"HAUPTSTATISTIKEN","SQUAD":"SQUAD",
+"PROFESIÓN":"BERUF","jugadores":"Spieler","jugadores con profesión":"Spieler mit Beruf","VER DETALLE":"DETAILS ANZEIGEN","Ver detalle":"Details anzeigen",
+"PODER DE LA ALIANZA":"ALLIANZSTÄRKE","DISTRIBUCIÓN POR RANGOS":"STÄRKEVERTEILUNG","TIPO DE SQUAD 1":"SQUAD-1-TYP","ACTIVIDAD":"AKTIVITÄT",
+"encuestas completadas":"abgeschlossene Umfragen","ACCESOS RÁPIDOS":"SCHNELLZUGRIFF","ESTADÍSTICAS VS":"VS-STATISTIKEN","ESTADÍSTICAS DS":"DS-STATISTIKEN",
+"ESTADÍSTICAS DONACIONES":"SPENDENSTATISTIKEN","ESTADÍSTICAS TREN":"ZUG-STATISTIKEN","ESTADÍSTICAS MIEMBROS":"MITGLIEDERSTATISTIKEN",
+"INICIO":"STARTSEITE","CENTRO DE ALIANZA":"ALLIANZZENTRUM","GUÍAS":"ANLEITUNGEN"},
+fr:{"CUMPLIMIENTO VS":"RESPECT VS","Semana 24–29":"Semaine 24–29","cumplieron":"ont réussi","no llegaron":"n’ont pas atteint","Mínimo diario":"Minimum quotidien","Cumplió":"Réussi","No cumplió":"Non réussi","Poder total":"Puissance totale","Poder medio":"Puissance moyenne","Mayor Squad 1":"Squad 1 le plus puissant","Jugadores":"Joueurs","TOP SQUAD 1":"TOP SQUAD 1","THP total":"THP total","THP medio":"THP moyen","THP máximo":"THP maximum","THP mínimo":"THP minimum","TOP 10 THP":"TOP 10 THP","DISTRIBUCIÓN DE PODER":"RÉPARTITION DE LA PUISSANCE","SQUAD 1":"SQUAD 1","THP":"THP","Total power heroe":"Puissance totale des héros","Ingenieros":"Ingénieurs","Warlords":"Seigneurs de guerre","Misiles":"Missiles","Tanques":"Chars","Aéreos":"Aérien","Sin datos":"Aucune donnée","DONACIONES":"DONS","TREN":"TRAIN","MIEMBROS":"MEMBRES",
+"ESTADÍSTICAS":"STATISTIQUES","Datos recopilados desde las encuestas de la alianza":"Données actualisées des joueurs de l’alliance","Última actualización":"Dernière mise à jour",
+"MIEMBROS":"MEMBRES","Total":"Total","JUGADORES VS":"JOUEURS VS","Registros de VS":"enregistrements VS","REGISTROS COMPLETOS":"ENREGISTREMENTS COMPLETS",
+"PERFILES COMPLETOS":"PROFILS COMPLETS","THP MEDIO":"THP MOYEN","Poder de héroes":"Puissance des héros","THP MÁXIMO":"THP MAXIMUM",
+"PODER MEDIO SQUAD 1":"PUISSANCE MOYENNE SQUAD 1","Squad principal":"Squad principal","ESTADÍSTICAS PRINCIPALES":"STATISTIQUES PRINCIPALES","SQUAD":"SQUAD",
+"PROFESIÓN":"PROFESSION","jugadores":"joueurs","jugadores con profesión":"joueurs avec profession","VER DETALLE":"VOIR LES DÉTAILS","Ver detalle":"Voir les détails",
+"PODER DE LA ALIANZA":"PUISSANCE DE L’ALLIANCE","DISTRIBUCIÓN POR RANGOS":"RÉPARTITION DE LA PUISSANCE","TIPO DE SQUAD 1":"TYPE DE SQUAD 1","ACTIVIDAD":"ACTIVITÉ",
+"encuestas completadas":"questionnaires terminés","ACCESOS RÁPIDOS":"ACCÈS RAPIDE","ESTADÍSTICAS VS":"STATISTIQUES VS","ESTADÍSTICAS DS":"STATISTIQUES DS",
+"ESTADÍSTICAS DONACIONES":"STATISTIQUES DES DONS","ESTADÍSTICAS TREN":"STATISTIQUES DU TRAIN","ESTADÍSTICAS MIEMBROS":"STATISTIQUES DES MEMBRES",
+"INICIO":"ACCUEIL","CENTRO DE ALIANZA":"CENTRE DE L’ALLIANCE","GUÍAS":"GUIDES"},
+ro:{"CUMPLIMIENTO VS":"ÎNDEPLINIRE VS","Cumplió":"Îndeplinit","No cumplió":"Neîndeplinit","Poder total":"Putere totală","Poder medio":"Putere medie","Mayor Squad 1":"Cel mai puternic Squad 1","Jugadores":"Jucători","TOP SQUAD 1":"TOP SQUAD 1","THP total":"THP total","THP medio":"THP mediu","THP máximo":"THP maxim","THP mínimo":"THP minim","TOP 10 THP":"TOP 10 THP","DISTRIBUCIÓN DE PODER":"DISTRIBUȚIA PUTERII","SQUAD 1":"SQUAD 1","THP":"THP","Total power heroe":"Puterea totală a eroilor","Ingenieros":"Ingineri","Warlords":"Warlords","Misiles":"Rachete","Tanques":"Tancuri","Aéreos":"Aeriene","Sin datos":"Fără date","DONACIONES":"DONAȚII","TREN":"TREN","MIEMBROS":"MEMBRI",
+"ESTADÍSTICAS":"STATISTICI","Datos recopilados desde las encuestas de la alianza":"Date actualizate ale jucătorilor alianței","Última actualización":"Ultima actualizare",
+"MIEMBROS":"MEMBRI","Total":"Total","JUGADORES VS":"JUCĂTORI VS","Registros de VS":"înregistrări VS","REGISTROS COMPLETOS":"ÎNREGISTRĂRI COMPLETE",
+"PERFILES COMPLETOS":"PROFILURI COMPLETE","THP MEDIO":"THP MEDIU","Poder de héroes":"Puterea eroilor","THP MÁXIMO":"THP MAXIM",
+"PODER MEDIO SQUAD 1":"PUTEREA MEDIE A SQUAD 1","Squad principal":"Squad principal","ESTADÍSTICAS PRINCIPALES":"STATISTICI PRINCIPALE","SQUAD":"SQUAD",
+"PROFESIÓN":"PROFESIE","jugadores":"jucători","jugadores con profesión":"jucători cu profesie","VER DETALLE":"VEZI DETALII","Ver detalle":"Vezi detalii",
+"PODER DE LA ALIANZA":"PUTEREA ALIANȚEI","DISTRIBUCIÓN POR RANGOS":"DISTRIBUȚIA PUTERII","TIPO DE SQUAD 1":"TIP SQUAD 1","ACTIVIDAD":"ACTIVITATE",
+"encuestas completadas":"chestionare completate","ACCESOS RÁPIDOS":"ACCES RAPID","ESTADÍSTICAS VS":"STATISTICI VS","ESTADÍSTICAS DS":"STATISTICI DS",
+"ESTADÍSTICAS DONACIONES":"STATISTICI DONAȚII","ESTADÍSTICAS TREN":"STATISTICI TREN","ESTADÍSTICAS MIEMBROS":"STATISTICI MEMBRI",
+"INICIO":"ACASĂ","CENTRO DE ALIANZA":"CENTRUL ALIANȚEI","GUÍAS":"GHIDURI"},
+pt:{"CUMPLIMIENTO VS":"CUMPRIMENTO VS","Cumplió":"Cumpriu","No cumplió":"Não cumpriu","Poder total":"Poder total","Poder medio":"Poder médio","Mayor Squad 1":"Squad 1 mais poderoso","Jugadores":"Jogadores","TOP SQUAD 1":"TOP SQUAD 1","THP total":"THP total","THP medio":"THP médio","THP máximo":"THP máximo","THP mínimo":"THP mínimo","TOP 10 THP":"TOP 10 THP","DISTRIBUCIÓN DE PODER":"DISTRIBUIÇÃO DE PODER","SQUAD 1":"SQUAD 1","THP":"THP","Total power heroe":"Poder total dos heróis","Ingenieros":"Engenheiros","Warlords":"Warlords","Misiles":"Mísseis","Tanques":"Tanques","Aéreos":"Aéreos","Sin datos":"Sem dados","DONACIONES":"DOAÇÕES","TREN":"TREM","MIEMBROS":"MEMBROS",
+"ESTADÍSTICAS":"ESTATÍSTICAS","Datos recopilados desde las encuestas de la alianza":"Dados atualizados dos jogadores da aliança","Última actualización":"Última atualização",
+"MIEMBROS":"MEMBROS","Total":"Total","JUGADORES VS":"JOGADORES VS","Registros de VS":"registos VS","REGISTROS COMPLETOS":"REGISTOS COMPLETOS",
+"PERFILES COMPLETOS":"PERFIS COMPLETOS","THP MEDIO":"THP MÉDIO","Poder de héroes":"Poder dos heróis","THP MÁXIMO":"THP MÁXIMO",
+"PODER MEDIO SQUAD 1":"PODER MÉDIO DO SQUAD 1","Squad principal":"Squad principal","ESTADÍSTICAS PRINCIPALES":"ESTATÍSTICAS PRINCIPAIS","SQUAD":"SQUAD",
+"PROFESIÓN":"PROFISSÃO","jugadores":"jogadores","jugadores con profesión":"jogadores com profissão","VER DETALLE":"VER DETALHES","Ver detalle":"Ver detalhes",
+"PODER DE LA ALIANZA":"PODER DA ALIANÇA","DISTRIBUCIÓN POR RANGOS":"DISTRIBUIÇÃO DE PODER","TIPO DE SQUAD 1":"TIPO DE SQUAD 1","ACTIVIDAD":"ATIVIDADE",
+"encuestas completadas":"pesquisas concluídas","ACCESOS RÁPIDOS":"ACESSO RÁPIDO","ESTADÍSTICAS VS":"ESTATÍSTICAS VS","ESTADÍSTICAS DS":"ESTATÍSTICAS DS",
+"ESTADÍSTICAS DONACIONES":"ESTATÍSTICAS DE DOAÇÕES","ESTADÍSTICAS TREN":"ESTATÍSTICAS DO TREM","ESTADÍSTICAS MIEMBROS":"ESTATÍSTICAS DOS MEMBROS",
+"INICIO":"INÍCIO","CENTRO DE ALIANZA":"CENTRO DA ALIANÇA","GUÍAS":"GUIAS"},
+uk:{"CUMPLIMIENTO VS":"ВИКОНАННЯ VS","Cumplió":"Виконано","No cumplió":"Не виконано","Jugadores":"Гравці","TOP SQUAD 1":"ТОП SQUAD 1","THP total":"Загальний THP","THP medio":"Середній THP","THP máximo":"Максимальний THP","THP mínimo":"Мінімальний THP","TOP 10 THP":"ТОП-10 THP","DISTRIBUCIÓN DE PODER":"РОЗПОДІЛ СИЛИ","DONACIONES":"ПОЖЕРТВИ","TREN":"ПОЇЗД","MIEMBROS":"УЧАСНИКИ",
+"ESTADÍSTICAS":"СТАТИСТИКА","Datos recopilados desde las encuestas de la alianza":"Оновлені дані гравців альянсу","Última actualización":"Останнє оновлення",
+"MIEMBROS":"УЧАСНИКИ","Total":"Усього","JUGADORES VS":"ГРАВЦІ VS","Registros de VS":"записів VS","REGISTROS COMPLETOS":"ПОВНІ ЗАПИСИ",
+"PERFILES COMPLETOS":"ПОВНІ ПРОФІЛІ","THP MEDIO":"СЕРЕДНІЙ THP","Poder de héroes":"Сила героїв","THP MÁXIMO":"МАКС. THP",
+"PODER MEDIO SQUAD 1":"СЕРЕДНЯ СИЛА SQUAD 1","Squad principal":"Основний загін","ESTADÍSTICAS PRINCIPALES":"ОСНОВНА СТАТИСТИКА","SQUAD":"ЗАГІН",
+"PROFESIÓN":"ПРОФЕСІЯ","jugadores":"гравців","jugadores con profesión":"гравців із професією","VER DETALLE":"ПЕРЕГЛЯНУТИ ДЕТАЛІ","Ver detalle":"Переглянути деталі",
+"PODER DE LA ALIANZA":"СИЛА АЛЬЯНСУ","DISTRIBUCIÓN POR RANGOS":"РОЗПОДІЛ СИЛИ","TIPO DE SQUAD 1":"ТИП SQUAD 1","ACTIVIDAD":"АКТИВНІСТЬ",
+"encuestas completadas":"заповнених анкет","ACCESOS RÁPIDOS":"ШВИДКИЙ ДОСТУП","ESTADÍSTICAS VS":"СТАТИСТИКА VS","ESTADÍSTICAS DS":"СТАТИСТИКА DS",
+"ESTADÍSTICAS DONACIONES":"СТАТИСТИКА ПОЖЕРТВ","ESTADÍSTICAS TREN":"СТАТИСТИКА ПОЇЗДА","ESTADÍSTICAS MIEMBROS":"СТАТИСТИКА УЧАСНИКІВ",
+"INICIO":"ГОЛОВНА","CENTRO DE ALIANZA":"ЦЕНТР АЛЬЯНСУ","GUÍAS":"ПОСІБНИКИ"}
+};
+let holaLang=localStorage.getItem("holaLang")||"es";
+const t=k=>(HOLA_I18N[holaLang]||HOLA_I18N.es)[k]||k;
+function setLanguage(lang){holaLang=lang;localStorage.setItem("holaLang",lang);if(typeof render==="function")render();applyTranslations();}
+function applyTranslations(){
+ document.documentElement.lang=holaLang;
+ const sel=document.getElementById("languageSelect");if(sel)sel.value=holaLang;
+ document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=t(el.dataset.i18n));
+}
+document.addEventListener("DOMContentLoaded",applyTranslations);
+</script>
+
+<script>
+const SUPABASE_URL="https://ovybstpiomphrouvqxmf.supabase.co";
+const SUPABASE_KEY="sb_publishable_gU5Wgy2NhdXcy23_TotF9g_LKthVmKV";
+let players=[];
+
+function num(v){
+  if(v===null||v===undefined||v==="") return 0;
+  let s=String(v).trim().toUpperCase().replace(/\s/g,"");
+  const hasM=/M$/.test(s), hasB=/B$/.test(s), hasK=/K$/.test(s);
+  s=s.replace(/M$|B$|K$/,"").replace(/[^0-9,.-]/g,"");
+  if(s.includes(",")){
+    // Supabase stores these power values in Spanish decimal notation.
+    // Example: 114,70 -> 114.70M; 74,766,806 -> 74.766806M.
+    s=s.replace(/\./g,"").replace(/,/g,".");
+  }
+  const x=parseFloat(s);
+  if(!Number.isFinite(x)) return 0;
+  if(hasB) return x*1000;
+  if(hasK) return x/1000;
+  return x; // values in this table are already expressed in millions
+}
+function fmt(v){return num(v).toLocaleString("es-ES",{minimumFractionDigits:1,maximumFractionDigits:1})+"M"}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+
+function makeSquadTypeCard(title,list){
+  const typeOf=p=>String(p.squad1_type||"").trim().toLowerCase();
+  const groups=[
+    {label:"Misiles",icon:"🚀",cls:"missile-type",arr:list.filter(p=>["missile","missiles","misil","misiles"].includes(typeOf(p)))},
+    {label:"Tanques",icon:"🛡️",cls:"tank-type",arr:list.filter(p=>["tank","tanks","tanque","tanques"].includes(typeOf(p)))},
+    {label:"Aéreos",icon:"✈️",cls:"air-type",arr:list.filter(p=>["aircraft","air","aire","aerial","aéreo","aereos","aéreos"].includes(typeOf(p)))}
+  ];
+  return `<article class="card squadtypes-card accent-cyan" data-card="squadtypes" tabindex="0" role="button">
+    <div class="cardhead"><div class="squadtypes-summary"><div class="squadtypes-title">🎯 ${esc(title)}</div>
+      <div class="type-summary-grid">${groups.map(g=>{
+        const total=g.arr.reduce((s,p)=>s+num(p.squad1_power),0), avg=g.arr.length?total/g.arr.length:0;
+        const top=[...g.arr].sort((a,b)=>num(b.squad1_power)-num(a.squad1_power))[0];
+        return `<div class="type-summary ${g.cls}"><div class="type-summary-head"><span>${g.icon}</span><strong>${esc(t(g.label))}</strong><b>${g.arr.length}</b></div></div>`;
+      }).join("")}</div>
+    </div><span class="card-open">›</span></div>
   </article>`;
 }
 
+function makeHQCard(title,list){
+  const hqVal=p=>String(p.hq ?? p.HQ ?? p.hq_level ?? p.hqLevel ?? "").trim();
+  const t10Val=p=>p.t10 ?? p.T10 ?? p.has_t10 ?? p.hasT10;
+  const hasT10=p=>t10Val(p)===true || ["si","sí","yes","true","1","con t10"].includes(String(t10Val(p)).trim().toLowerCase());
+  const hq30=list.filter(p=>hqVal(p)==="30").length;
+  const t10=list.filter(hasT10).length;
+  return `<article class="card hq-card accent-green" data-card="hq" tabindex="0" role="button">
+    <div class="cardhead">
+      <div class="squadtypes-summary">
+        <div class="squadtypes-title">🏰 ${esc(title)}</div>
+        <div class="hq-compact">
+          <span>🏰 <b>${hq30}</b> ${esc(t("HQ 30"))}</span>
+          <span>🛡️ <b>${t10}</b> ${esc(t("T10"))}</span>
+        </div>
+      </div>
+      <span class="card-open">›</span>
+    </div>
+  </article>`;
+}
+
+function makeVSComplianceCard(title,list){
+  return `<article class="card vs-compliance-card accent-blue" data-card="vscompliance" tabindex="0" role="button">
+    <div class="cardhead"><div class="vs-compliance-summary">
+      <div class="squadtypes-title">⚔️ ${esc(title)}</div>
+      <div class="vs-week-label">${esc(t("Semana 24–29"))}</div>
+      <div class="vs-compliance-counts"><span>✅ <b id="vsCoverMet">—</b> ${esc(t("cumplieron"))}</span><span>❌ <b id="vsCoverMissed">—</b> ${esc(t("no llegaron"))}</span></div>
+      <small class="vs-minimum">${esc(t("Mínimo diario"))}: 7,2M</small>
+    </div><span class="card-open">›</span></div>
+  </article>`;
+}
+
+function makeCard(id,title,icon,count,subtitle,list,accent,key){
+  if(id==="profession"){
+    const engineers=list.filter(p=>String(p.profession||"").toLowerCase()==="engineer").sort((a,b)=>num(b.thp)-num(a.thp));
+    const warlords=list.filter(p=>String(p.profession||"").toLowerCase()==="warlord").sort((a,b)=>num(b.thp)-num(a.thp));
+    return `<article class="card profession-card ${accent}" data-card="profession" tabindex="0" role="button" aria-label="${esc(title)}">
+      <div class="cardhead profession-head">
+        <div class="profession-summary">
+          <div class="profession-title">${icon} ${esc(title)}</div>
+          <div class="profession-types">
+            <div class="profession-type engineer-type"><span class="profession-icon">👷</span><div><strong>${engineers.length}</strong><small>${esc(t("Ingenieros"))}</small></div></div>
+            <div class="profession-type warlord-type"><span class="profession-icon">⚔️</span><div><strong>${warlords.length}</strong><small>${esc(t("Warlords"))}</small></div></div>
+          </div>
+        </div><span class="card-open">›</span>
+      </div>
+      <div class="rows profession-rows">
+        <div class="profession-group-row"><span class="group-icon">👷</span><span class="group-name">${esc(t("Ingenieros"))}</span><span class="group-count">${engineers.length}</span></div>
+        ${engineers.map((p,i)=>`<div class="row"><span class="rank">#${i+1}</span><span class="name">${esc(p.flag||"🌍")} ${esc(p.name)}</span><span class="value">${fmt(p.thp)}</span></div>`).join("")}
+        <div class="profession-group-row"><span class="group-icon">⚔️</span><span class="group-name">${esc(t("Warlords"))}</span><span class="group-count">${warlords.length}</span></div>
+        ${warlords.map((p,i)=>`<div class="row"><span class="rank">#${i+1}</span><span class="name">${esc(p.flag||"🌍")} ${esc(p.name)}</span><span class="value">${fmt(p.thp)}</span></div>`).join("")}
+      </div>
+    </article>`;
+  }
+
+  if(id==="squad"){
+    const ranked=[...list].filter(p=>num(p.squad1_power)>0).sort((a,b)=>num(b.squad1_power)-num(a.squad1_power));
+    const total=ranked.reduce((s,p)=>s+num(p.squad1_power),0);
+    const avg=ranked.length?total/ranked.length:0;
+    const max=ranked.length?num(ranked[0].squad1_power):0;
+
+    return `<article class="card squad-card ${accent}" data-card="squad" tabindex="0" role="button" aria-label="${esc(title)}">
+      <div class="cardhead squad-head">
+        <div class="squad-summary">
+          <div class="squad-title">${icon} ${esc(title)}</div>
+          <div class="squad-stats">
+            <div><span>⚡</span><strong>${fmt(total)}</strong><small>${esc(t("Poder total"))}</small></div>
+            <div><span>📊</span><strong>${fmt(avg)}</strong><small>${esc(t("Poder medio"))}</small></div>
+            <div><span>👑</span><strong>${fmt(max)}</strong><small>${esc(t("Mayor Squad 1"))}</small></div>
+          </div>
+        </div>
+        <span class="card-open">›</span>
+      </div>
+      <div class="rows squad-performance-rows">
+        ${ranked.map((p,i)=>`<div class="row"><span class="rank">#${i+1}</span><span class="name">${esc(p.flag||"🌍")} ${esc(p.name)}</span><span class="value">${fmt(p.squad1_power)}</span></div>`).join("")}
+      </div>
+    </article>`;
+  }
+
+  const sorted=[...list].sort((a,b)=>num(b[key])-num(a[key]));
+  return `<article class="card ${accent}" data-card="${id}" tabindex="0" role="button" aria-label="${esc(title)}">
+    <div class="cardhead"><div class="card-main"><h4>${icon} ${title}</h4><div class="big">${count}</div><div class="small">${esc(subtitle)}</div></div><span class="card-open">›</span></div>
+    <div class="rows">${sorted.map((p,i)=>`<div class="row"><span class="rank">#${i+1}</span><span class="name">${esc(p.flag||"🌍")} ${esc(p.name)}</span><span class="value">${fmt(p[key])}</span></div>`).join("")}</div>
+  </article>`;
+}
+function render(){
+  const total=players.length;
+  const surveyed=players.filter(p=>p.thp && p.squad1_power && p.profession).length;
+  const active=players.filter(p=>p.thp && p.squad1_power).length;
+  const avg=total?players.reduce((s,p)=>s+num(p.thp),0)/total:0;
+  const top=[...players].sort((a,b)=>num(b.thp)-num(a.thp))[0];
+  const squadAvg=total?players.reduce((s,p)=>s+num(p.squad1_power),0)/total:0;
+
+  document.getElementById("kMembers").textContent=total;
+  document.getElementById("kActive").textContent=active;
+  document.getElementById("kActivePct").textContent=total?Math.round(active/total*100)+"% del total":"—";
+  document.getElementById("kSurvey").textContent=surveyed;
+  document.getElementById("kSurveyPct").textContent=total?Math.round(surveyed/total*100)+"% del total":"—";
+  document.getElementById("kAvg").textContent=fmt(avg);
+  document.getElementById("kTop").textContent=top?fmt(top.thp):"—";
+  document.getElementById("kTopName").textContent=top?top.name:"—";
+  document.getElementById("kSquad").textContent=fmt(squadAvg);
+
+  const tanks=players.filter(p=>String(p.squad1_type||"").toLowerCase()==="tank");
+  const air=players.filter(p=>["aircraft","air","aire"].includes(String(p.squad1_type||"").toLowerCase()));
+  const missiles=players.filter(p=>["missile","missiles","misiles"].includes(String(p.squad1_type||"").toLowerCase()));
+  const engineers=players.filter(p=>String(p.profession||"").toLowerCase()==="engineer");
+  const warlords=players.filter(p=>String(p.profession||"").toLowerCase()==="warlord");
+
+  const totalTHP=players.reduce((s,p)=>s+num(p.thp),0);
+
+  document.getElementById("rankGrid").innerHTML=
+    makeCard("squad",t("SQUAD 1"),"🛡️",players.length,t("jugadores"),players,"accent-cyan","squad1_power")+
+    makeCard("profession",t("PROFESIÓN"),"👷",engineers.length+warlords.length,
+      t("jugadores con profesión"),[...engineers,...warlords],"accent-purple","thp")+
+    makeCard("power",t("THP"),"🏆",fmt(totalTHP),t("Total power heroe"),players,"accent-gold","thp")+
+    makeHQCard(t("HQ & T10"),players)+
+    makeSquadTypeCard(t("TIPO DE SQUAD 1"),players)+
+    makeVSComplianceCard(t("CUMPLIMIENTO VS"),players);
+}
+
 async function load(){
-  document.getElementById('updatedAt').textContent='Actualizando...';
+  document.getElementById("updated").textContent="cargando…";
   try{
-    const snap=await getDocs(collection(db, "players"));
-    const all=[];
-    snap.forEach(d=>{
-      const raw=d.data()||{};
-      const name=String(raw.name||raw.playerName||d.id||'').trim();
-      all.push(player(name,raw));
-      all[all.length-1].raw=raw;
-    });
-    const withT10=all.filter(p=>yesT10(p.raw));
-    const withoutT10=all.filter(p=>!yesT10(p.raw));
-    const air=all.filter(p=>['aircraft','air','aire'].includes(squadType(p.raw)));
-    const tanks=all.filter(p=>['tank','tanks','tanque'].includes(squadType(p.raw)));
-    const missiles=all.filter(p=>['missile','missiles','misiles'].includes(squadType(p.raw)));
-    const engineers=all.filter(p=>['engineer','engineers','ingeniero','ingenieros'].includes(profession(p.raw)));
-    const warlords=all.filter(p=>['warlord','warlords'].includes(profession(p.raw)));
-
-    document.getElementById('t10Grid').innerHTML =
-      card({title:'CON T10',count:withT10.length,icon:'🛡️',accent:'green',players:withT10,listTitle:'JUGADORES CON T10'}) +
-      card({title:'SIN T10',count:withoutT10.length,icon:'🛡️',accent:'red',players:withoutT10,listTitle:'JUGADORES SIN T10'});
-
-    document.getElementById('squadGrid').innerHTML =
-      card({title:'AIRE',count:air.length,icon:'🚁',accent:'blue',players:air,listTitle:'JUGADORES (AIRE)',valueKey:'squadPower',valueLabel:'SQUAD 1'}) +
-      card({title:'TANQUE',count:tanks.length,icon:'🛡️',accent:'gold',players:tanks,listTitle:'JUGADORES (TANQUE)',valueKey:'squadPower',valueLabel:'SQUAD 1'}) +
-      card({title:'MISILES',count:missiles.length,icon:'🚀',accent:'purple',players:missiles,listTitle:'JUGADORES (MISILES)',valueKey:'squadPower',valueLabel:'SQUAD 1'});
-
-    document.getElementById('professionGrid').innerHTML =
-      card({title:'INGENIEROS',count:engineers.length,icon:'👷',accent:'green',players:engineers,listTitle:'INGENIEROS'}) +
-      card({title:'WARLORDS',count:warlords.length,icon:'⚔️',accent:'red',players:warlords,listTitle:'WARLORDS'});
-
-    document.getElementById('updatedAt').textContent=new Date().toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
-  }catch(err){
-    console.error(err);
-    document.querySelectorAll('.grid').forEach(g=>g.innerHTML='<div class="empty">No se pudieron cargar los datos de Firebase.</div>');
-    document.getElementById('updatedAt').textContent='Error al cargar';
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/players?select=*`,{headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`}});
+    if(!r.ok) throw new Error("Supabase HTTP "+r.status);
+    players=await r.json();
+    // VS is loaded separately so it can never prevent the other cards from rendering.
+    try {
+    // VS: contar jugadores únicos de la tabla histórica, no filas de puntos.
+    const vr=await fetch(`${SUPABASE_URL}/rest/v1/vs_scores?select=player_name,day,points,week_type,vs_date&week_type=eq.push&vs_date=eq.2026-08-24&day=gte.1&day=lte.6&limit=10000`,{headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`}});
+    if(!vr.ok) throw new Error("VS HTTP "+vr.status);
+    const vsRows=await vr.json();
+    const days=[1,2,3,4,5,6], minimum=7200000;
+    const daily=new Map();
+    for(const row of vsRows){
+      const name=String(row.player_name||"").trim();
+      const day=Number(row.day);
+      if(!name||!days.includes(day)) continue;
+      if(!daily.has(name)) daily.set(name,{});
+      daily.get(name)[day]=(daily.get(name)[day]||0)+(Number(row.points)||0);
+    }
+    // Include every current player from players; missing VS record = 0 for that day.
+    const playerMap=new Map(players.map(p=>[String(p.name||"").trim(),p]));
+    for(const name of playerMap.keys()) if(!daily.has(name)) daily.set(name,{});
+    const compliance=[...daily.entries()].map(([name,vals])=>({
+      name, vals, thp:playerMap.get(name)?.thp||0,
+      met:days.every(d=>(vals[d]||0)>=minimum)
+    }));
+    window.vsWeeklyCompliance=compliance;
+    window.vsWeeklyMinimum=minimum;
+    window.vsWeeklyDays=days;
+    window.vsWeeklyMet=compliance.filter(x=>x.met);
+    window.vsWeeklyMissed=compliance.filter(x=>!x.met);
+    window.holaVSPlayers=compliance.filter(x=>days.some(d=>(x.vals[d]||0)>0)).length;
+    window.holaVSRows=vsRows.length;
+    } catch(vsErr) {
+      console.warn("VS compliance unavailable:",vsErr);
+      window.vsWeeklyCompliance=[];
+      window.vsWeeklyMet=[];
+      window.vsWeeklyMissed=[];
+      window.holaVSPlayers=0;
+      window.holaVSRows=0;
+    }
+    render();
+    const metEl=document.getElementById("vsCoverMet"), missedEl=document.getElementById("vsCoverMissed");
+    if(metEl)metEl.textContent=window.vsWeeklyMet?.length??0;
+    if(missedEl)missedEl.textContent=window.vsWeeklyMissed?.length??0;
+    const vsEl=document.getElementById("kVSPlayers");
+    if(vsEl)vsEl.textContent=window.holaVSPlayers??"—";
+    const vsSub=document.getElementById("kVSDates");
+    if(vsSub)vsSub.textContent=`${window.holaVSRows??0} registros VS`;
+    const d=new Date();
+    document.getElementById("updated").textContent=d.toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"})+" "+d.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
+  }catch(e){
+    console.error(e);
+    document.getElementById("updated").textContent="error";
+    document.getElementById("rankGrid").innerHTML=`<div class="empty" style="grid-column:1/-1">No se pudieron cargar las estadísticas.<br><small>${esc(e.message)}</small></div>`;
   }
 }
-document.getElementById('refreshBtn').addEventListener('click',load);
+
+const statModal=document.getElementById("statModal");
+const statModalTitle=document.getElementById("statModalTitle");
+const statModalCount=document.getElementById("statModalCount");
+const statModalRows=document.getElementById("statModalRows");
+const statModalClose=document.getElementById("statModalClose");
+
+function closeStatModal(){
+  statModal.hidden=true;
+  statModal.style.display="none";
+  document.body.style.overflow="";
+}
+
+function openStatModal(card){if(card.dataset.card==="vscompliance"){
+  const rows=window.vsWeeklyCompliance||[];
+  const met=[...rows].filter(x=>x.met).sort((a,b)=>num(b.thp)-num(a.thp)||a.name.localeCompare(b.name));
+  const missed=[...rows].filter(x=>!x.met).sort((a,b)=>num(b.thp)-num(a.thp)||a.name.localeCompare(b.name));
+
+  const playerList=(arr,ok)=>arr.length
+    ? arr.map(x=>`<div class="vs-player-detail simple">
+        <span class="vs-player-status">${ok?"🟢":"🔴"}</span>
+        <span class="vs-player-name">${esc(x.name)}</span>
+        <strong>${ok?esc(t("Cumplió")):esc(t("No cumplió"))}</strong>
+      </div>`).join("")
+    : `<div class="empty-state">${esc(t("Sin jugadores"))}</div>`;
+
+  statModalTitle.textContent=t("CUMPLIMIENTO VS");
+  statModalCount.textContent=`${met.length} / ${rows.length}`;
+  statModalRows.innerHTML=`<div class="vs-compliance-modal">
+    <div class="vs-modal-summary">
+      <div><span>📅</span><strong>${esc(t("Semana 24–29"))}</strong><small>${esc(t("Mínimo diario"))}: 7,2M</small></div>
+      <div><span>✅</span><strong>${met.length}</strong><small>${esc(t("cumplieron los 6 días"))}</small></div>
+      <div><span>❌</span><strong>${missed.length}</strong><small>${esc(t("no cumplieron"))}</small></div>
+    </div>
+    <section class="vs-compliance-section">
+      <h3>✅ ${esc(t("CUMPLIERON"))} <b>${met.length}</b></h3>
+      ${playerList(met,true)}
+    </section>
+    <section class="vs-compliance-section">
+      <h3>❌ ${esc(t("NO LLEGARON"))} <b>${missed.length}</b></h3>
+      ${playerList(missed,false)}
+    </section>
+  </div>`;
+
+  statModal.hidden=false;
+  statModal.style.display="flex";
+  statModal.classList.add("open");
+  document.body.style.overflow="hidden";
+  return;
+}
+
+const titleEl=card.querySelector(".card-main h4, h4, .profession-title");
+  const countEl=card.querySelector(".card-main .big, .big");
+  const title=titleEl ? titleEl.textContent.trim() : "";
+  const count=countEl ? countEl.textContent.trim() : "";
+
+  statModalTitle.textContent=title;
+  statModalCount.textContent=count;
+
+  if(card.dataset.card==="squad"){
+    const ranked=[...players].filter(p=>num(p.squad1_power)>0).sort((a,b)=>num(b.squad1_power)-num(a.squad1_power));
+    const total=ranked.reduce((s,p)=>s+num(p.squad1_power),0);
+    const avg=ranked.length?total/ranked.length:0;
+    const max=ranked.length?num(ranked[0].squad1_power):0;
+    const ranges=[
+      {label:"100M+",min:100,max:Infinity},
+      {label:"80–99M",min:80,max:100},
+      {label:"60–79M",min:60,max:80},
+      {label:"40–59M",min:40,max:60},
+      {label:"<40M",min:0,max:40}
+    ];
+    statModalRows.innerHTML=`<div class="squad-dashboard">
+      <div class="squad-dashboard-summary">
+        <div><span>⚡</span><small>${esc(t("Poder total"))}</small><strong>${fmt(total)}</strong></div>
+        <div><span>📊</span><small>${esc(t("Poder medio"))}</small><strong>${fmt(avg)}</strong></div>
+        <div><span>👑</span><small>${esc(t("Mayor Squad 1"))}</small><strong>${ranked.length?esc(ranked[0].name):"—"}</strong></div>
+        <div><span>👤</span><small>${esc(t("Jugadores"))}</small><strong>${ranked.length}</strong></div>
+      </div>
+      <section class="squad-dashboard-section">
+        <div class="squad-dashboard-title">🏆 ${esc(t("TOP SQUAD 1"))}</div>
+        ${ranked.slice(0,10).map((p,i)=>`<div class="squad-top-row"><span>${i<3?["🥇","🥈","🥉"][i]:"#"+(i+1)}</span><span>${esc(p.flag||"🌍")} ${esc(p.name)}</span><strong>${fmt(p.squad1_power)}</strong></div>`).join("")}
+      </section>
+      <section class="squad-dashboard-section">
+        <div class="squad-dashboard-title">📊 ${esc(t("DISTRIBUCIÓN DE PODER"))}</div>
+        <div class="squad-ranges">
+          ${ranges.map(r=>{
+            const n=ranked.filter(p=>num(p.squad1_power)>=r.min && num(p.squad1_power)<r.max).length;
+            const pct=ranked.length?Math.round(n/ranked.length*100):0;
+            return `<div class="squad-range"><div><span>${r.label}</span><b>${n}</b></div><i><em style="width:${pct}%"></em></i></div>`;
+          }).join("")}
+        </div>
+      </section>
+    </div>`;
+  }else if(card.dataset.card==="squadtypes"){
+    const typeOf=p=>String(p.squad1_type||"").trim().toLowerCase();
+    const groups=[
+      {label:"Misiles",icon:"🚀",cls:"missile-modal",arr:players.filter(p=>["missile","missiles","misil","misiles"].includes(typeOf(p)))},
+      {label:"Tanques",icon:"🛡️",cls:"tank-modal",arr:players.filter(p=>["tank","tanks","tanque","tanques"].includes(typeOf(p)))},
+      {label:"Aéreos",icon:"✈️",cls:"air-modal",arr:players.filter(p=>["aircraft","air","aire","aerial","aéreo","aereos","aéreos"].includes(typeOf(p)))}
+    ];
+    statModalRows.innerHTML=`<div class="type-detail-grid">${groups.map(g=>{
+      const total=g.arr.reduce((s,p)=>s+num(p.squad1_power),0), avg=g.arr.length?total/g.arr.length:0;
+      const top=[...g.arr].sort((a,b)=>num(b.squad1_power)-num(a.squad1_power))[0];
+      return `<section class="type-detail-card ${g.cls}">
+        <div class="type-detail-head"><span>${g.icon}</span><div><strong>${esc(t(g.label))}</strong><small>${g.arr.length} ${esc(t("jugadores"))}</small></div></div>
+        <div class="type-detail-stats"><div>⚡<b>${fmt(total)}</b><small>${esc(t("Poder total"))}</small></div><div>📊<b>${fmt(avg)}</b><small>${esc(t("Poder medio"))}</small></div></div>
+        <div class="type-detail-top">👑 ${top?esc(top.name):"—"} <strong>${top?fmt(top.squad1_power):"—"}</strong></div>
+        <div class="type-detail-members">${[...g.arr].sort((a,b)=>num(b.squad1_power)-num(a.squad1_power)).map((p,i)=>`<div><span>#${i+1}</span><span>${esc(p.flag||"🌍")} ${esc(p.name)}</span><b>${fmt(p.squad1_power)}</b></div>`).join("")}</div>
+      </section>`;
+    }).join("")}</div>`;
+  }else if(card.dataset.card==="profession" || card.dataset.card==="squadtypes"){
+    const isProfession=card.dataset.card==="profession";
+    const groups=isProfession
+      ? [...card.querySelectorAll(".profession-group-row")]
+      : [...card.querySelectorAll(".squad-group-row")];
+
+    let html=`<div class="${isProfession?"profession-modal-grid":"squad-modal-grid"}">`;
+    groups.forEach((group,index)=>{
+      const groupName=(group.querySelector(".group-name, strong")?.textContent||"").trim();
+      const groupCount=(group.querySelector(".group-count, b")?.textContent||"").trim();
+      const groupIcon=(group.querySelector(".group-icon, span")?.textContent||"").trim();
+      const rows=[];
+      let node=group.nextElementSibling;
+      while(node && !node.classList.contains(isProfession?"profession-group-row":"squad-group-row")){
+        if(node.classList.contains("row")) rows.push(node);
+        node=node.nextElementSibling;
+      }
+      const cls=isProfession
+        ? (index===0?"engineer-modal":"warlord-modal")
+        : (index===0?"missile-modal":index===1?"tank-modal":"air-modal");
+      html+=`<section class="${isProfession?"profession-modal-card":"squad-modal-card"} ${cls}">
+        <div class="${isProfession?"profession-modal-head":"squad-modal-head"}">
+          <span class="${isProfession?"profession-modal-icon":"squad-modal-icon"}">${esc(groupIcon)}</span>
+          <div><strong>${esc(groupName)}</strong><small>${esc(groupCount)} ${esc(t("jugadores"))}</small></div>
+        </div>
+        <div class="${isProfession?"profession-modal-list":"squad-modal-list"}">
+          ${rows.length?rows.map((row,i)=>{
+            const rank=row.querySelector(".rank")?.textContent||"#"+(i+1);
+            const name=row.querySelector(".name")?.textContent||"";
+            const value=row.querySelector(".value")?.textContent||"";
+            return `<div class="${isProfession?"profession-member-row":"squad-member-row"}"><span class="rank">${esc(rank)}</span><span class="name">${esc(name)}</span><span class="value">${esc(value)}</span></div>`;
+          }).join(""):`<div class="profession-empty">${esc(t("Sin datos"))}</div>`}
+        </div>
+      </section>`;
+    });
+    html+=`</div>`;
+    statModalRows.innerHTML=html;
+  }else if(card.dataset.card==="power"){
+    const ranked=[...players].filter(p=>num(p.thp)>0).sort((a,b)=>num(b.thp)-num(a.thp));
+    const totalTHP=ranked.reduce((s,p)=>s+num(p.thp),0);
+    const avgTHP=ranked.length?totalTHP/ranked.length:0;
+    const maxTHP=ranked.length?num(ranked[0].thp):0;
+    const minTHP=ranked.length?num(ranked[ranked.length-1].thp):0;
+    const ranges=[
+      {label:"100M+",min:100,max:Infinity,cls:"thp-r100"},
+      {label:"80–99M",min:80,max:100,cls:"thp-r80"},
+      {label:"60–79M",min:60,max:80,cls:"thp-r60"},
+      {label:"40–59M",min:40,max:60,cls:"thp-r40"},
+      {label:"<40M",min:0,max:40,cls:"thp-r0"}
+    ];
+    html=`<div class="thp-dashboard">
+      <div class="thp-summary-grid">
+        <div class="thp-summary"><span>🏆</span><small>${esc(t("THP total"))}</small><strong>${fmt(totalTHP)}</strong></div>
+        <div class="thp-summary"><span>📊</span><small>${esc(t("THP medio"))}</small><strong>${fmt(avgTHP)}</strong></div>
+        <div class="thp-summary"><span>👑</span><small>${esc(t("THP máximo"))}</small><strong>${fmt(maxTHP)}</strong></div>
+        <div class="thp-summary"><span>🛡️</span><small>${esc(t("THP mínimo"))}</small><strong>${fmt(minTHP)}</strong></div>
+      </div>
+      <section class="thp-section">
+        <div class="thp-section-title">👑 ${esc(t("TOP 10 THP"))}</div>
+        <div class="thp-top-list">
+          ${ranked.slice(0,10).map((p,i)=>`<div class="thp-top-row">
+            <span class="thp-rank">${i<3?["🥇","🥈","🥉"][i]:"#"+(i+1)}</span>
+            <span class="thp-name">${esc(p.flag||"🌍")} ${esc(p.name)}</span>
+            <strong>${fmt(p.thp)}</strong>
+          </div>`).join("")}
+        </div>
+      </section>
+      <section class="thp-section">
+        <div class="thp-section-title">📊 ${esc(t("DISTRIBUCIÓN DE PODER"))}</div>
+        <div class="thp-ranges">
+          ${ranges.map(r=>{
+            const n=ranked.filter(p=>num(p.thp)>=r.min && num(p.thp)<r.max).length;
+            const pct=ranked.length?Math.round(n/ranked.length*100):0;
+            return `<div class="thp-range">
+              <div class="thp-range-label"><span>${esc(r.label)}</span><strong>${n}</strong></div>
+              <div class="thp-bar"><span class="${r.cls}" style="width:${pct}%"></span></div>
+            </div>`;
+          }).join("")}
+        </div>
+      </section>
+    </div>`;
+    statModalRows.innerHTML=html;
+  }else{
+    const sourceRows=card.querySelectorAll(".rows .row");
+    if(sourceRows.length){
+      statModalRows.innerHTML=[...sourceRows].map(row=>{
+        const rank=row.querySelector(".rank")?.textContent||"";
+        const name=row.querySelector(".name")?.textContent||"";
+        const value=row.querySelector(".value")?.textContent||"";
+        return `<div class="stat-modal-row">
+          <span class="rank">${esc(rank)}</span>
+          <span class="name">${esc(name)}</span>
+          <span class="value">${esc(value)}</span>
+        </div>`;
+      }).join("");
+    }else{
+      statModalRows.innerHTML=`<div class="stat-modal-row"><span></span><span>${esc(t("Sin datos"))}</span><span></span></div>`;
+    }
+  }
+
+  statModal.hidden=false;
+  statModal.style.display="flex";
+  document.body.style.overflow="hidden";
+  statModalRows.scrollTop=0;
+}
+
+document.addEventListener("click",e=>{
+  const card=e.target.closest(".card");
+  if(card) openStatModal(card);
+  if(e.target===statModal || e.target===statModalClose) closeStatModal();
+});
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape" && !statModal.hidden) closeStatModal();
+  if((e.key==="Enter" || e.key===" ") && e.target.closest(".card")){
+    e.preventDefault();
+    openStatModal(e.target.closest(".card"));
+  }
+});
+
 load();
+setInterval(load,60000);
 </script>
 </body>
 </html>

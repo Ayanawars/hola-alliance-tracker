@@ -125,12 +125,48 @@ body{
 </head>
 <body>
 
+<style id="hola-lang-css">
+#hola-language-selector{
+  position:absolute;
+  top:18px;
+  right:18px;
+  z-index:100;
+}
+#hola-language-selector select{
+  background:#101d2c;
+  color:#eef5ff;
+  border:1px solid #31465d;
+  border-radius:10px;
+  padding:9px 11px;
+  font-weight:700;
+  font-size:13px;
+  outline:none;
+}
+@media(max-width:620px){
+  #hola-language-selector{top:10px;right:10px}
+  #hola-language-selector select{font-size:11px;padding:7px 8px;max-width:135px}
+}
+</style>
+<div id="hola-language-selector">
+  <select id="languageSelect" aria-label="Idioma">
+    <option value="es">🇪🇸 Español</option>
+    <option value="en">🇬🇧 English</option>
+    <option value="pt">🇵🇹 Português</option>
+    <option value="ro">🇷🇴 Română</option>
+    <option value="fr">🇫🇷 Français</option>
+    <option value="it">🇮🇹 Italiano</option>
+    <option value="de">🇩🇪 Deutsch</option>
+    <option value="uk">🇺🇦 Українська</option>
+  </select>
+</div>
+
+
 <header class="header">
   <div class="header-inner">
     <div class="brand">H<span class="world">🌍</span>La<small>ALLIANCE TRACKER</small></div>
     <div class="title">
-      <h1 id="pageTitle"><span>⌂</span> INICIO</h1>
-      <p id="pageSubtitle">Panel principal de la alianza</p>
+      <h1 id="pageTitle"><span>⌂</span> <span data-i18n="nav_home">INICIO</span></h1>
+      <p id="pageSubtitle" data-i18n="home_subtitle">Panel principal de la alianza</p>
     </div>
     <div class="updated">Datos de Supabase<strong id="updatedAt">Cargando...</strong><button id="refreshBtn" title="Actualizar">↻</button></div>
   </div>
@@ -141,71 +177,71 @@ body{
     <div class="home-grid">
       <article class="hero-card">
         <div class="kicker">HOLa ALLIANCE TRACKER</div>
-        <h2>Bienvenido al centro de la alianza</h2>
-        <p>Consulta tus datos, rellena la encuesta y accede a todas las herramientas de HOLa desde un único panel.</p>
-        <a class="big-btn" href="survey.html">📝 RELLENAR ENCUESTA</a>
+        <h2 data-i18n="welcome">Bienvenido al centro de la alianza</h2>
+        <p data-i18n="welcome_text">Consulta tus datos, rellena la encuesta y accede a todas las herramientas de HOLa desde un único panel.</p>
+        <a class="big-btn" href="survey.html">📝 <span data-i18n="fill_survey">RELLENAR ENCUESTA</span></a>
       </article>
 
       <article class="panel">
-        <h2>⚡ Acceso rápido</h2>
-        <p>Las herramientas principales de la alianza.</p>
+        <h2>⚡ <span data-i18n="quick_access">Acceso rápido</span></h2>
+        <p data-i18n="main_tools">Las herramientas principales de la alianza.</p>
         <div class="quick-grid">
-          <a class="quick-card" href="members.html"><span class="quick-icon">👥</span><b>Miembros</b><span>Lista y perfiles</span></a>
-          <a class="quick-card" href="statistics.html"><span class="quick-icon">📊</span><b>Estadísticas</b><span>Datos de la encuesta</span></a>
-          <a class="quick-card" href="train.html"><span class="quick-icon">🚆</span><b>Tren</b><span>Elegibilidad y ranking</span></a>
-          <a class="quick-card" href="guides.html"><span class="quick-icon">📚</span><b>Guías</b><span>Información útil</span></a>
+          <a class="quick-card" href="members.html"><span class="quick-icon">👥</span><b data-i18n="nav_members">Miembros</b><span data-i18n="member_list">Lista y perfiles</span></a>
+          <a class="quick-card" href="statistics.html"><span class="quick-icon">📊</span><b data-i18n="nav_statistics">Estadísticas</b><span data-i18n="survey_data">Datos de la encuesta</span></a>
+          <a class="quick-card" href="train.html"><span class="quick-icon">🚆</span><b data-i18n="nav_train">Tren</b><span data-i18n="eligibility">Elegibilidad y ranking</span></a>
+          <a class="quick-card" href="guides.html"><span class="quick-icon">📚</span><b data-i18n="nav_guides">Guías</b><span data-i18n="useful_info">Información útil</span></a>
         </div>
       </article>
     </div>
 
-    <div class="section-title">RESUMEN DE LA ENCUESTA</div>
+    <div class="section-title" data-i18n="survey_summary">RESUMEN DE LA ENCUESTA</div>
     <div class="stats-grid">
-      <article class="stat-card"><span>JUGADORES CON ENCUESTA</span><strong id="countPlayers">—</strong><small>datos guardados en Supabase</small></article>
-      <article class="stat-card green"><span>CON T10</span><strong id="countT10">—</strong><small>tropas nivel 10</small></article>
-      <article class="stat-card gold"><span>SQUAD PRINCIPAL</span><strong id="countSquad">—</strong><small id="topSquad">tipo más frecuente</small></article>
-      <article class="stat-card purple"><span>PROFESIÓN</span><strong id="countProfession">—</strong><small id="topProfession">profesión más frecuente</small></article>
+      <article class="stat-card"><span data-i18n="players_survey">JUGADORES CON ENCUESTA</span><strong id="countPlayers">—</strong><small data-i18n="supabase_saved">datos guardados en Supabase</small></article>
+      <article class="stat-card green"><span data-i18n="with_t10">CON T10</span><strong id="countT10">—</strong><small data-i18n="level10">tropas nivel 10</small></article>
+      <article class="stat-card gold"><span data-i18n="main_squad">SQUAD PRINCIPAL</span><strong id="countSquad">—</strong><small id="topSquad" data-i18n="most_frequent">tipo más frecuente</small></article>
+      <article class="stat-card purple"><span data-i18n="profession">PROFESIÓN</span><strong id="countProfession">—</strong><small id="topProfession" data-i18n="most_frequent_prof">profesión más frecuente</small></article>
     </div>
-    <a class="stats-link" href="statistics.html">VER ESTADÍSTICAS COMPLETAS →</a>
+    <a class="stats-link" href="statistics.html"><span data-i18n="full_statistics">VER ESTADÍSTICAS COMPLETAS →</span></a>
   </section>
 
   <section id="centerPanel" class="center-panel">
-    <div class="section-title">CENTRO DE ALIANZA</div>
+    <div class="section-title" data-i18n="alliance_center">CENTRO DE ALIANZA</div>
     <div class="center-grid">
-      <a class="center-link" href="members.html"><span class="ci">👥</span><b>MIEMBROS</b><p>Miembros de HOLa y datos principales.</p></a>
-      <a class="center-link" href="donations.html"><span class="ci">🎁</span><b>DONACIONES</b><p>Consulta las donaciones de la alianza.</p></a>
-      <a class="center-link" href="vs.html#estadisticas"><span class="ci">⚔️</span><b>VS</b><p>Estadísticas, puntos y clasificación semanal.</p></a>
-      <a class="center-link" href="ds.html"><span class="ci">🛡️</span><b>DS</b><p>Información y participación en Desert Storm.</p></a>
-      <a class="center-link" href="train.html"><span class="ci">🚆</span><b>TREN</b><p>Elegibilidad y ranking para el tren.</p></a>
+      <a class="center-link" href="members.html"><span class="ci">👥</span><b data-i18n="nav_members">MIEMBROS</b><p data-i18n="member_desc">Miembros de HOLa y datos principales.</p></a>
+      <a class="center-link" href="donations.html"><span class="ci">🎁</span><b data-i18n="nav_donations">DONACIONES</b><p data-i18n="donations_desc">Consulta las donaciones de la alianza.</p></a>
+      <a class="center-link" href="vs.html#estadisticas"><span class="ci">⚔️</span><b data-i18n="nav_vs">VS</b><p data-i18n="vs_desc">Estadísticas, puntos y clasificación semanal.</p></a>
+      <a class="center-link" href="ds.html"><span class="ci">🛡️</span><b data-i18n="nav_ds">DS</b><p data-i18n="ds_desc">Información y participación en Desert Storm.</p></a>
+      <a class="center-link" href="train.html"><span class="ci">🚆</span><b data-i18n="nav_train">TREN</b><p data-i18n="train_desc">Elegibilidad y ranking para el tren.</p></a>
     </div>
   </section>
 
   <section id="statsPanel" class="center-panel">
-    <div class="section-title">ESTADÍSTICAS</div>
+    <div class="section-title" data-i18n="nav_statistics">ESTADÍSTICAS</div>
     <div class="stats-grid">
-      <article class="stat-card"><span>JUGADORES</span><strong id="sPlayers">—</strong><small>encuestas completadas</small></article>
-      <article class="stat-card green"><span>CON T10</span><strong id="sT10">—</strong><small id="sNoT10">— sin T10</small></article>
-      <article class="stat-card gold"><span>AIRE</span><strong id="sAir">—</strong><small>Squad 1 principal</small></article>
-      <article class="stat-card purple"><span>TANQUE / MISILES</span><strong id="sOther">—</strong><small id="sOtherDetail">—</small></article>
+      <article class="stat-card"><span data-i18n="players">JUGADORES</span><strong id="sPlayers">—</strong><small data-i18n="completed_surveys">encuestas completadas</small></article>
+      <article class="stat-card green"><span data-i18n="with_t10">CON T10</span><strong id="sT10">—</strong><small id="sNoT10">— <span data-i18n="without_t10">sin T10</span></small></article>
+      <article class="stat-card gold"><span data-i18n="air">AIRE</span><strong id="sAir">—</strong><small data-i18n="main_squad_1">Squad 1 principal</small></article>
+      <article class="stat-card purple"><span data-i18n="tank_missiles">TANQUE / MISILES</span><strong id="sOther">—</strong><small id="sOtherDetail">—</small></article>
     </div>
-    <a class="big-btn" style="margin-top:20px" href="statistics.html">📊 ABRIR ESTADÍSTICAS COMPLETAS</a>
+    <a class="big-btn" style="margin-top:20px" href="statistics.html">📊 <span data-i18n="open_full_stats">ABRIR ESTADÍSTICAS COMPLETAS</span></a>
   </section>
 
   <section id="guidesPanel" class="guides-panel">
-    <div class="section-title">GUÍAS</div>
+    <div class="section-title" data-i18n="nav_guides">GUÍAS</div>
     <div class="guide-list">
-      <article class="guide"><h3>📚 Guías de la alianza</h3><p>Accede a las guías y recursos disponibles.</p></article>
-      <article class="guide"><h3>📝 Encuesta de jugador</h3><p>Mantén actualizados tus datos para mejorar las estadísticas.</p></article>
+      <article class="guide"><h3>📚 <span data-i18n="alliance_guides">Guías de la alianza</span></h3><p data-i18n="guides_resources">Accede a las guías y recursos disponibles.</p></article>
+      <article class="guide"><h3>📝 <span data-i18n="player_survey">Encuesta de jugador</span></h3><p data-i18n="keep_updated">Mantén actualizados tus datos para mejorar las estadísticas.</p></article>
     </div>
-    <a class="big-btn" style="margin-top:20px" href="guides.html">📖 ABRIR GUÍAS</a>
+    <a class="big-btn" style="margin-top:20px" href="guides.html">📖 <span data-i18n="open_guides">ABRIR GUÍAS</span></a>
   </section>
 </main>
 
 <nav class="nav">
   <div class="nav-inner">
-    <button class="active" data-panel="homePanel" data-title="INICIO" data-sub="Panel principal de la alianza"><span class="icon">⌂</span>INICIO</button>
-    <button data-panel="centerPanel" data-title="CENTRO DE ALIANZA" data-sub="Herramientas y actividades de HOLa"><span class="icon">♜</span>CENTRO DE ALIANZA</button>
-    <button data-panel="statsPanel" data-title="ESTADÍSTICAS" data-sub="Datos recopilados desde Supabase"><span class="icon">▮▮▮</span>ESTADÍSTICAS</button>
-    <button data-panel="guidesPanel" data-title="GUÍAS" data-sub="Información y recursos de la alianza"><span class="icon">▱</span>GUÍAS</button>
+    <button class="active" data-panel="homePanel" data-title="INICIO" data-sub="Panel principal de la alianza"><span class="icon">⌂</span><span data-i18n="nav_home">INICIO</span></button>
+    <button data-panel="centerPanel" data-title="CENTRO DE ALIANZA" data-sub="Herramientas y actividades de HOLa"><span class="icon">♜</span><span data-i18n="alliance_center">CENTRO DE ALIANZA</span></button>
+    <button data-panel="statsPanel" data-title="ESTADÍSTICAS" data-sub="Datos recopilados desde Supabase"><span class="icon">▮▮▮</span><span data-i18n="nav_statistics">ESTADÍSTICAS</span></button>
+    <button data-panel="guidesPanel" data-title="GUÍAS" data-sub="Información y recursos de la alianza"><span class="icon">▱</span><span data-i18n="nav_guides">GUÍAS</span></button>
   </div>
 </nav>
 
@@ -282,5 +318,81 @@ document.querySelectorAll(".nav button").forEach(btn=>{
 document.getElementById("refreshBtn").addEventListener("click",load);
 load();
 </script>
+
+<script>
+const translations = {
+  es:{
+    nav_home:"Inicio",nav_members:"Miembros",nav_train:"Entrenamiento",nav_donations:"Donaciones",nav_statistics:"Estadísticas",nav_survey:"Encuestas",nav_vs:"VS Match",nav_guides:"Guías",nav_ds:"Desert Storm",
+    home_subtitle:"Panel principal de la alianza",welcome:"Bienvenido al centro de la alianza",welcome_text:"Consulta tus datos, rellena la encuesta y accede a todas las herramientas de HOLa desde un único panel.",fill_survey:"RELLENAR ENCUESTA",quick_access:"Acceso rápido",main_tools:"Las herramientas principales de la alianza.",member_list:"Lista y perfiles",survey_data:"Datos de la encuesta",eligibility:"Elegibilidad y ranking",useful_info:"Información útil",survey_summary:"RESUMEN DE LA ENCUESTA",players_survey:"JUGADORES CON ENCUESTA",supabase_saved:"datos guardados en Supabase",with_t10:"CON T10",level10:"tropas nivel 10",main_squad:"SQUAD PRINCIPAL",most_frequent:"tipo más frecuente",profession:"PROFESIÓN",most_frequent_prof:"profesión más frecuente",full_statistics:"VER ESTADÍSTICAS COMPLETAS →",alliance_center:"CENTRO DE ALIANZA",member_desc:"Miembros de HOLa y datos principales.",donations_desc:"Consulta las donaciones de la alianza.",vs_desc:"Estadísticas, puntos y clasificación semanal.",ds_desc:"Información y participación en Desert Storm.",train_desc:"Elegibilidad y ranking para el tren.",players:"JUGADORES",completed_surveys:"encuestas completadas",without_t10:"sin T10",air:"AIRE",main_squad_1:"Squad 1 principal",tank_missiles:"TANQUE / MISILES",open_full_stats:"ABRIR ESTADÍSTICAS COMPLETAS",alliance_guides:"Guías de la alianza",guides_resources:"Accede a las guías y recursos disponibles.",player_survey:"Encuesta de jugador",keep_updated:"Mantén actualizados tus datos para mejorar las estadísticas.",open_guides:"ABRIR GUÍAS"
+  },
+  en:{
+    nav_home:"Home",nav_members:"Members",nav_train:"Train",nav_donations:"Donations",nav_statistics:"Statistics",nav_survey:"Survey",nav_vs:"VS Match",nav_guides:"Guides",nav_ds:"Desert Storm",
+    home_subtitle:"Main alliance dashboard",welcome:"Welcome to the alliance center",welcome_text:"Check your data, fill in the survey and access all HOLa tools from one panel.",fill_survey:"FILL IN SURVEY",quick_access:"Quick access",main_tools:"The main alliance tools.",member_list:"List and profiles",survey_data:"Survey data",eligibility:"Eligibility and ranking",useful_info:"Useful information",survey_summary:"SURVEY SUMMARY",players_survey:"PLAYERS WITH SURVEY",supabase_saved:"data saved in Supabase",with_t10:"WITH T10",level10:"level 10 troops",main_squad:"MAIN SQUAD",most_frequent:"most frequent type",profession:"PROFESSION",most_frequent_prof:"most frequent profession",full_statistics:"VIEW FULL STATISTICS →",alliance_center:"ALLIANCE CENTER",member_desc:"HOLa members and main data.",donations_desc:"View alliance donations.",vs_desc:"Weekly statistics, points and ranking.",ds_desc:"Desert Storm information and participation.",train_desc:"Train eligibility and ranking.",players:"PLAYERS",completed_surveys:"completed surveys",without_t10:"without T10",air:"AIR",main_squad_1:"Main Squad 1",tank_missiles:"TANK / MISSILES",open_full_stats:"OPEN FULL STATISTICS",alliance_guides:"Alliance guides",guides_resources:"Access available guides and resources.",player_survey:"Player survey",keep_updated:"Keep your data updated to improve statistics.",open_guides:"OPEN GUIDES"
+  },
+  pt:{
+    nav_home:"Início",nav_members:"Membros",nav_train:"Treino",nav_donations:"Doações",nav_statistics:"Estatísticas",nav_survey:"Pesquisa",nav_vs:"VS Match",nav_guides:"Guias",nav_ds:"Desert Storm",
+    home_subtitle:"Painel principal da aliança",welcome:"Bem-vindo ao centro da aliança",welcome_text:"Consulta os teus dados, preenche a pesquisa e acede a todas as ferramentas da HOLa num único painel.",fill_survey:"PREENCHER PESQUISA",quick_access:"Acesso rápido",main_tools:"As principais ferramentas da aliança.",member_list:"Lista e perfis",survey_data:"Dados da pesquisa",eligibility:"Elegibilidade e classificação",useful_info:"Informação útil",survey_summary:"RESUMO DA PESQUISA",players_survey:"JOGADORES COM PESQUISA",supabase_saved:"dados guardados no Supabase",with_t10:"COM T10",level10:"tropas de nível 10",main_squad:"SQUAD PRINCIPAL",most_frequent:"tipo mais frequente",profession:"PROFISSÃO",most_frequent_prof:"profissão mais frequente",full_statistics:"VER ESTATÍSTICAS COMPLETAS →",alliance_center:"CENTRO DA ALIANÇA",member_desc:"Membros da HOLa e dados principais.",donations_desc:"Consulta as doações da aliança.",vs_desc:"Estatísticas, pontos e classificação semanal.",ds_desc:"Informação e participação no Desert Storm.",train_desc:"Elegibilidade e classificação para o trem.",players:"JOGADORES",completed_surveys:"pesquisas concluídas",without_t10:"sem T10",air:"AR",main_squad_1:"Squad 1 principal",tank_missiles:"TANQUE / MÍSSEIS",open_full_stats:"ABRIR ESTATÍSTICAS COMPLETAS",alliance_guides:"Guias da aliança",guides_resources:"Acede aos guias e recursos disponíveis.",player_survey:"Pesquisa do jogador",keep_updated:"Mantém os teus dados atualizados para melhorar as estatísticas.",open_guides:"ABRIR GUIAS"
+  },
+  ro:{
+    nav_home:"Acasă",nav_members:"Membri",nav_train:"Tren",nav_donations:"Donații",nav_statistics:"Statistici",nav_survey:"Chestionar",nav_vs:"Meci VS",nav_guides:"Ghiduri",nav_ds:"Desert Storm",
+    home_subtitle:"Panoul principal al alianței",welcome:"Bine ai venit în centrul alianței",welcome_text:"Verifică-ți datele, completează chestionarul și accesează toate instrumentele HOLa dintr-un singur panou.",fill_survey:"COMPLETEAZĂ CHESTIONARUL",quick_access:"Acces rapid",main_tools:"Instrumentele principale ale alianței.",member_list:"Listă și profiluri",survey_data:"Datele chestionarului",eligibility:"Eligibilitate și clasament",useful_info:"Informații utile",survey_summary:"REZUMATUL CHESTIONARULUI",players_survey:"JUCĂTORI CU CHESTIONAR",supabase_saved:"date salvate în Supabase",with_t10:"CU T10",level10:"trupe de nivel 10",main_squad:"ECHIPA PRINCIPALĂ",most_frequent:"tipul cel mai frecvent",profession:"PROFESIE",most_frequent_prof:"profesia cea mai frecventă",full_statistics:"VEZI STATISTICILE COMPLETE →",alliance_center:"CENTRUL ALIANȚEI",member_desc:"Membrii HOLa și datele principale.",donations_desc:"Vezi donațiile alianței.",vs_desc:"Statistici săptămânale, puncte și clasament.",ds_desc:"Informații și participare la Desert Storm.",train_desc:"Eligibilitate și clasament pentru tren.",players:"JUCĂTORI",completed_surveys:"chestionare completate",without_t10:"fără T10",air:"AER",main_squad_1:"Echipa principală 1",tank_missiles:"TANC / RACHETE",open_full_stats:"DESCHIDE STATISTICILE COMPLETE",alliance_guides:"Ghidurile alianței",guides_resources:"Accesează ghidurile și resursele disponibile.",player_survey:"Chestionarul jucătorului",keep_updated:"Păstrează-ți datele actualizate pentru a îmbunătăți statisticile.",open_guides:"DESCHIDE GHIDURILE"
+  },
+  fr:{
+    nav_home:"Accueil",nav_members:"Membres",nav_train:"Train",nav_donations:"Dons",nav_statistics:"Statistiques",nav_survey:"Sondage",nav_vs:"Match VS",nav_guides:"Guides",nav_ds:"Desert Storm",
+    home_subtitle:"Tableau de bord principal de l’alliance",welcome:"Bienvenue au centre de l’alliance",welcome_text:"Consultez vos données, remplissez le sondage et accédez à tous les outils HOLa depuis un seul panneau.",fill_survey:"REMPLIR LE SONDAGE",quick_access:"Accès rapide",main_tools:"Les principaux outils de l’alliance.",member_list:"Liste et profils",survey_data:"Données du sondage",eligibility:"Éligibilité et classement",useful_info:"Informations utiles",survey_summary:"RÉSUMÉ DU SONDAGE",players_survey:"JOUEURS AVEC SONDAGE",supabase_saved:"données enregistrées dans Supabase",with_t10:"AVEC T10",level10:"troupes de niveau 10",main_squad:"ÉQUIPE PRINCIPALE",most_frequent:"type le plus fréquent",profession:"PROFESSION",most_frequent_prof:"profession la plus fréquente",full_statistics:"VOIR LES STATISTIQUES COMPLÈTES →",alliance_center:"CENTRE DE L’ALLIANCE",member_desc:"Membres de HOLa et données principales.",donations_desc:"Consultez les dons de l’alliance.",vs_desc:"Statistiques hebdomadaires, points et classement.",ds_desc:"Informations et participation à Desert Storm.",train_desc:"Éligibilité et classement pour le train.",players:"JOUEURS",completed_surveys:"sondages complétés",without_t10:"sans T10",air:"AIR",main_squad_1:"Équipe principale 1",tank_missiles:"CHAR / MISSILES",open_full_stats:"OUVRIR LES STATISTIQUES COMPLÈTES",alliance_guides:"Guides de l’alliance",guides_resources:"Accédez aux guides et ressources disponibles.",player_survey:"Sondage du joueur",keep_updated:"Gardez vos données à jour pour améliorer les statistiques.",open_guides:"OUVRIR LES GUIDES"
+  },
+  it:{
+    nav_home:"Home",nav_members:"Membri",nav_train:"Treno",nav_donations:"Donazioni",nav_statistics:"Statistiche",nav_survey:"Sondaggio",nav_vs:"Match VS",nav_guides:"Guide",nav_ds:"Desert Storm",
+    home_subtitle:"Pannello principale dell’alleanza",welcome:"Benvenuto nel centro dell’alleanza",welcome_text:"Controlla i tuoi dati, compila il sondaggio e accedi a tutti gli strumenti HOLa da un unico pannello.",fill_survey:"COMPILA IL SONDAGGIO",quick_access:"Accesso rapido",main_tools:"Gli strumenti principali dell’alleanza.",member_list:"Elenco e profili",survey_data:"Dati del sondaggio",eligibility:"Idoneità e classifica",useful_info:"Informazioni utili",survey_summary:"RIEPILOGO DEL SONDAGGIO",players_survey:"GIOCATORI CON SONDAGGIO",supabase_saved:"dati salvati in Supabase",with_t10:"CON T10",level10:"truppe di livello 10",main_squad:"SQUADRA PRINCIPALE",most_frequent:"tipo più frequente",profession:"PROFESSIONE",most_frequent_prof:"professione più frequente",full_statistics:"VEDI LE STATISTICHE COMPLETE →",alliance_center:"CENTRO DELL’ALLEANZA",member_desc:"Membri HOLa e dati principali.",donations_desc:"Visualizza le donazioni dell’alleanza.",vs_desc:"Statistiche settimanali, punti e classifica.",ds_desc:"Informazioni e partecipazione a Desert Storm.",train_desc:"Idoneità e classifica per il treno.",players:"GIOCATORI",completed_surveys:"sondaggi completati",without_t10:"senza T10",air:"AEREI",main_squad_1:"Squadra principale 1",tank_missiles:"CARRI / MISSILI",open_full_stats:"APRI LE STATISTICHE COMPLETE",alliance_guides:"Guide dell’alleanza",guides_resources:"Accedi alle guide e alle risorse disponibili.",player_survey:"Sondaggio del giocatore",keep_updated:"Mantieni aggiornati i tuoi dati per migliorare le statistiche.",open_guides:"APRI LE GUIDE"
+  },
+  de:{
+    nav_home:"Startseite",nav_members:"Mitglieder",nav_train:"Zug",nav_donations:"Spenden",nav_statistics:"Statistiken",nav_survey:"Umfrage",nav_vs:"VS-Match",nav_guides:"Guides",nav_ds:"Desert Storm",
+    home_subtitle:"Hauptübersicht der Allianz",welcome:"Willkommen im Allianz-Zentrum",welcome_text:"Prüfe deine Daten, fülle die Umfrage aus und greife über ein einziges Dashboard auf alle HOLa-Tools zu.",fill_survey:"UMFRAGE AUSFÜLLEN",quick_access:"Schnellzugriff",main_tools:"Die wichtigsten Allianz-Tools.",member_list:"Liste und Profile",survey_data:"Umfragedaten",eligibility:"Berechtigung und Rangliste",useful_info:"Nützliche Informationen",survey_summary:"UMFRAGE-ZUSAMMENFASSUNG",players_survey:"SPIELER MIT UMFRAGE",supabase_saved:"Daten in Supabase gespeichert",with_t10:"MIT T10",level10:"Truppen der Stufe 10",main_squad:"HAUPT-SQUAD",most_frequent:"häufigster Typ",profession:"BERUF",most_frequent_prof:"häufigster Beruf",full_statistics:"VOLLSTÄNDIGE STATISTIKEN ANZEIGEN →",alliance_center:"ALLIANZ-ZENTRUM",member_desc:"HOLa-Mitglieder und wichtige Daten.",donations_desc:"Allianzspenden anzeigen.",vs_desc:"Wöchentliche Statistiken, Punkte und Rangliste.",ds_desc:"Informationen und Teilnahme an Desert Storm.",train_desc:"Berechtigung und Rangliste für den Zug.",players:"SPIELER",completed_surveys:"ausgefüllte Umfragen",without_t10:"ohne T10",air:"LUFT",main_squad_1:"Haupt-Squad 1",tank_missiles:"PANZER / RAKETEN",open_full_stats:"VOLLSTÄNDIGE STATISTIKEN ÖFFNEN",alliance_guides:"Allianz-Guides",guides_resources:"Verfügbare Guides und Ressourcen aufrufen.",player_survey:"Spielerumfrage",keep_updated:"Halte deine Daten aktuell, um die Statistiken zu verbessern.",open_guides:"GUIDES ÖFFNEN"
+  },
+  uk:{
+    nav_home:"Головна",nav_members:"Учасники",nav_train:"Потяг",nav_donations:"Пожертви",nav_statistics:"Статистика",nav_survey:"Опитування",nav_vs:"VS Матч",nav_guides:"Посібники",nav_ds:"Desert Storm",
+    home_subtitle:"Головна панель альянсу",welcome:"Ласкаво просимо до центру альянсу",welcome_text:"Переглядайте свої дані, заповнюйте опитування та отримуйте доступ до всіх інструментів HOLa з однієї панелі.",fill_survey:"ЗАПОВНИТИ ОПИТУВАННЯ",quick_access:"Швидкий доступ",main_tools:"Основні інструменти альянсу.",member_list:"Список і профілі",survey_data:"Дані опитування",eligibility:"Право участі та рейтинг",useful_info:"Корисна інформація",survey_summary:"ПІДСУМОК ОПИТУВАННЯ",players_survey:"ГРАВЦІВ З ОПИТУВАННЯМ",supabase_saved:"дані збережено в Supabase",with_t10:"З T10",level10:"війська 10 рівня",main_squad:"ОСНОВНИЙ SQUAD",most_frequent:"найпоширеніший тип",profession:"ПРОФЕСІЯ",most_frequent_prof:"найпоширеніша професія",full_statistics:"ПЕРЕГЛЯНУТИ ПОВНУ СТАТИСТИКУ →",alliance_center:"ЦЕНТР АЛЬЯНСУ",member_desc:"Учасники HOLa та основні дані.",donations_desc:"Перегляд пожертв альянсу.",vs_desc:"Щотижнева статистика, очки та рейтинг.",ds_desc:"Інформація та участь у Desert Storm.",train_desc:"Право участі та рейтинг для потяга.",players:"ГРАВЦІ",completed_surveys:"заповнених опитувань",without_t10:"без T10",air:"ПОВІТРЯ",main_squad_1:"Основний Squad 1",tank_missiles:"ТАНКИ / РАКЕТИ",open_full_stats:"ВІДКРИТИ ПОВНУ СТАТИСТИКУ",alliance_guides:"Посібники альянсу",guides_resources:"Доступ до доступних посібників і ресурсів.",player_survey:"Опитування гравця",keep_updated:"Оновлюйте свої дані, щоб покращувати статистику.",open_guides:"ВІДКРИТИ ПОСІБНИКИ"
+  }
+};
+
+function applyLanguage(lang){
+  const d=translations[lang]||translations.es;
+  document.documentElement.lang=lang;
+
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const k=el.dataset.i18n;
+    if(d[k]!==undefined) el.textContent=d[k];
+  });
+
+  // Translate the title and subtitle shown in the header when using the bottom navigation.
+  document.querySelectorAll(".nav button").forEach(btn=>{
+    const key=btn.querySelector("[data-i18n]")?.dataset.i18n;
+    if(key==="nav_home"){
+      btn.dataset.title=d.nav_home.toUpperCase();
+      btn.dataset.sub=d.home_subtitle;
+    }else if(key==="alliance_center"){
+      btn.dataset.title=d.alliance_center;
+      btn.dataset.sub=d.main_tools;
+    }else if(key==="nav_statistics"){
+      btn.dataset.title=d.nav_statistics;
+      btn.dataset.sub=d.supabase_saved;
+    }else if(key==="nav_guides"){
+      btn.dataset.title=d.nav_guides;
+      btn.dataset.sub=d.guides_resources;
+    }
+  });
+
+  document.getElementById("languageSelect").value=lang;
+  localStorage.setItem("hola-language",lang);
+}
+const languageSelect=document.getElementById("languageSelect");
+const saved=localStorage.getItem("hola-language");
+const browser=(navigator.language||"es").slice(0,2);
+const initial=saved||(["es","en","pt","ro","fr","it","de","uk"].includes(browser)?browser:"es");
+languageSelect.value=initial;
+languageSelect.addEventListener("change",e=>applyLanguage(e.target.value));
+applyLanguage(initial);
+</script>
+
 </body>
 </html>
