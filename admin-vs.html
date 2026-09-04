@@ -1363,6 +1363,17 @@ if(weeklyCompareModal) weeklyCompareModal.addEventListener("click",e=>{
 
 /* ===================== GUARDAR DÍA ===================== */
 const daySaveModal=document.getElementById("daySaveModal");
+
+// El botón principal debe abrir el selector de día antes de guardar.
+const mainSaveBtn=document.getElementById("save");
+if(mainSaveBtn){
+  mainSaveBtn.type="button";
+  mainSaveBtn.onclick=()=>{
+    updateSaveDayOptions();
+    daySaveModal.classList.add("show");
+  };
+}
+
 const saveDaySelect=document.getElementById("saveDaySelect");
 const confirmSaveDay=document.getElementById("confirmSaveDay");
 const cancelSaveDay=document.getElementById("cancelSaveDay");
