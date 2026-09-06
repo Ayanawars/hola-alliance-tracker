@@ -183,6 +183,36 @@ td.pos{color:#fff;font-weight:900}
 .ocr-auto-note{margin-top:12px;padding:11px 13px;border:1px solid rgba(0,210,237,.18);border-radius:10px;background:rgba(0,210,237,.035);color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:.2px}
 </style>
 
+<style>
+.content-admin{grid-column:1/-1;border-color:rgba(0,210,237,.28)}
+.admin-content-head{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:end;margin:16px 0}
+.content-date label{display:block;margin-bottom:7px;color:var(--muted);font-size:9px;font-weight:1000;letter-spacing:1.5px}
+.content-date input{width:100%}
+.content-team-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.content-team{min-height:44px;padding:9px 12px;border-radius:10px;border:1px solid rgba(0,210,237,.25);background:rgba(0,210,237,.035);color:#a9b4d0;font-weight:1000;font-size:10px;letter-spacing:.8px;cursor:pointer;transition:.18s}
+.content-team:hover{border-color:rgba(0,210,237,.65);color:#fff}
+.content-team.active{color:#fff;border-color:#00D2ED;box-shadow:0 0 16px rgba(0,210,237,.12),inset 0 0 16px rgba(0,210,237,.04)}
+.content-team[data-content-team="A"].active{border-color:#D923E2;box-shadow:0 0 16px rgba(217,35,226,.12),inset 0 0 16px rgba(217,35,226,.04)}
+.editable-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.editable-panel{position:relative;padding:16px;border-radius:13px;background:rgba(5,8,20,.42);border:1px solid rgba(255,208,0,.15)}
+.editable-panel h3{margin:0 0 10px;font-size:13px;letter-spacing:1.4px}
+.battle-result-panel{margin-top:14px;padding:16px;border-radius:13px;background:rgba(5,8,20,.42);border:1px solid rgba(255,208,0,.18)}
+.battle-result-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.battle-result-head h3{margin:0;font-size:13px;letter-spacing:1.4px}.battle-result-head small{color:var(--muted);font-size:9px}
+#battleResult{width:100%;max-width:280px}
+.result-win{border-color:#00D2ED!important;box-shadow:0 0 14px rgba(0,210,237,.12)!important}
+.result-loss{border-color:#D923E2!important;box-shadow:0 0 14px rgba(217,35,226,.12)!important}
+.result-draw{border-color:#FFD000!important;box-shadow:0 0 14px rgba(255,208,0,.12)!important}
+.panel-kicker{position:absolute;right:12px;top:10px;color:var(--muted);font-size:9px;font-weight:1000}
+#strategyText{width:100%;min-height:250px;resize:vertical}
+.image-upload{display:flex;min-height:54px;flex-direction:column;justify-content:center;align-items:center;gap:4px;border:1px dashed rgba(0,210,237,.45);border-radius:10px;background:rgba(0,210,237,.025);cursor:pointer;text-align:center}
+.image-upload span{font-size:10px;font-weight:1000;color:#00D2ED;letter-spacing:1px}.image-upload small{font-size:9px;color:var(--muted)}
+.map-preview{margin-top:10px;min-height:210px;border-radius:10px;overflow:hidden;background:#080b16;border:1px solid rgba(255,208,0,.13);display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:10px;padding:8px}
+.map-preview img{display:block;max-width:100%;max-height:420px;width:auto;height:auto;object-fit:contain;border-radius:7px}
+.empty-map{border-style:dashed}
+.map-remove{margin-top:9px!important;width:100%}
+@media(max-width:760px){.content-admin{grid-column:auto}.admin-content-head,.editable-grid{grid-template-columns:1fr}.content-team{font-size:9px;padding:9px 6px}}
+</style>
 </head>
 <body>
 <header class="header">
@@ -221,8 +251,64 @@ td.pos{color:#fff;font-weight:900}
     </div>
   </section>
 
-  <section class="card magenta">
+  <section class="card content-admin">
     <div class="step">02</div>
+    <h2 id="contentTitle">ESTRATEGIA Y MAPA</h2>
+    <p class="help" id="contentHelp">Aquí preparas la información que verán los jugadores en la página pública de Desert Storm.</p>
+
+    <div class="admin-content-head">
+      <div class="content-date">
+        <label for="contentDate" id="contentDateLabel">DÍA</label>
+        <input id="contentDate" type="date">
+      </div>
+      <div class="content-team-tabs" role="tablist" aria-label="Equipo">
+        <button type="button" class="content-team active" data-content-team="B">FUERZA ESPECIAL B</button>
+        <button type="button" class="content-team" data-content-team="A">FUERZA ESPECIAL A</button>
+      </div>
+    </div>
+
+    <div class="editable-grid">
+      <div class="editable-panel">
+        <div class="panel-kicker">01</div>
+        <h3 id="strategyTitle">ESTRATEGIA</h3>
+        <textarea id="strategyText" placeholder="Escribe aquí la estrategia de este equipo..."></textarea>
+      </div>
+
+      <div class="editable-panel">
+        <div class="panel-kicker">02</div>
+        <h3 id="mapTitle">MAPA / IMAGEN</h3>
+        <label class="image-upload" for="teamMap">
+          <span id="mapUploadText">SUBIR IMAGEN</span>
+          <small id="mapUploadHelp">Selecciona la imagen del mapa para este equipo.</small>
+        </label>
+        <input id="teamMap" type="file" accept="image/*" hidden>
+        <div id="mapPreview" class="map-preview empty-map">No hay imagen cargada.</div>
+        <button type="button" id="removeMapBtn" class="btn secondary map-remove" hidden>✕ QUITAR IMAGEN</button>
+      </div>
+    </div>
+
+    <div class="battle-result-panel">
+      <div class="battle-result-head">
+        <h3 id="battleResultTitle">RESULTADO DE LA BATALLA</h3>
+        <small id="battleResultHelp">Indica si este equipo ganó o perdió esta jornada.</small>
+      </div>
+      <select id="battleResult">
+        <option value="">— SIN RESULTADO —</option>
+        <option value="WIN">🟢 VICTORIA</option>
+        <option value="LOSS">🔴 DERROTA</option>
+        <option value="DRAW">🟡 EMPATE</option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="saveContentBtn" class="btn save">💾 GUARDAR ESTRATEGIA Y MAPA</button>
+      <button type="button" id="loadContentBtn" class="btn secondary">↻ CARGAR DATOS GUARDADOS</button>
+    </div>
+    <div id="contentStatus" class="status">Nada pendiente de guardar.</div>
+  </section>
+
+  <section class="card magenta">
+    <div class="step">03</div>
     <h2 id="ocrTitle">OCR SPACE</h2>
     <p class="help" id="ocrHelp">
       Sube capturas ya recortadas mostrando las filas de nombre + puntos. El OCR leerá esos dos datos y el TOP se ordenará automáticamente por puntuación.
@@ -237,7 +323,7 @@ td.pos{color:#fff;font-weight:900}
   </section>
 
   <section class="card full results">
-    <div class="step">03</div>
+    <div class="step">04</div>
     <h2 id="resultsTitle">RESULTADOS DETECTADOS</h2>
     <p class="help" id="resultsHelp">
       Revisa los nombres y puntos detectados. El TOP se calcula ordenando de mayor a menor puntuación. Solo se guardan jugadores vinculados a la lista de participantes.
@@ -883,8 +969,86 @@ $("saveBtn").addEventListener("click",async()=>{
   }
 });
 
+
+// --- Desert Storm editable strategy + map content ---
+let contentTeam="B";
+let contentMapData=null;
+const contentDateEl=$("contentDate");
+contentDateEl.value=battleDate;
+
+function setContentTeam(t){
+  contentTeam=t;
+  document.querySelectorAll(".content-team").forEach(b=>b.classList.toggle("active",b.dataset.contentTeam===t));
+  loadContent();
+}
+
+document.querySelectorAll(".content-team").forEach(b=>b.addEventListener("click",()=>setContentTeam(b.dataset.contentTeam)));
+contentDateEl.addEventListener("change",()=>{battleDate=contentDateEl.value;updateSelectedEvent();loadContent();});
+
+function showMap(data){
+  contentMapData=data||null;
+  const box=$("mapPreview"), remove=$("removeMapBtn");
+  if(data){ box.className="map-preview"; box.innerHTML="<img alt=\"Mapa Desert Storm\" src=\""+escapeHtml(data)+"\">"; remove.hidden=false; }
+  else { box.className="map-preview empty-map"; box.textContent="No hay imagen cargada."; remove.hidden=true; }
+}
+
+$("teamMap").addEventListener("change",()=>{
+  const file=$("teamMap").files[0];
+  if(!file) return;
+  if(file.size>6*1024*1024){
+    $("contentStatus").className="status err"; $("contentStatus").textContent="⚠️ La imagen supera 6 MB."; $("teamMap").value=""; return;
+  }
+  const reader=new FileReader();
+  reader.onload=()=>showMap(reader.result);
+  reader.readAsDataURL(file);
+});
+
+$("removeMapBtn").addEventListener("click",()=>{showMap(null);$("teamMap").value="";});
+
+function updateBattleResultStyle(){
+  const el=$("battleResult");
+  el.classList.remove("result-win","result-loss","result-draw");
+  if(el.value==="WIN") el.classList.add("result-win");
+  if(el.value==="LOSS") el.classList.add("result-loss");
+  if(el.value==="DRAW") el.classList.add("result-draw");
+}
+$("battleResult").addEventListener("change",updateBattleResultStyle);
+
+async function loadContent(){
+  const date=contentDateEl.value||battleDate;
+  if(!date) return;
+  $("contentStatus").className="status"; $("contentStatus").textContent="⏳ Cargando datos…";
+  try{
+    const {data,error}=await supabaseClient.from("desert_storm_content").select("strategy,map_data_url,result").eq("battle_date",date).eq("team",contentTeam).maybeSingle();
+    if(error) throw error;
+    $("strategyText").value=data?.strategy||"";
+    $("battleResult").value=data?.result||"";
+    updateBattleResultStyle();
+    showMap(data?.map_data_url||null);
+    $("contentStatus").textContent=data?"✅ Datos cargados.":"No hay datos guardados para esta jornada y equipo.";
+  }catch(e){
+    console.error(e); $("contentStatus").className="status err"; $("contentStatus").textContent="❌ No se pudieron cargar los datos: "+(e.message||"error");
+  }
+}
+
+$("saveContentBtn").addEventListener("click",async()=>{
+  const date=contentDateEl.value||battleDate;
+  if(!date){$("contentStatus").className="status err";$("contentStatus").textContent="⚠️ Selecciona un día.";return;}
+  const btn=$("saveContentBtn"); btn.disabled=true;
+  $("contentStatus").className="status"; $("contentStatus").textContent="⏳ Guardando…";
+  try{
+    const {error}=await supabaseClient.from("desert_storm_content").upsert({battle_date:date,team:contentTeam,strategy:$("strategyText").value.trim(),map_data_url:contentMapData,result:$("battleResult").value||null},{onConflict:"battle_date,team"});
+    if(error) throw error;
+    $("contentStatus").className="status ok"; $("contentStatus").textContent=`✅ Fuerza Especial ${contentTeam} guardada · ${date}`;
+  }catch(e){
+    console.error(e); $("contentStatus").className="status err"; $("contentStatus").textContent="❌ No se pudo guardar: "+(e.message||"error");
+  }finally{btn.disabled=false;}
+});
+$("loadContentBtn").addEventListener("click",loadContent);
+
 updateTeamButtons();
 updateSelectedEvent();
+loadContent();
 </script>
 
 
@@ -1010,5 +1174,25 @@ apply();
 
 
 
-</body>
+<script>
+(function(){
+ const labels={
+ es:{title:"ESTRATEGIA Y MAPA",help:"Aquí preparas la información que verán los jugadores en la página pública de Desert Storm.",day:"DÍA",strategy:"ESTRATEGIA",map:"MAPA / IMAGEN",upload:"SUBIR IMAGEN",uploadHelp:"Selecciona la imagen del mapa para este equipo.",save:"💾 GUARDAR ESTRATEGIA Y MAPA",load:"↻ CARGAR DATOS GUARDADOS",empty:"No hay imagen cargada.",resultTitle:"RESULTADO DE LA BATALLA",resultHelp:"Indica si este equipo ganó o perdió esta jornada.",noResult:"— SIN RESULTADO —",win:"🟢 VICTORIA",loss:"🔴 DERROTA",draw:"🟡 EMPATE"},
+ en:{title:"STRATEGY & MAP",help:"Prepare here the information players will see on the public Desert Storm page.",day:"DAY",strategy:"STRATEGY",map:"MAP / IMAGE",upload:"UPLOAD IMAGE",uploadHelp:"Select the map image for this team.",save:"💾 SAVE STRATEGY & MAP",load:"↻ LOAD SAVED DATA",empty:"No image loaded.",resultTitle:"BATTLE RESULT",resultHelp:"Indicate whether this team won or lost this battle.",noResult:"— NO RESULT —",win:"🟢 WIN",loss:"🔴 LOSS",draw:"🟡 DRAW"},
+ pt:{title:"ESTRATÉGIA E MAPA",help:"Prepare aqui as informações que os jogadores verão na página pública do Desert Storm.",day:"DIA",strategy:"ESTRATÉGIA",map:"MAPA / IMAGEM",upload:"CARREGAR IMAGEM",uploadHelp:"Selecione a imagem do mapa desta equipa.",save:"💾 GUARDAR ESTRATÉGIA E MAPA",load:"↻ CARREGAR DADOS GUARDADOS",empty:"Nenhuma imagem carregada.",resultTitle:"RESULTADO DA BATALHA",resultHelp:"Indique se esta equipa ganhou ou perdeu esta batalha.",noResult:"— SEM RESULTADO —",win:"🟢 VITÓRIA",loss:"🔴 DERROTA",draw:"🟡 EMPATE"},
+ ro:{title:"STRATEGIE ȘI HARTĂ",help:"Pregătește aici informațiile pe care jucătorii le vor vedea pe pagina publică Desert Storm.",day:"ZI",strategy:"STRATEGIE",map:"HARTĂ / IMAGINE",upload:"ÎNCARCĂ IMAGINEA",uploadHelp:"Selectează imaginea hărții pentru această echipă.",save:"💾 SALVEAZĂ STRATEGIA ȘI HARTA",load:"↻ ÎNCARCĂ DATELE SALVATE",empty:"Nu există imagine încărcată.",resultTitle:"REZULTATUL BĂTĂLIEI",resultHelp:"Indică dacă această echipă a câștigat sau a pierdut această bătălie.",noResult:"— FĂRĂ REZULTAT —",win:"🟢 VICTORIE",loss:"🔴 ÎNFRÂNGERE",draw:"🟡 EGAL"},
+ fr:{title:"STRATÉGIE ET CARTE",help:"Préparez ici les informations que les joueurs verront sur la page publique Desert Storm.",day:"JOUR",strategy:"STRATÉGIE",map:"CARTE / IMAGE",upload:"TÉLÉVERSER UNE IMAGE",uploadHelp:"Sélectionnez l'image de la carte pour cette équipe.",save:"💾 ENREGISTRER LA STRATÉGIE ET LA CARTE",load:"↻ CHARGER LES DONNÉES",empty:"Aucune image chargée.",resultTitle:"RÉSULTAT DE LA BATAILLE",resultHelp:"Indiquez si cette équipe a gagné ou perdu cette bataille.",noResult:"— AUCUN RÉSULTAT —",win:"🟢 VICTOIRE",loss:"🔴 DÉFAITE",draw:"🟡 MATCH NUL"},
+ it:{title:"STRATEGIA E MAPPA",help:"Prepara qui le informazioni che i giocatori vedranno nella pagina pubblica di Desert Storm.",day:"GIORNO",strategy:"STRATEGIA",map:"MAPPA / IMMAGINE",upload:"CARICA IMMAGINE",uploadHelp:"Seleziona l'immagine della mappa per questa squadra.",save:"💾 SALVA STRATEGIA E MAPPA",load:"↻ CARICA DATI SALVATI",empty:"Nessuna immagine caricata.",resultTitle:"RISULTATO DELLA BATTAGLIA",resultHelp:"Indica se questa squadra ha vinto o perso questa battaglia.",noResult:"— NESSUN RISULTATO —",win:"🟢 VITTORIA",loss:"🔴 SCONFITTA",draw:"🟡 PAREGGIO"},
+ de:{title:"STRATEGIE & KARTE",help:"Bereite hier die Informationen vor, die Spieler auf der öffentlichen Desert-Storm-Seite sehen.",day:"TAG",strategy:"STRATEGIE",map:"KARTE / BILD",upload:"BILD HOCHLADEN",uploadHelp:"Wähle das Kartenbild für dieses Team.",save:"💾 STRATEGIE & KARTE SPEICHERN",load:"↻ GESPEICHERTE DATEN LADEN",empty:"Kein Bild geladen.",resultTitle:"KAMPFERGEBNIS",resultHelp:"Gib an, ob dieses Team diesen Kampf gewonnen oder verloren hat.",noResult:"— KEIN ERGEBNIS —",win:"🟢 SIEG",loss:"🔴 NIEDERLAGE",draw:"🟡 UNENTSCHIEDEN"},
+ uk:{title:"СТРАТЕГІЯ ТА КАРТА",help:"Підготуйте тут інформацію, яку гравці бачитимуть на публічній сторінці Desert Storm.",day:"ДЕНЬ",strategy:"СТРАТЕГІЯ",map:"КАРТА / ЗОБРАЖЕННЯ",upload:"ЗАВАНТАЖИТИ ЗОБРАЖЕННЯ",uploadHelp:"Виберіть зображення карти для цієї команди.",save:"💾 ЗБЕРЕГТИ СТРАТЕГІЮ ТА КАРТУ",load:"↻ ЗАВАНТАЖИТИ ЗБЕРЕЖЕНІ ДАНІ",empty:"Зображення не завантажено.",resultTitle:"РЕЗУЛЬТАТ БОЮ",resultHelp:"Вкажіть, чи перемогла або програла ця команда в цьому бою.",noResult:"— БЕЗ РЕЗУЛЬТАТУ —",win:"🟢 ПЕРЕМОГА",loss:"🔴 ПОРАЗКА",draw:"🟡 НІЧИЯ"}
+ };
+ function apply(){
+  const l=labels[localStorage.getItem('hola-language')||'es']||labels.es;
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+  set('contentTitle',l.title);set('contentHelp',l.help);set('contentDateLabel',l.day);set('strategyTitle',l.strategy);set('mapTitle',l.map);set('mapUploadText',l.upload);set('mapUploadHelp',l.uploadHelp);set('saveContentBtn',l.save);set('loadContentBtn',l.load);set('battleResultTitle',l.resultTitle);set('battleResultHelp',l.resultHelp);const br=$("battleResult");if(br){br.options[0].textContent=l.noResult;br.options[1].textContent=l.win;br.options[2].textContent=l.loss;br.options[3].textContent=l.draw;}
+ }
+ apply();
+ document.addEventListener('change',e=>{if(e.target.id==='languageSelect')setTimeout(apply,0)});
+})();
+</script></body>
 </html>
