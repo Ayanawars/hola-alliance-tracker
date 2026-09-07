@@ -119,6 +119,7 @@ body{margin:0;min-height:100vh;background-image:linear-gradient(rgba(1,8,18,.62)
 .profile-status-new{display:flex;align-items:center;gap:8px;color:#b8c8d8;font-size:14px;font-weight:700}
 .profile-status-check-new{width:25px;height:25px;border-radius:50%;display:grid;place-items:center;flex:0 0 25px;font-size:15px;font-weight:900;background:linear-gradient(145deg,#39d5ff,#1997db);color:#07111e;box-shadow:0 0 0 4px rgba(37,185,255,.12),0 6px 16px rgba(37,185,255,.22)}
 .profile-status-new.is-empty .profile-status-check-new{background:#1b2b3d;color:#9fb0c4;box-shadow:none}
+.profile-status-new.is-incomplete{border-color:rgba(255,208,0,.5);color:#ffd000}
 .profile-date-new{margin:7px 0 0 33px;color:#8fa4b8;font-size:13px}
 .profile-rank-new{align-self:start;margin-top:2px;min-width:42px;padding:8px 10px;border-radius:12px;text-align:center;font-size:14px;font-weight:900;background:#17263a}
 .profile-divider-new{height:1px;background:linear-gradient(90deg,transparent,rgba(80,116,148,.72),transparent);margin:10px 0 14px}
@@ -1789,6 +1790,9 @@ body {
 
 
 
+<style>
+.incomplete-mark{color:#ffd000;font-weight:900}
+</style>
 </head>
 <body>
 <header class="hola-simple-header">
@@ -2029,14 +2033,14 @@ body {
 
 <script>
 window.HOLaI18n={
- es:{resultadosEncuesta:"RESULTADOS DE LA ENCUESTA",members:"MIEMBROS",completed:"Encuesta completada",none:"Sin encuesta todavía",notfound:"No se encontraron miembros.",loading:"Cargando miembros...",supabase:"No se pudieron cargar los datos de Supabase.",squads:"SQUADS",profession:"PROFESIÓN",yes:"Sí",no:"No",type:{Tank:"Tanque",Aircraft:"Aire",Missile:"Misiles",Mixed:"Mixto"}},
- en:{resultadosEncuesta:"SURVEY RESULTS",members:"MEMBERS",completed:"Survey completed",none:"No survey yet",notfound:"No members found.",loading:"Loading members...",supabase:"Could not load Supabase data.",squads:"SQUADS",profession:"PROFESSION",yes:"Yes",no:"No",type:{Tank:"Tank",Aircraft:"Aircraft",Missile:"Missile",Mixed:"Mixed"}},
- pt:{resultadosEncuesta:"RESULTADOS DA PESQUISA",members:"MEMBROS",completed:"Pesquisa concluída",none:"Ainda sem pesquisa",notfound:"Nenhum membro encontrado.",loading:"A carregar membros...",supabase:"Não foi possível carregar os dados do Supabase.",squads:"SQUADS",profession:"PROFISSÃO",yes:"Sim",no:"Não",type:{Tank:"Tanque",Aircraft:"Aéreo",Missile:"Mísseis",Mixed:"Misto"}},
- ro:{resultadosEncuesta:"REZULTATELE CHESTIONARULUI",members:"MEMBRI",completed:"Chestionar completat",none:"Încă fără chestionar",notfound:"Nu au fost găsiți membri.",loading:"Se încarcă membrii...",supabase:"Datele Supabase nu au putut fi încărcate.",squads:"ECHIPE",profession:"PROFESIE",yes:"Da",no:"Nu",type:{Tank:"Tanc",Aircraft:"Aer",Missile:"Rachete",Mixed:"Mixt"}},
- fr:{resultadosEncuesta:"RÉSULTATS DU SONDAGE",members:"MEMBRES",completed:"Sondage terminé",none:"Aucun sondage pour l’instant",notfound:"Aucun membre trouvé.",loading:"Chargement des membres...",supabase:"Impossible de charger les données Supabase.",squads:"ESCOUADES",profession:"PROFESSION",yes:"Oui",no:"Non",type:{Tank:"Char",Aircraft:"Aérien",Missile:"Missiles",Mixed:"Mixte"}},
- it:{resultadosEncuesta:"RISULTATI DEL SONDAGGIO",members:"MEMBRI",completed:"Sondaggio completato",none:"Nessun sondaggio",notfound:"Nessun membro trovato.",loading:"Caricamento membri...",supabase:"Impossibile caricare i dati Supabase.",squads:"SQUADRE",profession:"PROFESSIONE",yes:"Sì",no:"No",type:{Tank:"Carri",Aircraft:"Aerei",Missile:"Missili",Mixed:"Misto"}},
- de:{resultadosEncuesta:"UMFRAGEERGEBNISSE",members:"MITGLIEDER",completed:"Umfrage abgeschlossen",none:"Noch keine Umfrage",notfound:"Keine Mitglieder gefunden.",loading:"Mitglieder werden geladen...",supabase:"Supabase-Daten konnten nicht geladen werden.",squads:"SQUADS",profession:"BERUF",yes:"Ja",no:"Nein",type:{Tank:"Panzer",Aircraft:"Luft",Missile:"Raketen",Mixed:"Gemischt"}},
- uk:{resultadosEncuesta:"РЕЗУЛЬТАТИ ОПИТУВАННЯ",members:"УЧАСНИКИ",completed:"Опитування завершено",none:"Опитування ще немає",notfound:"Учасників не знайдено.",loading:"Завантаження учасників...",supabase:"Не вдалося завантажити учасників.",squads:"ЗАГОНИ",profession:"ПРОФЕСІЯ",yes:"Так",no:"Ні",type:{Tank:"Танк",Aircraft:"Повітря",Missile:"Ракети",Mixed:"Змішаний"}}
+ es:{resultadosEncuesta:"RESULTADOS DE LA ENCUESTA",members:"MIEMBROS",completed:"Encuesta completada",none:"Sin encuesta todavía",incomplete:"Encuesta incompleta",pending:"Sin encuesta",notfound:"No se encontraron miembros.",loading:"Cargando miembros...",supabase:"No se pudieron cargar los datos de Supabase.",squads:"SQUADS",profession:"PROFESIÓN",yes:"Sí",no:"No",type:{Tank:"Tanque",Aircraft:"Aire",Missile:"Misiles",Mixed:"Mixto"}},
+ en:{resultadosEncuesta:"SURVEY RESULTS",members:"MEMBERS",completed:"Survey completed",none:"No survey yet",incomplete:"Survey incomplete",pending:"No survey",notfound:"No members found.",loading:"Loading members...",supabase:"Could not load Supabase data.",squads:"SQUADS",profession:"PROFESSION",yes:"Yes",no:"No",type:{Tank:"Tank",Aircraft:"Aircraft",Missile:"Missile",Mixed:"Mixed"}},
+ pt:{resultadosEncuesta:"RESULTADOS DA PESQUISA",members:"MEMBROS",completed:"Pesquisa concluída",none:"Ainda sem pesquisa",incomplete:"Pesquisa incompleta",pending:"Sem pesquisa",notfound:"Nenhum membro encontrado.",loading:"A carregar membros...",supabase:"Não foi possível carregar os dados do Supabase.",squads:"SQUADS",profession:"PROFISSÃO",yes:"Sim",no:"Não",type:{Tank:"Tanque",Aircraft:"Aéreo",Missile:"Mísseis",Mixed:"Misto"}},
+ ro:{resultadosEncuesta:"REZULTATELE CHESTIONARULUI",members:"MEMBRI",completed:"Chestionar completat",none:"Încă fără chestionar",incomplete:"Chestionar incomplet",pending:"Fără chestionar",notfound:"Nu au fost găsiți membri.",loading:"Se încarcă membrii...",supabase:"Datele Supabase nu au putut fi încărcate.",squads:"ECHIPE",profession:"PROFESIE",yes:"Da",no:"Nu",type:{Tank:"Tanc",Aircraft:"Aer",Missile:"Rachete",Mixed:"Mixt"}},
+ fr:{resultadosEncuesta:"RÉSULTATS DU SONDAGE",members:"MEMBRES",completed:"Sondage terminé",none:"Aucun sondage pour l’instant",incomplete:"Sondage incomplet",pending:"Aucun sondage",notfound:"Aucun membre trouvé.",loading:"Chargement des membres...",supabase:"Impossible de charger les données Supabase.",squads:"ESCOUADES",profession:"PROFESSION",yes:"Oui",no:"Non",type:{Tank:"Char",Aircraft:"Aérien",Missile:"Missiles",Mixed:"Mixte"}},
+ it:{resultadosEncuesta:"RISULTATI DEL SONDAGGIO",members:"MEMBRI",completed:"Sondaggio completato",none:"Nessun sondaggio",incomplete:"Sondaggio incompleto",pending:"Nessun sondaggio",notfound:"Nessun membro trovato.",loading:"Caricamento membri...",supabase:"Impossibile caricare i dati Supabase.",squads:"SQUADRE",profession:"PROFESSIONE",yes:"Sì",no:"No",type:{Tank:"Carri",Aircraft:"Aerei",Missile:"Missili",Mixed:"Misto"}},
+ de:{resultadosEncuesta:"UMFRAGEERGEBNISSE",members:"MITGLIEDER",completed:"Umfrage abgeschlossen",none:"Noch keine Umfrage",incomplete:"Umfrage unvollständig",pending:"Keine Umfrage",notfound:"Keine Mitglieder gefunden.",loading:"Mitglieder werden geladen...",supabase:"Supabase-Daten konnten nicht geladen werden.",squads:"SQUADS",profession:"BERUF",yes:"Ja",no:"Nein",type:{Tank:"Panzer",Aircraft:"Luft",Missile:"Raketen",Mixed:"Gemischt"}},
+ uk:{resultadosEncuesta:"РЕЗУЛЬТАТИ ОПИТУВАННЯ",members:"УЧАСНИКИ",completed:"Опитування завершено",none:"Опитування ще немає",incomplete:"Опитування не завершено",pending:"Без опитування",notfound:"Учасників не знайдено.",loading:"Завантаження учасників...",supabase:"Не вдалося завантажити учасників.",squads:"ЗАГОНИ",profession:"ПРОФЕСІЯ",yes:"Так",no:"Ні",type:{Tank:"Танк",Aircraft:"Повітря",Missile:"Ракети",Mixed:"Змішаний"}}
 };
 
 window.HOLaHeaderTranslations={
@@ -2134,15 +2138,17 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const num=v=>{const s=String(v??"").replace(/,/g,".").replace(/[^0-9.]/g,"");const n=parseFloat(s);return Number.isFinite(n)?n:0};
 const fmtPower=v=>{const n=num(v);if(!n)return "—";return String(v).toUpperCase().includes("M")?String(v):n.toFixed(n>=100?0:1)+"M"};
 const getSurveyPower=m=>m.survey?.thp||m.survey?.THP||m.thp||"—";
-// Una fila en Supabase solo indica que el miembro existe.
-// La encuesta se considera completada cuando están rellenados sus datos principales: THP y HQ.
-const surveyDone=m=>{
+// A row in Supabase does NOT mean that the survey was completed.
+// Only an explicit marker written by the survey submission counts.
+// This prevents old/partial player records from appearing as completed.
+const surveyStatus=m=>{
  const s=m.survey;
- if(!s) return false;
- const thp=s.thp??s.THP??"";
- const hq=s.hq_level??s.hqLevel??s.hq??"";
- return String(thp).trim()!=="" && String(hq).trim()!=="";
+ // Supabase uses snake_case; accept camelCase too for old records.
+ if(s && (s.survey_completed === true || s.surveyCompleted === true)) return 'completed';
+ if(s) return 'incomplete';
+ return 'pending';
 };
+const surveyDone=m=>surveyStatus(m)==='completed';
 const avatar=m=>m.survey?.avatar||"";
 const flag=m=>m.survey?.flag||"";
 const getHQ=m=>m.survey?.hq_level ?? m.survey?.hqLevel ?? m.hq_level ?? m.hq ?? "—";
@@ -2154,7 +2160,7 @@ function surveyDateValue(m){
  // La encuesta actualiza updated_at al volver a enviarse.
  // Por eso debe tener prioridad sobre created_at, que solo indica
  // cuándo se creó el registro por primera vez.
- return s.surveyCompletedAt||s.completedAt||s.submittedAt||s.updated_at||s.updatedAt||s.created_at||s.createdAt||null;
+ return s.survey_completed_at||s.surveyCompletedAt||s.completedAt||s.submittedAt||s.updated_at||s.updatedAt||s.created_at||s.createdAt||null;
 }
 function formatSurveyDate(m){
  const value=surveyDateValue(m);
@@ -2175,7 +2181,7 @@ function row(m){
    <span class="rank member-number">${m.memberNo||""}</span>
    <span class="avatar">${img?`<img src="${esc(img)}" alt="">`:"👤"}</span>
    <div><div class="member-name">${esc(m.name)} ${flag(m)?`<span style="font-size:14px">${esc(flag(m))}</span>`:""}</div>
-   <div class="member-meta">${surveyDone(m)?`<span class="check">✓</span><span>${window.HOLaLang().completed}${formatSurveyDate(m)?` · ${formatSurveyDate(m)}`:""}</span>`:`<span>${window.HOLaLang().none}</span>`}</div></div>
+   <div class="member-meta">${surveyStatus(m)==='completed'?`<span class="check">✓</span><span>${window.HOLaLang().completed}${formatSurveyDate(m)?` · ${formatSurveyDate(m)}`:""}</span>`:surveyStatus(m)==='incomplete'?`<span class="check incomplete-mark">!</span><span>${window.HOLaLang().incomplete}</span>`:`<span>${window.HOLaLang().pending||window.HOLaLang().none}</span>`}</div></div>
    <strong class="thp">${esc(fmtPower(getSurveyPower(m)))}</strong>
    <span class="hq">HQ ${esc(getHQ(m))}</span>
  </article>`;
@@ -2200,7 +2206,8 @@ window.renderMembers=render;
 function showProfile(m){
  const s=m.survey||{};
  const img=avatar(m), squads=[1,2,3].map(i=>({type:s[`squad${i}_type`]||s[`squad${i}Type`]||"",power:s[`squad${i}_power`]||s[`squad${i}Power`]||""}));
- const completed=surveyDone(m);
+ const status=surveyStatus(m);
+ const completed=status==='completed';
  const date=formatSurveyDate(m);
  document.getElementById("profile").innerHTML=`
    <section class="profile-card-new">
@@ -2210,9 +2217,9 @@ function showProfile(m){
          <div class="profile-name-row-new">
            <span class="profile-name-new">${esc(m.name)}</span>${flag(m)?`<span class="profile-flag-new">${esc(flag(m))}</span>`:""}
          </div>
-         <div class="profile-status-new ${completed?'is-done':'is-empty'}">
-           <span class="profile-status-check-new">${completed?'✓':'!'}</span>
-           <span>${completed?window.HOLaLang().completed:window.HOLaLang().none}</span>
+         <div class="profile-status-new ${status==='completed'?'is-done':status==='incomplete'?'is-incomplete':'is-empty'}">
+           <span class="profile-status-check-new">${status==='completed'?'✓':'!'}</span>
+           <span>${status==='completed'?window.HOLaLang().completed:status==='incomplete'?window.HOLaLang().incomplete:(window.HOLaLang().pending||window.HOLaLang().none)}</span>
          </div>
          ${date?`<div class="profile-date-new">${date}</div>`:""}
        </div>
