@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOLa Alliance Tracker — Resultados de la encuesta</title>
+<style>
+:root{--bg:#161A28;--panel:#161A28;--panel2:#101521;--blue:#159AA6;--purple:#C23BD4;--gold:#F6E652;--text:#e7eef7;--muted:#8fa5b9;--line:rgba(0,210,237,.22)}
+*{box-sizing:border-box}body{margin:0;background:#161A28;color:var(--text);font-family:Arial,Helvetica,sans-serif}a{color:inherit}.wrap{width:min(1400px,calc(100% - 28px));margin:0 auto;padding:28px 0 40px}.back{display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--muted);font-size:12px;margin-bottom:16px}.back:hover{color:var(--blue)}.title{margin:0 0 6px;color:var(--blue);font-size:30px;letter-spacing:1px}.subtitle{margin:0 0 20px;color:var(--muted);font-size:13px}.card{border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(15,29,44,.98),rgba(8,18,29,.98));box-shadow:0 12px 30px rgba(0,0,0,.2);overflow:hidden}.head{padding:15px 18px;border-bottom:1px solid rgba(0,210,237,.18);display:flex;align-items:center;justify-content:space-between;gap:12px}.head strong{color:var(--blue);letter-spacing:.6px}.count{font-size:12px;color:var(--muted);font-weight:700}.scroll{overflow:auto;-webkit-overflow-scrolling:touch}.table{width:100%;min-width:1100px;border-collapse:collapse;font-size:13px}.table th{padding:11px 12px;text-align:left;color:var(--blue);background:rgba(0,210,237,.055);border-bottom:1px solid rgba(0,210,237,.18);font-size:10px;letter-spacing:.8px;white-space:nowrap}.table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.055);white-space:nowrap;vertical-align:middle}.table tbody tr:hover{background:rgba(217,35,226,.055)}.name{font-weight:800;color:#fff}.power{color:var(--gold);font-weight:800}.bool{font-weight:800}.yes{color:var(--blue)}.no{color:#8d9aaa}.muted{color:var(--muted);text-align:center;padding:28px!important}.rank-num{width:44px;text-align:center;color:var(--blue);font-weight:900;font-size:14px}.avatar{display:none}
+
+@media(max-width:760px){.login-grid{grid-template-columns:1fr}.field-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.head{align-items:flex-start}.head-actions{flex-shrink:0}.count{display:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<a class="back" href="members.html">‹ VOLVER A MIEMBROS</a>
+<h1 class="title">RESULTADOS DE LA ENCUESTA</h1>
+<p class="subtitle">Todos los datos registrados de las encuestas completadas.</p>
+<section class="card">
+<div class="head"><strong>ENCUESTAS COMPLETADAS</strong><span id="count" class="count">Cargando...</span></div>
+<div class="scroll"><table class="table"><thead><tr>
+<th>#</th><th>NOMBRE</th><th>THP</th><th>HQ</th><th>T10</th><th>PROFESIÓN</th><th>SQUAD 1</th><th>POTENCIA 1</th><th>SQUAD 2</th><th>POTENCIA 2</th><th>SQUAD 3</th><th>POTENCIA 3</th><th>ACTUALIZADA</th>
+</tr></thead><tbody id="body"><tr><td colspan="13" class="muted">Cargando...</td></tr></tbody></table></div>
+</section></main>
+<script type="module">
+import {createClient} from "https://esm.sh/@supabase/supabase-js@2";
+const sb=createClient("https://ovybstpiomphrouvqxmf.supabase.co","sb_publishable_gU5Wgy2NhdXcy23_TotF9g_LKthVmKV");
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+const val=v=>v==null||String(v).trim()===""?'—':v;
+const thpNum=v=>{const s=String(v??'').replace(/,/g,'.').toUpperCase().replace(/[^0-9.]/g,'');const n=parseFloat(s);return Number.isFinite(n)?n:0};
+const done=s=>{const thp=s.thp??s.THP??"",hq=s.hq_level??s.hqLevel??s.hq??"";return String(thp).trim()!==""&&String(hq).trim()!==""};
+const fmtDate=v=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?'—':d.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'})};
+const bool=v=>v===true?'<span class="bool yes">SÍ</span>':v===false?'<span class="bool no">NO</span>':'—';
+function type(s,i){return s[`squad${i}_type`]??s[`squad${i}Type`]??''}
+function power(s,i){return s[`squad${i}_power`]??s[`squad${i}Power`]??''}
+let surveyRows=[];
+async function load(){try{
+  const {data,error}=await sb.from('players').select('*');if(error)throw error;
+  surveyRows=(data||[]).filter(done).sort((a,b)=>thpNum(b.thp??b.THP)-thpNum(a.thp??a.THP)||String(a.name||'').localeCompare(String(b.name||''),'es'));
+  $('count').textContent=`${surveyRows.length} MIEMBROS`;
+  if(!surveyRows.length){$('body').innerHTML='<tr><td colspan="13" class="muted">No hay encuestas completadas.</td></tr>';return}
+  $('body').innerHTML=surveyRows.map((s,i)=>`<tr><td class="rank-num">${i+1}</td><td class="name">${esc(s.name)}</td><td class="power">${esc(val(s.thp??s.THP))}</td><td>${esc(val(s.hq_level??s.hqLevel??s.hq))}</td><td>${bool(s.t10)}</td><td>${esc(val(s.profession))}</td><td>${esc(val(type(s,1)))}</td><td class="power">${esc(val(power(s,1)))}</td><td>${esc(val(type(s,2)))}</td><td class="power">${esc(val(power(s,2)))}</td><td>${esc(val(type(s,3)))}</td><td class="power">${esc(val(power(s,3)))}</td><td>${esc(fmtDate(s.updated_at||s.created_at))}</td></tr>`).join('');
+}catch(e){console.error(e);$('count').textContent='ERROR';$('body').innerHTML='<tr><td colspan="13" class="muted">No se pudieron cargar los resultados.</td></tr>'}}
+load();
+</script></body></html>

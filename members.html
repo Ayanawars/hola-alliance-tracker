@@ -1722,6 +1722,21 @@ body {
   border-color:rgba(196,213,223,.38)!important;
 }
 
+/* Numeración fija de miembros: sustituye la insignia R1/R2/R3/R4/R5 en cada fila */
+.member-number{
+  min-width:36px!important;
+  width:36px!important;
+  height:36px!important;
+  padding:0!important;
+  border-radius:10px!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  color:#00D2ED!important;
+  border:1px solid rgba(0,210,237,.45)!important;
+  background:rgba(0,210,237,.07)!important;
+  box-shadow:0 0 9px rgba(0,210,237,.08)!important;
+}
+
 /* Filas de miembros */
 .member{
   background:rgba(1,14,27,.58)!important;
@@ -1771,6 +1786,8 @@ body {
   background:rgba(1,12,24,.20)!important;
 }
 </style>
+
+
 
 </head>
 <body>
@@ -1979,12 +1996,29 @@ body {
   }
 }
 </style>
+<style id="survey-results-link-styles">
+.survey-results-link{display:flex;align-items:center;gap:13px;width:100%;box-sizing:border-box;margin:0 0 18px;padding:14px 16px;border:1px solid rgba(0,210,237,.28);border-radius:16px;background:linear-gradient(145deg,rgba(15,29,44,.98),rgba(8,18,29,.98));box-shadow:0 10px 26px rgba(0,0,0,.16);color:#fff;text-decoration:none;transition:.18s ease}
+.survey-results-link:hover{border-color:rgba(217,35,226,.55);transform:translateY(-1px);box-shadow:0 13px 30px rgba(0,0,0,.24)}
+.survey-results-link-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:11px;border:1px solid rgba(0,210,237,.28);color:#00D2ED;background:rgba(0,210,237,.07);font-size:25px;flex:0 0 auto}
+.survey-results-link span:nth-child(2){min-width:0;display:flex;flex-direction:column;gap:3px}.survey-results-link strong{font-size:15px;letter-spacing:.7px;color:#00D2ED}.survey-results-link small{font-size:11px;color:#8fa5b9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.survey-results-link-arrow{margin-left:auto;font-size:29px;line-height:1;color:#D923E2}
+@media(max-width:620px){.survey-results-link{padding:13px 14px}.survey-results-link-icon{width:38px;height:38px;font-size:22px}.survey-results-link strong{font-size:13px}.survey-results-link small{font-size:10px}}
+</style>
+
 <main class="wrap">
   <div class="members-page-title"><h2>MIEMBROS</h2></div>
   <div class="toolbar">
     <input id="search" class="search" type="search" placeholder="🔎 Buscar miembro...">
     <select id="filter" class="filter" aria-label="Filtrar por rango"><option value="ALL">ALL</option><option value="R1">R1</option><option value="R2">R2</option><option value="R3">R3</option><option value="R4">R4</option><option value="R5">R5</option></select>
   </div>
+
+
+
+
+  <a class="survey-results-link" href="resultados-encuesta.html" aria-label="Resultados de la encuesta">
+    <span class="survey-results-link-icon">▦</span>
+    <span><strong>RESULTADOS DE LA ENCUESTA</strong><small>Ver todos los datos registrados en la encuesta</small></span>
+    <span class="survey-results-link-arrow">›</span>
+  </a>
 
   <div id="status" class="empty">Cargando miembros...</div>
   <div id="groups"></div>
@@ -1995,14 +2029,14 @@ body {
 
 <script>
 window.HOLaI18n={
- es:{members:"MIEMBROS",completed:"Encuesta completada",none:"Sin encuesta todavía",notfound:"No se encontraron miembros.",loading:"Cargando miembros...",supabase:"No se pudieron cargar los datos de Supabase.",squads:"SQUADS",profession:"PROFESIÓN",yes:"Sí",no:"No",type:{Tank:"Tanque",Aircraft:"Aire",Missile:"Misiles",Mixed:"Mixto"}},
- en:{members:"MEMBERS",completed:"Survey completed",none:"No survey yet",notfound:"No members found.",loading:"Loading members...",supabase:"Could not load Supabase data.",squads:"SQUADS",profession:"PROFESSION",yes:"Yes",no:"No",type:{Tank:"Tank",Aircraft:"Aircraft",Missile:"Missile",Mixed:"Mixed"}},
- pt:{members:"MEMBROS",completed:"Pesquisa concluída",none:"Ainda sem pesquisa",notfound:"Nenhum membro encontrado.",loading:"A carregar membros...",supabase:"Não foi possível carregar os dados do Supabase.",squads:"SQUADS",profession:"PROFISSÃO",yes:"Sim",no:"Não",type:{Tank:"Tanque",Aircraft:"Aéreo",Missile:"Mísseis",Mixed:"Misto"}},
- ro:{members:"MEMBRI",completed:"Chestionar completat",none:"Încă fără chestionar",notfound:"Nu au fost găsiți membri.",loading:"Se încarcă membrii...",supabase:"Datele Supabase nu au putut fi încărcate.",squads:"ECHIPE",profession:"PROFESIE",yes:"Da",no:"Nu",type:{Tank:"Tanc",Aircraft:"Aer",Missile:"Rachete",Mixed:"Mixt"}},
- fr:{members:"MEMBRES",completed:"Sondage terminé",none:"Aucun sondage pour l’instant",notfound:"Aucun membre trouvé.",loading:"Chargement des membres...",supabase:"Impossible de charger les données Supabase.",squads:"ESCOUADES",profession:"PROFESSION",yes:"Oui",no:"Non",type:{Tank:"Char",Aircraft:"Aérien",Missile:"Missiles",Mixed:"Mixte"}},
- it:{members:"MEMBRI",completed:"Sondaggio completato",none:"Nessun sondaggio",notfound:"Nessun membro trovato.",loading:"Caricamento membri...",supabase:"Impossibile caricare i dati Supabase.",squads:"SQUADRE",profession:"PROFESSIONE",yes:"Sì",no:"No",type:{Tank:"Carri",Aircraft:"Aerei",Missile:"Missili",Mixed:"Misto"}},
- de:{members:"MITGLIEDER",completed:"Umfrage abgeschlossen",none:"Noch keine Umfrage",notfound:"Keine Mitglieder gefunden.",loading:"Mitglieder werden geladen...",supabase:"Supabase-Daten konnten nicht geladen werden.",squads:"SQUADS",profession:"BERUF",yes:"Ja",no:"Nein",type:{Tank:"Panzer",Aircraft:"Luft",Missile:"Raketen",Mixed:"Gemischt"}},
- uk:{members:"УЧАСНИКИ",completed:"Опитування завершено",none:"Опитування ще немає",notfound:"Учасників не знайдено.",loading:"Завантаження учасників...",supabase:"Не вдалося завантажити учасників.",squads:"ЗАГОНИ",profession:"ПРОФЕСІЯ",yes:"Так",no:"Ні",type:{Tank:"Танк",Aircraft:"Повітря",Missile:"Ракети",Mixed:"Змішаний"}}
+ es:{resultadosEncuesta:"RESULTADOS DE LA ENCUESTA",members:"MIEMBROS",completed:"Encuesta completada",none:"Sin encuesta todavía",notfound:"No se encontraron miembros.",loading:"Cargando miembros...",supabase:"No se pudieron cargar los datos de Supabase.",squads:"SQUADS",profession:"PROFESIÓN",yes:"Sí",no:"No",type:{Tank:"Tanque",Aircraft:"Aire",Missile:"Misiles",Mixed:"Mixto"}},
+ en:{resultadosEncuesta:"SURVEY RESULTS",members:"MEMBERS",completed:"Survey completed",none:"No survey yet",notfound:"No members found.",loading:"Loading members...",supabase:"Could not load Supabase data.",squads:"SQUADS",profession:"PROFESSION",yes:"Yes",no:"No",type:{Tank:"Tank",Aircraft:"Aircraft",Missile:"Missile",Mixed:"Mixed"}},
+ pt:{resultadosEncuesta:"RESULTADOS DA PESQUISA",members:"MEMBROS",completed:"Pesquisa concluída",none:"Ainda sem pesquisa",notfound:"Nenhum membro encontrado.",loading:"A carregar membros...",supabase:"Não foi possível carregar os dados do Supabase.",squads:"SQUADS",profession:"PROFISSÃO",yes:"Sim",no:"Não",type:{Tank:"Tanque",Aircraft:"Aéreo",Missile:"Mísseis",Mixed:"Misto"}},
+ ro:{resultadosEncuesta:"REZULTATELE CHESTIONARULUI",members:"MEMBRI",completed:"Chestionar completat",none:"Încă fără chestionar",notfound:"Nu au fost găsiți membri.",loading:"Se încarcă membrii...",supabase:"Datele Supabase nu au putut fi încărcate.",squads:"ECHIPE",profession:"PROFESIE",yes:"Da",no:"Nu",type:{Tank:"Tanc",Aircraft:"Aer",Missile:"Rachete",Mixed:"Mixt"}},
+ fr:{resultadosEncuesta:"RÉSULTATS DU SONDAGE",members:"MEMBRES",completed:"Sondage terminé",none:"Aucun sondage pour l’instant",notfound:"Aucun membre trouvé.",loading:"Chargement des membres...",supabase:"Impossible de charger les données Supabase.",squads:"ESCOUADES",profession:"PROFESSION",yes:"Oui",no:"Non",type:{Tank:"Char",Aircraft:"Aérien",Missile:"Missiles",Mixed:"Mixte"}},
+ it:{resultadosEncuesta:"RISULTATI DEL SONDAGGIO",members:"MEMBRI",completed:"Sondaggio completato",none:"Nessun sondaggio",notfound:"Nessun membro trovato.",loading:"Caricamento membri...",supabase:"Impossibile caricare i dati Supabase.",squads:"SQUADRE",profession:"PROFESSIONE",yes:"Sì",no:"No",type:{Tank:"Carri",Aircraft:"Aerei",Missile:"Missili",Mixed:"Misto"}},
+ de:{resultadosEncuesta:"UMFRAGEERGEBNISSE",members:"MITGLIEDER",completed:"Umfrage abgeschlossen",none:"Noch keine Umfrage",notfound:"Keine Mitglieder gefunden.",loading:"Mitglieder werden geladen...",supabase:"Supabase-Daten konnten nicht geladen werden.",squads:"SQUADS",profession:"BERUF",yes:"Ja",no:"Nein",type:{Tank:"Panzer",Aircraft:"Luft",Missile:"Raketen",Mixed:"Gemischt"}},
+ uk:{resultadosEncuesta:"РЕЗУЛЬТАТИ ОПИТУВАННЯ",members:"УЧАСНИКИ",completed:"Опитування завершено",none:"Опитування ще немає",notfound:"Учасників не знайдено.",loading:"Завантаження учасників...",supabase:"Не вдалося завантажити учасників.",squads:"ЗАГОНИ",profession:"ПРОФЕСІЯ",yes:"Так",no:"Ні",type:{Tank:"Танк",Aircraft:"Повітря",Missile:"Ракети",Mixed:"Змішаний"}}
 };
 
 window.HOLaHeaderTranslations={
@@ -2092,15 +2126,23 @@ if(document.readyState==="loading"){
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const supabase=createClient("https://ovybstpiomphrouvqxmf.supabase.co","sb_publishable_gU5Wgy2NhdXcy23_TotF9g_LKthVmKV");
 
-const baseRoster=[{"rank": "R5", "name": "Rey Excalibur", "thp": "94.8M", "hq": "30"}, {"rank": "R4", "name": "colludo", "thp": "102.9M", "hq": "30"}, {"rank": "R4", "name": "atEr", "thp": "111.9M", "hq": "31"}, {"rank": "R4", "name": "N6C6R6", "thp": "88.0M", "hq": "30"}, {"rank": "R4", "name": "dAndrei20", "thp": "94.6M", "hq": "30"}, {"rank": "R4", "name": "Frizante", "thp": "73.4M", "hq": "30"}, {"rank": "R4", "name": "Kinedaniii", "thp": "84.3M", "hq": "30"}, {"rank": "R4", "name": "Ayana wars", "thp": "96.2M", "hq": "30"}, {"rank": "R4", "name": "Naranjitox82", "thp": "82.3M", "hq": "30"}, {"rank": "R4", "name": "RIKIp", "thp": "63.4M", "hq": "30"}, {"rank": "R3", "name": "IonuțBogdan", "thp": "94.7M", "hq": "30"}, {"rank": "R3", "name": "ENIGMA31415", "thp": "104.6M", "hq": "31"}, {"rank": "R3", "name": "TurboCat93", "thp": "91.7M", "hq": "30"}, {"rank": "R3", "name": "Sergio endwar", "thp": "79.7M", "hq": "31"}, {"rank": "R3", "name": "ASSASSIN428", "thp": "111.5M", "hq": "31"}, {"rank": "R3", "name": "naVia", "thp": "79.3M", "hq": "30"}, {"rank": "R3", "name": "Bola7ad", "thp": "85.3M", "hq": "30"}, {"rank": "R3", "name": "whiteshii", "thp": "84.9M", "hq": "30"}, {"rank": "R3", "name": "SilentBG", "thp": "104.3M", "hq": "31"}, {"rank": "R3", "name": "jimmyjingjog", "thp": "86.3M", "hq": "30"}, {"rank": "R3", "name": "crachy", "thp": "75.9M", "hq": "30"}, {"rank": "R3", "name": "Pippins 2nd breakfst", "thp": "81.7M", "hq": "30"}, {"rank": "R3", "name": "Aspackad", "thp": "83.9M", "hq": "30"}, {"rank": "R3", "name": "Arturlion", "thp": "97.7M", "hq": "30"}, {"rank": "R3", "name": "PDub87", "thp": "65.5M", "hq": "30"}, {"rank": "R3", "name": "Jhaizel", "thp": "77.8M", "hq": "30"}, {"rank": "R3", "name": "iR4UL", "thp": "87.9M", "hq": "30"}, {"rank": "R3", "name": "Ucigăltoaca", "thp": "102.2M", "hq": "30"}, {"rank": "R3", "name": "Bassline187", "thp": "—", "hq": "30"}, {"rank": "R3", "name": "PaTToNeiToR", "thp": "80.0M", "hq": "30"}, {"rank": "R3", "name": "txipi", "thp": "72.0M", "hq": "30"}, {"rank": "R3", "name": "Metropolitano C", "thp": "63.1M", "hq": "30"}, {"rank": "R3", "name": "Andriy0601", "thp": "84.4M", "hq": "30"}, {"rank": "R3", "name": "OSASUNAa", "thp": "61.9M", "hq": "30"}, {"rank": "R3", "name": "jack daniels g", "thp": "76.5M", "hq": "30"}, {"rank": "R3", "name": "Lil Niño", "thp": "70.5M", "hq": "30"}, {"rank": "R3", "name": "Fiexter", "thp": "79.6M", "hq": "30"}, {"rank": "R3", "name": "guerra ANDR", "thp": "53.7M", "hq": "30"}, {"rank": "R3", "name": "silviu maya", "thp": "79.2M", "hq": "30"}, {"rank": "R3", "name": "Cristina1106", "thp": "63.1M", "hq": "30"}, {"rank": "R3", "name": "Dimon02", "thp": "78.1M", "hq": "30"}, {"rank": "R3", "name": "JamesLLD", "thp": "65.6M", "hq": "30"}, {"rank": "R3", "name": "N3v3r89", "thp": "76.2M", "hq": "30"}, {"rank": "R3", "name": "Moltó17", "thp": "64.2M", "hq": "30"}, {"rank": "R3", "name": "Bumblebee222", "thp": "49.3M", "hq": "30"}, {"rank": "R3", "name": "Super Andy 3", "thp": "57.2M", "hq": "30"}, {"rank": "R3", "name": "Fenix 04", "thp": "58.1M", "hq": "30"}, {"rank": "R3", "name": "Kay433", "thp": "58.0M", "hq": "30"}, {"rank": "R3", "name": "Macvet", "thp": "70.5M", "hq": "30"}, {"rank": "R2", "name": "Matrat FC", "thp": "85.9M", "hq": "29"}, {"rank": "R2", "name": "Viking1970", "thp": "82.1M", "hq": "30"}, {"rank": "R2", "name": "OfficelAgnes", "thp": "75.0M", "hq": "30"}, {"rank": "R2", "name": "lavin hhh", "thp": "75.6M", "hq": "30"}, {"rank": "R2", "name": "margaros", "thp": "69.2M", "hq": "30"}, {"rank": "R2", "name": "mohsenjamaa", "thp": "72.0M", "hq": "30"}, {"rank": "R2", "name": "Apocalipto", "thp": "70.0M", "hq": "30"}, {"rank": "R2", "name": "Please Dont Bite", "thp": "64.1M", "hq": "30"}, {"rank": "R2", "name": "Jannettix", "thp": "64.9M", "hq": "30"}, {"rank": "R2", "name": "TREX9", "thp": "61.7M", "hq": "30"}, {"rank": "R2", "name": "Com Hannibal Smith", "thp": "66.2M", "hq": "30"}, {"rank": "R2", "name": "Constangeles", "thp": "64.3M", "hq": "30"}, {"rank": "R2", "name": "GroZ", "thp": "68.5M", "hq": "30"}, {"rank": "R2", "name": "Black pantherix", "thp": "54.5M", "hq": "30"}, {"rank": "R2", "name": "Loïc1791", "thp": "59.1M", "hq": "30"}, {"rank": "R2", "name": "IDK What Am I Doing", "thp": "66.9M", "hq": "30"}, {"rank": "R2", "name": "Ipieyoh", "thp": "46.0M", "hq": "30"}, {"rank": "R2", "name": "Larry53", "thp": "48.8M", "hq": "29"}, {"rank": "R2", "name": "Ayrix62", "thp": "64.5M", "hq": "30"}, {"rank": "R2", "name": "NutyDuck", "thp": "59.6M", "hq": "30"}, {"rank": "R2", "name": "Grička vještica", "thp": "48.4M", "hq": "30"}, {"rank": "R1", "name": "Nadezhdaaa", "thp": "71.0M", "hq": "30"}, {"rank": "R1", "name": "مثالـي25", "thp": "66.8M", "hq": "30"}, {"rank": "R1", "name": "Thedarkknightt", "thp": "55.4M", "hq": "30"}, {"rank": "R1", "name": "BostonApp", "thp": "59.5M", "hq": "30"}, {"rank": "R1", "name": "PikABoo", "thp": "57.4M", "hq": "30"}, {"rank": "R1", "name": "ГоШа", "thp": "53.0M", "hq": "30"}, {"rank": "R1", "name": "IX BORSAN", "thp": "48.3M", "hq": "30"}, {"rank": "R1", "name": "Niklas78", "thp": "53.2M", "hq": "30"}, {"rank": "R1", "name": "Fab745", "thp": "63.9M", "hq": "30"}, {"rank": "R1", "name": "Crystall", "thp": "57.5M", "hq": "29"}, {"rank": "R1", "name": "ElCoudou", "thp": "57.8M", "hq": "30"}, {"rank": "R1", "name": "Álvaro97", "thp": "49.1M", "hq": "29"}, {"rank": "R1", "name": "Lmario313", "thp": "46.9M", "hq": "30"}, {"rank": "R1", "name": "FuryAmsterdam", "thp": "32.6M", "hq": "28"}, {"rank": "R1", "name": "Mia Miu", "thp": "48.4M", "hq": "30"}, {"rank": "R1", "name": "ℒoℒα", "thp": "33.0M", "hq": "30"}, {"rank": "R1", "name": "Gosamyr", "thp": "31.6M", "hq": "30"}];
-let members=baseRoster.map(x=>({...x,survey:null}));
+const baseRoster=[{"rank": "R5", "name": "Rey Excalibur", "thp": "94.8M", "hq": "30"}, {"rank": "R4", "name": "colludo", "thp": "102.9M", "hq": "30"}, {"rank": "R4", "name": "atEr", "thp": "111.9M", "hq": "31"}, {"rank": "R4", "name": "N6C6R6", "thp": "88.0M", "hq": "30"}, {"rank": "R4", "name": "dAndrei20", "thp": "94.6M", "hq": "30"}, {"rank": "R4", "name": "Frizante", "thp": "73.4M", "hq": "30"}, {"rank": "R4", "name": "Kinedaniii", "thp": "84.3M", "hq": "30"}, {"rank": "R4", "name": "Ayana wars", "thp": "96.2M", "hq": "30"}, {"rank": "R4", "name": "Naranjitox82", "thp": "82.3M", "hq": "30"}, {"rank": "R4", "name": "RIKIp", "thp": "63.4M", "hq": "30"}, {"rank": "R3", "name": "IonuțBogdan", "thp": "94.7M", "hq": "30"}, {"rank": "R3", "name": "ENIGMA31415", "thp": "104.6M", "hq": "31"}, {"rank": "R3", "name": "TurboCat93", "thp": "91.7M", "hq": "30"}, {"rank": "R3", "name": "Sergio endwar", "thp": "79.7M", "hq": "31"}, {"rank": "R3", "name": "ASSASSIN428", "thp": "111.5M", "hq": "31"}, {"rank": "R3", "name": "naVia", "thp": "79.3M", "hq": "30"}, {"rank": "R3", "name": "Bola7ad", "thp": "85.3M", "hq": "30"}, {"rank": "R3", "name": "whiteshii", "thp": "84.9M", "hq": "30"}, {"rank": "R3", "name": "SilentBG", "thp": "104.3M", "hq": "31"}, {"rank": "R3", "name": "jimmyjingjog", "thp": "86.3M", "hq": "30"}, {"rank": "R3", "name": "crachy", "thp": "75.9M", "hq": "30"}, {"rank": "R3", "name": "Pippins 2nd breakfst", "thp": "81.7M", "hq": "30"}, {"rank": "R3", "name": "Aspackad", "thp": "83.9M", "hq": "30"}, {"rank": "R3", "name": "Arturlion", "thp": "97.7M", "hq": "30"}, {"rank": "R3", "name": "PDub87", "thp": "65.5M", "hq": "30"}, {"rank": "R3", "name": "Jhaizel", "thp": "77.8M", "hq": "30"}, {"rank": "R3", "name": "iR4UL", "thp": "87.9M", "hq": "30"}, {"rank": "R3", "name": "Ucigăltoaca", "thp": "102.2M", "hq": "30"}, {"rank": "R3", "name": "Bassline187", "thp": "—", "hq": "30"}, {"rank": "R3", "name": "PaTToNeiToR", "thp": "80.0M", "hq": "30"}, {"rank": "R3", "name": "txipi", "thp": "72.0M", "hq": "30"}, {"rank": "R3", "name": "Metropolitano C", "thp": "63.1M", "hq": "30"}, {"rank": "R3", "name": "OSASUNAa", "thp": "61.9M", "hq": "30"}, {"rank": "R3", "name": "jack daniels g", "thp": "76.5M", "hq": "30"}, {"rank": "R3", "name": "Lil Niño", "thp": "70.5M", "hq": "30"}, {"rank": "R3", "name": "Fiexter", "thp": "79.6M", "hq": "30"}, {"rank": "R3", "name": "guerra ANDR", "thp": "53.7M", "hq": "30"}, {"rank": "R3", "name": "silviu maya", "thp": "79.2M", "hq": "30"}, {"rank": "R3", "name": "Cristina1106", "thp": "63.1M", "hq": "30"}, {"rank": "R3", "name": "Dimon02", "thp": "78.1M", "hq": "30"}, {"rank": "R3", "name": "JamesLLD", "thp": "65.6M", "hq": "30"}, {"rank": "R3", "name": "N3v3r89", "thp": "76.2M", "hq": "30"}, {"rank": "R3", "name": "Moltó17", "thp": "64.2M", "hq": "30"}, {"rank": "R3", "name": "Bumblebee222", "thp": "49.3M", "hq": "30"}, {"rank": "R3", "name": "Super Andy 3", "thp": "57.2M", "hq": "30"}, {"rank": "R3", "name": "Fenix 04", "thp": "58.1M", "hq": "30"}, {"rank": "R3", "name": "Kay433", "thp": "58.0M", "hq": "30"}, {"rank": "R3", "name": "Macvet", "thp": "70.5M", "hq": "30"}, {"rank": "R2", "name": "Matrat FC", "thp": "85.9M", "hq": "29"}, {"rank": "R2", "name": "Viking1970", "thp": "82.1M", "hq": "30"}, {"rank": "R2", "name": "OfficelAgnes", "thp": "75.0M", "hq": "30"}, {"rank": "R2", "name": "lavin hhh", "thp": "75.6M", "hq": "30"}, {"rank": "R2", "name": "margaros", "thp": "69.2M", "hq": "30"}, {"rank": "R2", "name": "mohsenjamaa", "thp": "72.0M", "hq": "30"}, {"rank": "R2", "name": "Apocalipto", "thp": "70.0M", "hq": "30"}, {"rank": "R2", "name": "Please Dont Bite", "thp": "64.1M", "hq": "30"}, {"rank": "R2", "name": "Jannettix", "thp": "64.9M", "hq": "30"}, {"rank": "R2", "name": "TREX9", "thp": "61.7M", "hq": "30"}, {"rank": "R2", "name": "Com Hannibal Smith", "thp": "66.2M", "hq": "30"}, {"rank": "R2", "name": "Constangeles", "thp": "64.3M", "hq": "30"}, {"rank": "R2", "name": "GroZ", "thp": "68.5M", "hq": "30"}, {"rank": "R2", "name": "Black pantherix", "thp": "54.5M", "hq": "30"}, {"rank": "R2", "name": "Loïc1791", "thp": "59.1M", "hq": "30"}, {"rank": "R2", "name": "IDK What Am I Doing", "thp": "66.9M", "hq": "30"}, {"rank": "R2", "name": "Ipieyoh", "thp": "46.0M", "hq": "30"}, {"rank": "R2", "name": "Larry53", "thp": "48.8M", "hq": "29"}, {"rank": "R2", "name": "Ayrix62", "thp": "64.5M", "hq": "30"}, {"rank": "R2", "name": "NutyDuck", "thp": "59.6M", "hq": "30"}, {"rank": "R2", "name": "Grička vještica", "thp": "48.4M", "hq": "30"}, {"rank": "R1", "name": "Nadezhdaaa", "thp": "71.0M", "hq": "30"}, {"rank": "R1", "name": "مثالـي25", "thp": "66.8M", "hq": "30"}, {"rank": "R1", "name": "Thedarkknightt", "thp": "55.4M", "hq": "30"}, {"rank": "R1", "name": "BostonApp", "thp": "59.5M", "hq": "30"}, {"rank": "R1", "name": "PikABoo", "thp": "57.4M", "hq": "30"}, {"rank": "R1", "name": "ГоШа", "thp": "53.0M", "hq": "30"}, {"rank": "R1", "name": "IX BORSAN", "thp": "48.3M", "hq": "30"}, {"rank": "R1", "name": "Niklas78", "thp": "53.2M", "hq": "30"}, {"rank": "R1", "name": "Fab745", "thp": "63.9M", "hq": "30"}, {"rank": "R1", "name": "Crystall", "thp": "57.5M", "hq": "29"}, {"rank": "R1", "name": "ElCoudou", "thp": "57.8M", "hq": "30"}, {"rank": "R1", "name": "Álvaro97", "thp": "49.1M", "hq": "29"}, {"rank": "R1", "name": "Lmario313", "thp": "46.9M", "hq": "30"}, {"rank": "R1", "name": "FuryAmsterdam", "thp": "32.6M", "hq": "28"}, {"rank": "R1", "name": "Mia Miu", "thp": "48.4M", "hq": "30"}, {"rank": "R1", "name": "ℒoℒα", "thp": "33.0M", "hq": "30"}, {"rank": "R1", "name": "Gosamyr", "thp": "31.6M", "hq": "30"}, {"rank": "R1", "name": "CassAkaza", "thp": "—", "hq": "—"}, {"rank": "R1", "name": "Yugo Léliatrope", "thp": "—", "hq": "—"}];
+let members=baseRoster.map((x,i)=>({...x,survey:null,memberNo:i+1}));
 const groupsEl=document.getElementById("groups"), statusEl=document.getElementById("status");
 const norm=s=>String(s??"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"");
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 const num=v=>{const s=String(v??"").replace(/,/g,".").replace(/[^0-9.]/g,"");const n=parseFloat(s);return Number.isFinite(n)?n:0};
 const fmtPower=v=>{const n=num(v);if(!n)return "—";return String(v).toUpperCase().includes("M")?String(v):n.toFixed(n>=100?0:1)+"M"};
 const getSurveyPower=m=>m.survey?.thp||m.survey?.THP||m.thp||"—";
-const surveyDone=m=>!!m.survey;
+// Una fila en Supabase solo indica que el miembro existe.
+// La encuesta se considera completada cuando están rellenados sus datos principales: THP y HQ.
+const surveyDone=m=>{
+ const s=m.survey;
+ if(!s) return false;
+ const thp=s.thp??s.THP??"";
+ const hq=s.hq_level??s.hqLevel??s.hq??"";
+ return String(thp).trim()!=="" && String(hq).trim()!=="";
+};
 const avatar=m=>m.survey?.avatar||"";
 const flag=m=>m.survey?.flag||"";
 const getHQ=m=>m.survey?.hq_level ?? m.survey?.hqLevel ?? m.hq_level ?? m.hq ?? "—";
@@ -2130,7 +2172,7 @@ function formatSurveyDate(m){
 function row(m){
  const img=avatar(m);
  return `<article class="member" data-name="${esc(norm(m.name))}" data-rank="${m.rank}">
-   <span class="rank ${m.rank.toLowerCase()}">${m.rank}</span>
+   <span class="rank member-number">${m.memberNo||""}</span>
    <span class="avatar">${img?`<img src="${esc(img)}" alt="">`:"👤"}</span>
    <div><div class="member-name">${esc(m.name)} ${flag(m)?`<span style="font-size:14px">${esc(flag(m))}</span>`:""}</div>
    <div class="member-meta">${surveyDone(m)?`<span class="check">✓</span><span>${window.HOLaLang().completed}${formatSurveyDate(m)?` · ${formatSurveyDate(m)}`:""}</span>`:`<span>${window.HOLaLang().none}</span>`}</div></div>
@@ -2212,9 +2254,9 @@ async function load(){
   const {data,error}=await supabase.from("players").select("*");
   if(error)throw error;
   const map=new Map((data||[]).filter(x=>x.name).map(x=>[norm(x.name),x]));
-  members=baseRoster.map(m=>({...m,survey:map.get(norm(m.name))||null}));
+  members=baseRoster.map((m,i)=>({...m,survey:map.get(norm(m.name))||null,memberNo:i+1}));
   // Jugadores que hayan rellenado la encuesta pero no estén en la lista base.
-  (data||[]).forEach(s=>{if(s.name&&!members.some(m=>norm(m.name)===norm(s.name)))members.push({rank:s.rank||"R1",name:s.name,thp:s.thp||"—",hq:s.hq_level ?? s.hq ?? "—",survey:s})});
+  (data||[]).forEach(s=>{if(s.name&&!members.some(m=>norm(m.name)===norm(s.name)))members.push({rank:s.rank||"R1",name:s.name,thp:s.thp||"—",hq:s.hq_level ?? s.hq ?? "—",survey:s,memberNo:members.length+1})});
   window.HOLaMembers=members;statusEl.style.display="none";render();
  }catch(err){console.error(err);statusEl.textContent=window.HOLaLang().supabase;statusEl.style.display="block";render();}
 }

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HOLa — Administración</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
 <style>
 :root{
@@ -207,7 +208,7 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(57,174,232,.1)}
   .modules{grid-template-columns:1fr}
   .login-wrap{margin:35px auto}
 }
-</style>
+.export-modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:18px}.export-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}.export-card{position:relative;width:min(760px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#061827,#031622);border:1px solid rgba(57,174,232,.55);border-radius:22px;padding:25px;box-shadow:0 25px 80px rgba(0,0,0,.65)}.export-close{position:absolute;right:14px;top:10px;width:38px;height:38px;border:1px solid rgba(57,174,232,.4);border-radius:10px;background:#031523;color:#fff;font-size:27px;cursor:pointer}.export-kicker{color:var(--blue);font-size:10px;font-weight:900;letter-spacing:3px}.export-card h2{margin:6px 45px 5px 0;color:var(--gold);font-size:24px}.export-card p{margin:0 0 18px;color:var(--muted);font-size:13px}.export-actions-top{display:flex;gap:8px;margin-bottom:12px}.export-mini{border:1px solid rgba(57,174,232,.45);background:#031523;color:#dff8ff;border-radius:9px;padding:8px 11px;font-size:11px;font-weight:800}.export-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.export-field{display:flex;align-items:center;gap:9px;padding:10px 11px;border:1px solid rgba(141,112,197,.42);border-radius:10px;background:rgba(3,22,36,.8);color:#fff;font-size:13px}.export-field input{width:17px;height:17px;margin:0;accent-color:var(--gold)}.export-status{min-height:20px;margin:13px 0 8px;color:var(--muted);font-size:12px}.export-download{width:100%;height:48px;border:1px solid rgba(230,223,68,.8);border-radius:12px;background:linear-gradient(135deg,#E6DF44,#F0810F);color:#061522;font-weight:900;cursor:pointer}.export-download:disabled{opacity:.55}@media(max-width:600px){.export-fields{grid-template-columns:1fr}.export-card{padding:21px}}</style>
 
 </head>
 <body>
@@ -294,6 +295,10 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(57,174,232,.1)}
       <span class="module-icon">📚</span>
       <span class="module-content"><b>Guías</b><span>Gestiona recursos y guías.</span></span>
     </button>
+    <button class="module" type="button" id="surveyExportBtn">
+      <span class="module-icon">📊</span>
+      <span class="module-content"><b>Resultados de encuesta</b><span>Selecciona los datos y descarga la encuesta en Excel.</span></span>
+    </button>
     <button class="module" type="button" id="logoutBtn">
       <span class="module-icon">↪</span>
       <span class="module-content"><b>Cerrar sesión</b><span>Salir del centro de administración.</span></span>
@@ -302,6 +307,20 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(57,174,232,.1)}
 </div>
 
 
+
+  <div class="export-modal" id="surveyExportModal" style="display:none">
+    <div class="export-backdrop" id="exportBackdrop"></div>
+    <div class="export-card" role="dialog" aria-modal="true">
+      <button class="export-close" id="exportClose" type="button">×</button>
+      <div class="export-kicker">HOLa · ADMIN</div>
+      <h2>EXPORTAR ENCUESTA</h2>
+      <p>Selecciona las columnas que quieres descargar en Excel.</p>
+      <div class="export-actions-top"><button type="button" class="export-mini" id="selectAllExport">SELECCIONAR TODO</button><button type="button" class="export-mini" id="clearAllExport">LIMPIAR</button></div>
+      <div class="export-fields" id="exportFields"></div>
+      <div class="export-status" id="exportStatus"></div>
+      <button type="button" class="export-download" id="downloadSurveyExcel">📥 DESCARGAR EXCEL</button>
+    </div>
+  </div>
 
 <script>
 const SUPABASE_URL = "https://ovybstpiomphrouvqxmf.supabase.co";
@@ -404,6 +423,17 @@ supabaseClient.auth.onAuthStateChange(async (_event, session)=>{
 });
 
 showCurrentSession();
+
+const surveyExportBtn=document.getElementById("surveyExportBtn"),surveyExportModal=document.getElementById("surveyExportModal"),exportFields=document.getElementById("exportFields"),exportStatus=document.getElementById("exportStatus");
+const surveyColumns=[["name","NOMBRE"],["thp","THP"],["hq_level","HQ"],["t10","T10"],["profession","PROFESIÓN"],["squad1_type","SQUAD 1"],["squad1_power","POTENCIA 1"],["squad2_type","SQUAD 2"],["squad2_power","POTENCIA 2"],["squad3_type","SQUAD 3"],["squad3_power","POTENCIA 3"]];
+exportFields.innerHTML=surveyColumns.map(([k,l],i)=>`<label class="export-field"><input type="checkbox" value="${k}" ${i<3?"checked":""}><span>${l}</span></label>`).join("");
+function closeExport(){surveyExportModal.style.display="none"}
+surveyExportBtn.addEventListener("click",()=>surveyExportModal.style.display="flex");document.getElementById("exportClose").addEventListener("click",closeExport);document.getElementById("exportBackdrop").addEventListener("click",closeExport);
+document.getElementById("selectAllExport").addEventListener("click",()=>exportFields.querySelectorAll("input").forEach(x=>x.checked=true));document.getElementById("clearAllExport").addEventListener("click",()=>exportFields.querySelectorAll("input").forEach(x=>x.checked=false));
+function thpNum(v){const n=parseFloat(String(v??"").replace(/,/g,".").replace(/[^0-9.]/g,""));return Number.isFinite(n)?n:0}
+document.getElementById("downloadSurveyExcel").addEventListener("click",async()=>{const selected=[...exportFields.querySelectorAll("input:checked")].map(x=>x.value);if(!selected.length){exportStatus.textContent="Selecciona al menos una columna.";return}const btn=document.getElementById("downloadSurveyExcel");btn.disabled=true;exportStatus.textContent="Cargando datos...";
+try{const {data,error}=await supabaseClient.from("players").select("*");if(error)throw error;const rows=(data||[]).filter(r=>String(r.thp??"").trim()!==""&&r.hq_level!==null&&r.hq_level!==undefined).sort((a,b)=>thpNum(b.thp)-thpNum(a.thp)||String(a.name||"").localeCompare(String(b.name||""),"es")).map((r,i)=>{const o={"#":i+1};selected.forEach(k=>{const c=surveyColumns.find(x=>x[0]===k);o[c?c[1]:k]=k==="t10"?(r.t10?"Sí":"No"):(r[k]??"")});return o});if(!rows.length)throw new Error("No hay encuestas completadas para exportar.");const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Encuesta");XLSX.writeFile(wb,"HOLa_resultados_encuesta.xlsx");exportStatus.textContent=`Excel generado con ${rows.length} miembros.`}catch(err){console.error(err);exportStatus.textContent=err.message||"No se pudo generar el Excel."}finally{btn.disabled=false}});
+
 </script>
 </body>
 </html>
