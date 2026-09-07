@@ -208,7 +208,26 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(57,174,232,.1)}
   .modules{grid-template-columns:1fr}
   .login-wrap{margin:35px auto}
 }
-.export-modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:18px}.export-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}.export-card{position:relative;width:min(760px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#061827,#031622);border:1px solid rgba(57,174,232,.55);border-radius:22px;padding:25px;box-shadow:0 25px 80px rgba(0,0,0,.65)}.export-close{position:absolute;right:14px;top:10px;width:38px;height:38px;border:1px solid rgba(57,174,232,.4);border-radius:10px;background:#031523;color:#fff;font-size:27px;cursor:pointer}.export-kicker{color:var(--blue);font-size:10px;font-weight:900;letter-spacing:3px}.export-card h2{margin:6px 45px 5px 0;color:var(--gold);font-size:24px}.export-card p{margin:0 0 18px;color:var(--muted);font-size:13px}.export-actions-top{display:flex;gap:8px;margin-bottom:12px}.export-mini{border:1px solid rgba(57,174,232,.45);background:#031523;color:#dff8ff;border-radius:9px;padding:8px 11px;font-size:11px;font-weight:800}.export-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.export-field{display:flex;align-items:center;gap:9px;padding:10px 11px;border:1px solid rgba(141,112,197,.42);border-radius:10px;background:rgba(3,22,36,.8);color:#fff;font-size:13px}.export-field input{width:17px;height:17px;margin:0;accent-color:var(--gold)}.export-status{min-height:20px;margin:13px 0 8px;color:var(--muted);font-size:12px}.export-download{width:100%;height:48px;border:1px solid rgba(230,223,68,.8);border-radius:12px;background:linear-gradient(135deg,#E6DF44,#F0810F);color:#061522;font-weight:900;cursor:pointer}.export-download:disabled{opacity:.55}@media(max-width:600px){.export-fields{grid-template-columns:1fr}.export-card{padding:21px}}</style>
+.export-modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:18px}.export-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}.export-card{position:relative;width:min(760px,100%);max-height:88vh;overflow:auto;background:linear-gradient(145deg,#061827,#031622);border:1px solid rgba(57,174,232,.55);border-radius:22px;padding:25px;box-shadow:0 25px 80px rgba(0,0,0,.65)}.export-close{position:absolute;right:14px;top:10px;width:38px;height:38px;border:1px solid rgba(57,174,232,.4);border-radius:10px;background:#031523;color:#fff;font-size:27px;cursor:pointer}.export-kicker{color:var(--blue);font-size:10px;font-weight:900;letter-spacing:3px}.export-card h2{margin:6px 45px 5px 0;color:var(--gold);font-size:24px}.export-card p{margin:0 0 18px;color:var(--muted);font-size:13px}.export-actions-top{display:flex;gap:8px;margin-bottom:12px}.export-mini{border:1px solid rgba(57,174,232,.45);background:#031523;color:#dff8ff;border-radius:9px;padding:8px 11px;font-size:11px;font-weight:800}.export-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.export-field{display:flex;align-items:center;gap:9px;padding:10px 11px;border:1px solid rgba(141,112,197,.42);border-radius:10px;background:rgba(3,22,36,.8);color:#fff;font-size:13px}.export-field input{width:17px;height:17px;margin:0;accent-color:var(--gold)}.export-status{min-height:20px;margin:13px 0 8px;color:var(--muted);font-size:12px}.export-download{width:100%;height:48px;border:1px solid rgba(230,223,68,.8);border-radius:12px;background:linear-gradient(135deg,#E6DF44,#F0810F);color:#061522;font-weight:900;cursor:pointer}.export-download:disabled{opacity:.55}@media(max-width:600px){.export-fields{grid-template-columns:1fr}.export-card{padding:21px}}
+.register-link{
+  display:block;width:100%;margin-top:13px;padding:10px 12px;border:0;background:transparent;
+  color:#28D7D7;text-align:center;font-size:13px;font-weight:800;cursor:pointer;
+}
+.register-link:hover{text-decoration:underline;color:#fff}
+.register-note{margin-top:8px;text-align:center;color:#849aa8;font-size:11px;line-height:1.4}
+.reg-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.72);backdrop-filter:blur(7px)}
+.reg-card{width:min(460px,100%);max-height:90vh;overflow:auto;background:linear-gradient(145deg,#12334a,#071522);border:1px solid rgba(40,215,215,.55);border-radius:20px;padding:24px;box-shadow:0 25px 80px rgba(0,0,0,.65)}
+.reg-card h3{margin:0 0 7px;color:#F6E652;text-align:center;font-size:22px;letter-spacing:1px}
+.reg-card .reg-sub{text-align:center;color:#28D7D7;font-size:12px;font-weight:800;letter-spacing:1.5px;margin-bottom:20px}
+.reg-card input{margin-bottom:14px}
+.reg-actions{display:flex;gap:10px;margin-top:4px}
+.reg-actions button{flex:1;height:46px;border-radius:11px;font-weight:900;cursor:pointer}
+.reg-cancel{background:#061522;border:1px solid rgba(40,215,215,.4);color:#fff}
+.reg-submit{background:linear-gradient(135deg,#F6E652,#F0810F);border:1px solid rgba(246,230,82,.8);color:#061522}
+.reg-info{margin:0 0 16px;padding:11px;border-radius:10px;background:rgba(21,154,166,.08);border:1px solid rgba(21,154,166,.3);color:#b8cbd3;font-size:12px;line-height:1.45;text-align:center}
+@media(max-width:480px){.reg-card{padding:19px}.reg-actions{flex-direction:column}}
+
+</style>
 
 </head>
 <body>
@@ -253,8 +272,39 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(57,174,232,.1)}
       <button class="login-btn" id="loginBtn" type="submit">INICIAR SESIÓN</button>
     </form>
 
+    <button class="register-link" id="registerOpen" type="button">¿ERES R4 O R5? · CREAR CUENTA</button>
+    <div class="register-note">El sistema comprobará automáticamente tu rango de alianza.</div>
+
     <div id="message" class="message"></div>
     <div class="hint">Acceso restringido a administradores autorizados.</div>
+  </div>
+</div>
+
+
+<div class="reg-modal" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
+  <div class="reg-card">
+    <h3 id="registerTitle">CREAR CUENTA ADMIN</h3>
+    <div class="reg-sub">SOLO R4 Y R5</div>
+    <p class="reg-info">Introduce tu nombre exacto de jugador. El sistema comprobará en Supabase que eres R4 o R5 antes de crear la cuenta.</p>
+    <form id="registerForm">
+      <label for="registerName">Nombre en el juego</label>
+      <input id="registerName" type="text" autocomplete="nickname" required maxlength="60" placeholder="Tu nombre exacto en HOLa">
+
+      <label for="registerEmail">Email</label>
+      <input id="registerEmail" type="email" autocomplete="email" required placeholder="tu@email.com">
+
+      <label for="registerPassword">Contraseña</label>
+      <input id="registerPassword" type="password" autocomplete="new-password" required minlength="8" placeholder="Mínimo 8 caracteres">
+
+      <label for="registerPassword2">Repetir contraseña</label>
+      <input id="registerPassword2" type="password" autocomplete="new-password" required minlength="8" placeholder="Repite la contraseña">
+
+      <div id="registerMessage" class="message"></div>
+      <div class="reg-actions">
+        <button class="reg-cancel" id="registerClose" type="button">CANCELAR</button>
+        <button class="reg-submit" id="registerBtn" type="submit">CREAR CUENTA</button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -408,6 +458,70 @@ loginForm.addEventListener("submit", async (e)=>{
   await showCurrentSession();
   loginBtn.disabled = false;
   loginBtn.textContent = "INICIAR SESIÓN";
+});
+
+
+const registerOpen = document.getElementById("registerOpen");
+const registerModal = document.getElementById("registerModal");
+const registerForm = document.getElementById("registerForm");
+const registerBtn = document.getElementById("registerBtn");
+const registerMessage = document.getElementById("registerMessage");
+
+function showRegisterMessage(text, type="error") {
+  registerMessage.textContent = text;
+  registerMessage.className = "message " + type;
+}
+function closeRegister(){
+  registerModal.style.display = "none";
+  registerForm.reset();
+  registerMessage.className = "message";
+}
+registerOpen.addEventListener("click",()=>{
+  registerMessage.className = "message";
+  registerModal.style.display = "flex";
+  setTimeout(()=>document.getElementById("registerName").focus(),50);
+});
+registerClose.addEventListener("click",closeRegister);
+registerModal.addEventListener("click",e=>{ if(e.target===registerModal) closeRegister(); });
+
+registerForm.addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  const name=document.getElementById("registerName").value.trim();
+  const email=document.getElementById("registerEmail").value.trim();
+  const password=document.getElementById("registerPassword").value;
+  const password2=document.getElementById("registerPassword2").value;
+
+  if(password.length<8){ showRegisterMessage("La contraseña debe tener al menos 8 caracteres."); return; }
+  if(password!==password2){ showRegisterMessage("Las contraseñas no coinciden."); return; }
+
+  registerBtn.disabled=true;
+  registerBtn.textContent="COMPROBANDO...";
+  registerMessage.className="message";
+
+  try{
+    const res=await fetch(`${SUPABASE_URL}/functions/v1/admin-register`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({name,email,password})
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok || !data.ok) throw new Error(data.error || "No se pudo crear la cuenta.");
+
+    showRegisterMessage(`Cuenta creada correctamente para ${data.display_name}. Ya puedes iniciar sesión.`,"ok");
+    registerForm.reset();
+    setTimeout(()=>{
+      closeRegister();
+      document.getElementById("email").value=email;
+      document.getElementById("password").focus();
+      showMessage("Cuenta creada. Ahora inicia sesión.","ok");
+    },1200);
+  }catch(err){
+    console.error(err);
+    showRegisterMessage(err.message || "No se pudo crear la cuenta.");
+  }finally{
+    registerBtn.disabled=false;
+    registerBtn.textContent="CREAR CUENTA";
+  }
 });
 
 document.getElementById("logoutBtn").addEventListener("click", async ()=>{
