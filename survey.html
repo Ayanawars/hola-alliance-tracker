@@ -1137,7 +1137,6 @@ button.submit{
   #thpConfirmEdit{background:#182a3b;border-color:#54758d;color:#d9edf7}
   #thpConfirmYes{background:#172f20;border-color:#39e66f;color:#baffcf;box-shadow:0 0 12px rgba(57,230,111,.18)}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 <body class="welcome-open survey-hidden">
   <div class="welcome-screen" id="welcomeScreen" aria-label="Survey preparation">
@@ -1280,7 +1279,18 @@ button.submit{
               <span data-i18n="thp">THP</span>
               <button type="button" class="thp-find-link" id="thpHelp" data-i18n="thpFind">¿Dónde lo encuentro?</button>
             </label>
-            <input id="thp" type="text" inputmode="decimal" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="7" pattern="^\d{1,4},\d{2}$" data-placeholder="thpInputPlaceholder" placeholder="98,35">
+            <input id="thp" type="text" inputmode="decimal" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="7" pattern="^\d{1,4}[,.]\d{2}$" data-placeholder="thpInputPlaceholder" placeholder="98,35" aria-describedby="thpInputHint">
+            <script>
+              // iPhone/iPad keyboards may show a dot instead of a comma.
+              // Accept both and normalize the value to the comma format.
+              document.getElementById('thp').addEventListener('input', function () {
+                this.value = this.value.replace(/\./g, ',').replace(/[^0-9,]/g, '');
+                const parts = this.value.split(',');
+                if (parts.length > 2) this.value = parts[0] + ',' + parts.slice(1).join('');
+                if (parts[1]) this.value = parts[0].slice(0, 4) + ',' + parts[1].slice(0, 2);
+                else this.value = parts[0].slice(0, 4);
+              });
+            </script>
             <button type="button" id="confirmThpBtn" class="thp-confirm-btn" data-i18n="confirmThp">CONFIRM THP</button>
             <div id="thpInputHint" class="thp-input-hint" data-i18n="thpInputHint">Enter your THP in millions: 98,35</div>
           </div>
@@ -1684,168 +1694,272 @@ button.submit{
   });
 
 
-  // ===== POWER OCR v11 =====
-  // Robust strategy: OCR the ORIGINAL screenshot with OCR.Space + overlay
-  // coordinates, then select only large 8-digit numbers in the left power
-  // column. This avoids guessing fixed Y coordinates and works with different
-  // screenshot crops/scales and both Spanish/English game UIs.
+  // OCR.Space — one screenshot contains all 3 squads.
   const OCRSPACE_ENDPOINT='https://api.ocr.space/parse/image';
   const OCRSPACE_KEY_STORAGE='hola:ocrspace:key';
   const OCRSPACE_DEFAULT_KEY='K88248924688957';
-  function getOcrApiKey(){ return localStorage.getItem(OCRSPACE_KEY_STORAGE)||OCRSPACE_DEFAULT_KEY; }
+  function getOcrApiKey(){
+    return localStorage.getItem(OCRSPACE_KEY_STORAGE)||OCRSPACE_DEFAULT_KEY;
+  }
 
   async function loadOcrImage(file){
     return await new Promise((resolve,reject)=>{
       const url=URL.createObjectURL(file), im=new Image();
       im.onload=()=>{URL.revokeObjectURL(url);resolve(im)};
-      im.onerror=reject; im.src=url;
+      im.onerror=reject;
+      im.src=url;
     });
   }
 
-  function normalizeOcrDigits(text){
-    return String(text||'').replace(/\u00a0/g,' ')
-      .replace(/[OoQ]/g,'0').replace(/[lI|]/g,'1').replace(/[Ss]/g,'5')
-      .replace(/[Zz]/g,'2').replace(/[Gg]/g,'6').replace(/[Bb]/g,'8')
-      .replace(/[;:]/g,',');
-  }
+  // OCR v9: exact coordinates measured from the real 945x2048 Last War
+  // screenshots supplied for this survey.  The three power values are NOT at
+  // the old .222/.362/.503 bands; those bands cut through the hero portraits.
+  // We now crop only the numeric power line, leaving the yellow icon outside.
+  async function makeOcrVariants(file,squad){
+    const img=await loadOcrImage(file);
+    const rows={
+      1:{y:.247,h:.034},
+      2:{y:.414,h:.034},
+      3:{y:.589,h:.034}
+    };
+    const p=rows[squad];
 
-  function eightDigitCandidates(raw){
-    const d=normalizeOcrDigits(raw).replace(/\D/g,'');
-    const out=new Set();
-    if(d.length===8) out.add(d);
-    // OCR occasionally adds one or more leading/embedded phantom digits.
-    if(d.length>8 && d.length<=11){
-      for(let drop=0;drop<d.length;drop++){
-        const v=d.slice(0,drop)+d.slice(drop+1);
-        if(v.length===8) out.add(v);
-      }
-      if(d.length>9){
-        for(let a=0;a<d.length;a++) for(let b=a+1;b<d.length;b++){
-          const v=d.slice(0,a)+d.slice(a+1,b)+d.slice(b+1);
-          if(v.length===8) out.add(v);
-        }
-      }
+    // The number starts around x=100 on a 945px screenshot. Keep a little
+    // left margin for the first digit, but exclude the power icon as much as
+    // possible. The width comfortably covers 8 digits with separators.
+    const sx=Math.floor(img.naturalWidth*.100);
+    const sy=Math.floor(img.naturalHeight*p.y);
+    const sw=Math.floor(img.naturalWidth*.285);
+    const sh=Math.floor(img.naturalHeight*p.h);
+
+    const base=document.createElement('canvas');
+    base.width=sw*5; base.height=sh*5;
+    const ctx=base.getContext('2d',{willReadFrequently:true});
+    ctx.imageSmoothingEnabled=true;
+    ctx.imageSmoothingQuality='high';
+    ctx.drawImage(img,sx,sy,sw,sh,0,0,base.width,base.height);
+
+    const variants=[];
+
+    // Original enlarged crop.
+    variants.push(await new Promise(r=>base.toBlob(r,'image/png')));
+
+    // High-contrast grayscale variant, tuned for the white digits with black
+    // outline used by Last War.
+    const gray=document.createElement('canvas');
+    gray.width=base.width; gray.height=base.height;
+    const g=gray.getContext('2d',{willReadFrequently:true});
+    g.drawImage(base,0,0);
+    const data=g.getImageData(0,0,gray.width,gray.height);
+    for(let i=0;i<data.data.length;i+=4){
+      const lum=0.299*data.data[i]+0.587*data.data[i+1]+0.114*data.data[i+2];
+      const v=Math.max(0,Math.min(255,(lum-115)*2.4+30));
+      data.data[i]=data.data[i+1]=data.data[i+2]=v;
     }
-    return [...out].filter(v=>{const n=Number(v);return n>=10000000&&n<100000000});
+    g.putImageData(data,0,0);
+    variants.push(await new Promise(r=>gray.toBlob(r,'image/png')));
+
+    return variants;
   }
 
-  function scorePowerNumber(d){
-    const n=Number(d), m=n/1e6;
-    let score=0;
-    if(m>=15&&m<=80) score+=80;
-    if(m>=20&&m<=50) score+=35;
-    if(m>=25&&m<=40) score+=15;
-    return score;
-  }
-
-  async function sendFullToOcrSpace(file){
+  async function sendCropToOcrSpace(cropped,squad,engine=2){
     const fd=new FormData();
-    fd.append('file',file,file.name||'squads.png');
+    fd.append('file',cropped,`squad-${squad}-power.png`);
     fd.append('language','eng');
-    fd.append('isOverlayRequired','true');
+    fd.append('isOverlayRequired','false');
+    fd.append('isTable','false');
     fd.append('scale','true');
     fd.append('detectOrientation','false');
-    fd.append('OCREngine','2');
-    fd.append('filetype','auto');
+    fd.append('OCREngine',String(engine));
+    fd.append('filetype','PNG');
+    fd.append('OCREngine',String(engine));
+    fd.append('isCreateSearchablePdf','false');
+
     const controller=new AbortController();
     const timeout=setTimeout(()=>controller.abort(),12000);
     try{
-      const res=await fetch(OCRSPACE_ENDPOINT,{method:'POST',headers:{apikey:getOcrApiKey()},body:fd,signal:controller.signal});
+      const res=await fetch(OCRSPACE_ENDPOINT,{
+        method:'POST',
+        headers:{apikey:getOcrApiKey()},
+        body:fd,
+        signal:controller.signal
+      });
       if(!res.ok) throw new Error('OCR service HTTP '+res.status);
       const json=await res.json();
       if(json.IsErroredOnProcessing) throw new Error((json.ErrorMessage||['OCR service error']).join(' '));
-      return json;
-    }finally{clearTimeout(timeout);}
+      return (json.ParsedResults||[]).map(x=>x.ParsedText||'').join('\n');
+    }finally{
+      clearTimeout(timeout);
+    }
   }
 
-  function extractOverlayPowerCandidates(json,fileWidth,fileHeight){
-    const result=json?.ParsedResults?.[0];
-    const lines=result?.TextOverlay?.Lines||[];
+  async function ocrOneSquadPower(file,squad){
+    const variants=await makeOcrVariants(file,squad);
+    const texts=[];
+    for(const variant of variants){
+      try{
+        const t=await sendCropToOcrSpace(variant,squad,2);
+        if(t) texts.push(t);
+      }catch(err){
+        console.warn('OCR failed',squad,err);
+      }
+    }
+    return texts.join('\n');
+  }
+
+  function extractRawPowerFromText(text){
+    const raw=String(text||'').replace(/\u00a0/g,' ').trim();
+    if(!raw) return '';
+
+    // Common OCR substitutions. Keep punctuation because comma-grouped
+    // numbers are much more reliable than a naked digit stream.
+    let cleaned=raw
+      .replace(/[OoQ]/g,'0')
+      .replace(/[lI|]/g,'1')
+      .replace(/[Ss]/g,'5')
+      .replace(/[Zz]/g,'2')
+      .replace(/[Gg]/g,'6')
+      .replace(/[Bb]/g,'8')
+      .replace(/[;:]/g,',');
+
     const candidates=[];
-    for(const line of lines){
-      for(const word of (line.Words||[])){
-        const raw=word.WordText||'';
-        const left=Number(word.Left)||0, top=Number(word.Top)||0;
-        const width=Number(word.Width)||0, height=Number(word.Height)||0;
-        // Power is in the left side of each squad card. Exclude header/top UI.
-        if(left<fileWidth*.065 || left>fileWidth*.40) continue;
-        if(top<fileHeight*.18 || top>fileHeight*.78) continue;
-        const vals=eightDigitCandidates(raw);
-        for(const d of vals){
-          candidates.push({digits:d,value:`${(Number(d)/1e6).toFixed(2)}M`,x:left,y:top,w:width,h:height,score:scorePowerNumber(d)});
+
+    const addCandidate=(digits,score=0)=>{
+      const v=String(digits||'').replace(/\D/g,'');
+      if(!/^\d{8,11}$/.test(v)) return;
+      // A squad power in these screenshots is an 8-digit number
+      // (10,000,000–99,999,999). If OCR added one or more stray digits,
+      // evaluate every deletion pattern down to 8 digits.
+      if(v.length===8){
+        const n=Number(v);
+        if(n>=10000000 && n<100000000) candidates.push({v,score:score+30});
+        return;
+      }
+
+      const targetLen=8;
+      const deletions=v.length-targetLen;
+      const variants=new Set();
+
+      function choose(pos,left,prefix){
+        if(left===0){
+          variants.add(prefix+v.slice(pos));
+          return;
+        }
+        if(v.length-pos<left) return;
+        // Keep this bounded: for 9–11 OCR digits this is tiny.
+        for(let i=pos;i<=v.length-left;i++){
+          choose(i+1,left-1,prefix+v.slice(pos,i));
         }
       }
-    }
-    // Some OCR engines return the entire power number as LineText but split
-    // Words strangely. Parse each line too, using the line's bounding box.
-    for(const line of lines){
-      const raw=line.LineText||'';
-      const left=Number(line.MinX)||Number(line.Words?.[0]?.Left)||0;
-      const top=Number(line.MinY)||Number(line.Words?.[0]?.Top)||0;
-      if(left<fileWidth*.065 || left>fileWidth*.40) continue;
-      if(top<fileHeight*.18 || top>fileHeight*.78) continue;
-      for(const d of eightDigitCandidates(raw)){
-        candidates.push({digits:d,value:`${(Number(d)/1e6).toFixed(2)}M`,x:left,y:top,w:0,h:0,score:scorePowerNumber(d)+15});
-      }
-    }
-    return candidates;
-  }
+      choose(0,deletions,'');
 
-  function chooseThreePowers(candidates,fileHeight){
-    if(!candidates.length) return {1:'',2:'',3:''};
-    // Cluster candidates by vertical position. The same power can appear twice
-    // (word + line); merge nearby readings and keep the strongest one.
-    candidates.sort((a,b)=>a.y-b.y);
-    const groups=[];
-    const gap=Math.max(45,fileHeight*.035);
-    for(const c of candidates){
-      let g=groups[groups.length-1];
-      if(!g || c.y-g.maxY>gap){g={items:[],minY:c.y,maxY:c.y};groups.push(g);}
-      g.items.push(c); g.maxY=Math.max(g.maxY,c.y);
-    }
-    const usable=groups.map(g=>{
-      const by=new Map();
-      for(const c of g.items){
-        const key=c.digits; const old=by.get(key);
-        if(!old || c.score>old.score) by.set(key,c);
+      for(const x of variants){
+        const n=Number(x);
+        if(n<10000000 || n>=100000000) continue;
+        let s=score;
+        // Prefer values close to the common 20–50M range, while not
+        // hard-coding a single player's power.
+        const m=n/1000000;
+        if(m>=20 && m<=50) s+=10;
+        if(m>=15 && m<=70) s+=4;
+        candidates.push({v:x,score:s});
       }
-      return [...by.values()].sort((a,b)=>b.score-a.score)[0];
-    }).filter(Boolean);
-    // There can be unrelated large numbers. Power values normally sit in the
-    // first three squad rows and are vertically separated, so take first 3.
-    const top=usable.slice(0,3);
-    return {1:top[0]?.value||'',2:top[1]?.value||'',3:top[2]?.value||''};
+    };
+
+    // First trust explicit grouped numbers such as 33,154,006.
+    for(const m of cleaned.matchAll(/\b(\d{1,3}(?:[,\.\s]\d{3}){2})\b/g)){
+      addCandidate(m[1],80);
+    }
+
+    // Also inspect any long digit runs, including OCR runs with a stray
+    // leading/interior digit.
+    for(const m of cleaned.matchAll(/\d[\d\s,\.]{6,13}\d/g)){
+      addCandidate(m[0],20);
+    }
+    for(const m of cleaned.matchAll(/\b\d{8,11}\b/g)){
+      addCandidate(m[0],10);
+    }
+
+    if(candidates.length){
+      const counts=new Map();
+      for(const c of candidates){
+        const prev=counts.get(c.v)||{count:0,score:c.score};
+        prev.count++;
+        prev.score=Math.max(prev.score,c.score);
+        counts.set(c.v,prev);
+      }
+      const ranked=[...counts.entries()]
+        .map(([v,x])=>({v,score:x.score+x.count*12,count:x.count}))
+        .sort((a,b)=>b.score-a.score || a.v.localeCompare(b.v));
+      const best=ranked[0];
+      if(best){
+        const n=Number(best.v);
+        if(n>=10000000 && n<100000000) return `${(n/1000000).toFixed(2)}M`;
+      }
+    }
+
+    // Fallback for OCR returning a compact form such as 33.15M.
+    const unitMatches=[...cleaned.matchAll(/(\d{1,4}(?:[.,]\d{1,3})?)\s*([KkMmBb])/g)]
+      .map(m=>({num:parseFloat(m[1].replace(',','.')),unit:m[2].toUpperCase()}))
+      .filter(x=>Number.isFinite(x.num)&&x.num>0);
+    if(unitMatches.length){
+      const factor={K:1e3,M:1e6,B:1e9};
+      unitMatches.sort((a,b)=>b.num*factor[b.unit]-a.num*factor[a.unit]);
+      const best=unitMatches[0];
+      const value=best.num*factor[best.unit];
+      if(value>=10000000&&value<100000000) return `${best.num.toFixed(2)}${best.unit}`;
+    }
+    return '';
   }
 
   async function runAllSquadsOcr(){
     const input=document.getElementById('allSquadsImage');
+    const preview=document.getElementById('allSquadsPreview');
     const status=document.getElementById('allSquadsOcrStatus');
-    const file=input?.files?.[0]; const d=T[lang]||T.en;
-    if(!file){ status.textContent=d.ocrImageFirst||'Upload a screenshot first.'; return; }
-    status.textContent=d.ocrAllWorking||'Analizando poderes...';
+    const file=input?.files?.[0];
+    const d=T[lang]||T.en;
+
+    if(!file){
+      status.textContent=d.ocrImageFirst||'Upload a screenshot first.';
+      return;
+    }
+
+    status.textContent=d.ocrAllWorking||'Scanning the 3 squad powers...';
+
     try{
-      const img=await loadOcrImage(file);
-      status.textContent='Analizando Escuadrones 1–3...';
-      const json=await sendFullToOcrSpace(file);
-      const candidates=extractOverlayPowerCandidates(json,img.naturalWidth,img.naturalHeight);
-      const powers=chooseThreePowers(candidates,img.naturalHeight);
+      const powers={1:'',2:'',3:''};
+
+      const texts=await Promise.all([1,2,3].map(squad=>ocrOneSquadPower(file,squad)));
+      [1,2,3].forEach((squad,i)=>{
+        powers[squad]=extractRawPowerFromText(texts[i]);
+      });
+
       let detected=0;
       [1,2,3].forEach(squad=>{
         if(powers[squad]){
           const target=document.getElementById(`s${squad}power`);
-          target.value=powers[squad]; target.dispatchEvent(new Event('input',{bubbles:true})); detected++;
+          target.value=powers[squad];
+          target.dispatchEvent(new Event('input',{bubbles:true}));
+          detected++;
         }
       });
-      const resultLabel=n=>d[`squad${n}`]||`Squad ${n}`;
-      const resultValue=n=>powers[n]?`<span class="ocr-result-value">${powers[n]}</span>`:`<span class="ocr-result-missing">—</span>`;
-      status.innerHTML=[1,2,3].map(n=>`<span class="ocr-result-label">${resultLabel(n)}</span>${resultValue(n)}`).join('')+`<span class="ocr-detected-count">${detected}/3</span>`;
+
+      const resultLabel=(n)=>d[`squad${n}`]||`Squad ${n}`;
+      const resultValue=(n)=>powers[n] ? `<span class="ocr-result-value">${powers[n]}</span>` : `<span class="ocr-result-missing">—</span>`;
+      if(detected===3){
+        status.innerHTML=`<span class="ocr-result-label">${resultLabel(1)}</span>${resultValue(1)}<span class="ocr-result-label">${resultLabel(2)}</span>${resultValue(2)}<span class="ocr-result-label">${resultLabel(3)}</span>${resultValue(3)}`;
+      }else if(detected>0){
+        status.innerHTML=`<span class="ocr-result-label">${resultLabel(1)}</span>${resultValue(1)}<span class="ocr-result-label">${resultLabel(2)}</span>${resultValue(2)}<span class="ocr-result-label">${resultLabel(3)}</span>${resultValue(3)}<span class="ocr-detected-count">${detected}/3</span>`;
+      }else{
+        status.textContent=d.ocrNotFound||'Power not detected. Try a clearer screenshot.';
+      }
     }catch(err){
-      console.error('Power OCR failed',err);
-      status.textContent=d.ocrNotFound||'No se detectó el poder. Prueba con una captura más clara.';
+      console.error('OCR.Space failed',err);
+      status.textContent=d.ocrNotFound||'Power not detected. Try a clearer screenshot.';
     }
   }
 
-const allSquadsInput=document.getElementById('allSquadsImage');
+  const allSquadsInput=document.getElementById('allSquadsImage');
 
   allSquadsInput.addEventListener('change',()=>{
     const file=allSquadsInput.files?.[0];
@@ -1916,7 +2030,7 @@ document.getElementById("surveyForm").addEventListener("submit",async e=>{
       // are sent, so a later partial update does not erase existing information.
       // Mark the record as a real survey submission only after the form
       // passes validation and the database save succeeds.
-      const update = { name, survey_completed: true, survey_completed_at: new Date().toISOString() };
+      const update = { name, surveyCompleted: true, surveyCompletedAt: new Date().toISOString() };
 
       const fields = {
         flag: document.getElementById("playerFlag").value,
