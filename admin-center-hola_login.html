@@ -349,6 +349,10 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(57,174,232,.1)}
       <span class="module-icon">📊</span>
       <span class="module-content"><b>Resultados de encuesta</b><span>Selecciona los datos y descarga la encuesta en Excel.</span></span>
     </button>
+    <button class="module" type="button" id="playersExportBtn">
+      <span class="module-icon">📋</span>
+      <span class="module-content"><b>Lista de jugadores</b><span>Descarga la lista actual de jugadores con la fecha de hoy.</span></span>
+    </button>
     <button class="module" type="button" id="logoutBtn">
       <span class="module-icon">↪</span>
       <span class="module-content"><b>Cerrar sesión</b><span>Salir del centro de administración.</span></span>
@@ -357,6 +361,18 @@ input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(57,174,232,.1)}
 </div>
 
 
+
+  <div class="export-modal" id="playersExportModal" style="display:none">
+    <div class="export-backdrop" id="playersExportBackdrop"></div>
+    <div class="export-card" role="dialog" aria-modal="true">
+      <button class="export-close" id="playersExportClose" type="button">×</button>
+      <div class="export-kicker">HOLa · ADMIN</div>
+      <h2>EXPORTAR LISTA DE JUGADORES</h2>
+      <p>Se descargará la lista actual de jugadores de Supabase con la fecha de hoy.</p>
+      <div class="export-status" id="playersExportStatus"></div>
+      <button type="button" class="export-download" id="downloadPlayersExcel">📥 DESCARGAR LISTA</button>
+    </div>
+  </div>
 
   <div class="export-modal" id="surveyExportModal" style="display:none">
     <div class="export-backdrop" id="exportBackdrop"></div>
@@ -545,8 +561,16 @@ function closeExport(){surveyExportModal.style.display="none"}
 surveyExportBtn.addEventListener("click",()=>surveyExportModal.style.display="flex");document.getElementById("exportClose").addEventListener("click",closeExport);document.getElementById("exportBackdrop").addEventListener("click",closeExport);
 document.getElementById("selectAllExport").addEventListener("click",()=>exportFields.querySelectorAll("input").forEach(x=>x.checked=true));document.getElementById("clearAllExport").addEventListener("click",()=>exportFields.querySelectorAll("input").forEach(x=>x.checked=false));
 function thpNum(v){const n=parseFloat(String(v??"").replace(/,/g,".").replace(/[^0-9.]/g,""));return Number.isFinite(n)?n:0}
+function hasSurveyData(r){return ["thp","hq_level","t10","profession","squad1_type","squad1_power","squad2_type","squad2_power","squad3_type","squad3_power"].some(k=>{const v=r?.[k];return v!==null&&v!==undefined&&String(v).trim()!==""});}
 document.getElementById("downloadSurveyExcel").addEventListener("click",async()=>{const selected=[...exportFields.querySelectorAll("input:checked")].map(x=>x.value);if(!selected.length){exportStatus.textContent="Selecciona al menos una columna.";return}const btn=document.getElementById("downloadSurveyExcel");btn.disabled=true;exportStatus.textContent="Cargando datos...";
-try{const {data,error}=await supabaseClient.from("players").select("*");if(error)throw error;const rows=(data||[]).filter(r=>String(r.thp??"").trim()!==""&&r.hq_level!==null&&r.hq_level!==undefined).sort((a,b)=>thpNum(b.thp)-thpNum(a.thp)||String(a.name||"").localeCompare(String(b.name||""),"es")).map((r,i)=>{const o={"#":i+1};selected.forEach(k=>{const c=surveyColumns.find(x=>x[0]===k);o[c?c[1]:k]=k==="t10"?(r.t10?"Sí":"No"):(r[k]??"")});return o});if(!rows.length)throw new Error("No hay encuestas completadas para exportar.");const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Encuesta");XLSX.writeFile(wb,"HOLa_resultados_encuesta.xlsx");exportStatus.textContent=`Excel generado con ${rows.length} miembros.`}catch(err){console.error(err);exportStatus.textContent=err.message||"No se pudo generar el Excel."}finally{btn.disabled=false}});
+try{const {data,error}=await supabaseClient.from("players").select("*");if(error)throw error;const rows=(data||[]).filter(hasSurveyData).sort((a,b)=>{const fields=["thp","hq_level","t10","profession","squad1_type","squad1_power","squad2_type","squad2_power","squad3_type","squad3_power"];const completeness=r=>fields.reduce((n,k)=>{const v=r?.[k];return n+(v!==null&&v!==undefined&&String(v).trim()!==""?1:0)},0);return completeness(b)-completeness(a)||thpNum(b.thp)-thpNum(a.thp)||String(a.name||"").localeCompare(String(b.name||""),"es")}).map((r,i)=>{const o={"#":i+1};selected.forEach(k=>{const c=surveyColumns.find(x=>x[0]===k);o[c?c[1]:k]=k==="t10"?(r.t10===true?"Sí":r.t10===false?"No":""):(r[k]??"")});return o});if(!rows.length)throw new Error("No hay datos de encuesta para exportar.");const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Encuesta");XLSX.writeFile(wb,"HOLa_resultados_encuesta.xlsx");exportStatus.textContent=`Excel generado con ${rows.length} miembros con datos.`}catch(err){console.error(err);exportStatus.textContent=err.message||"No se pudo generar el Excel."}finally{btn.disabled=false}});
+
+const playersExportBtn=document.getElementById("playersExportBtn"),playersExportModal=document.getElementById("playersExportModal"),playersExportStatus=document.getElementById("playersExportStatus");
+function closePlayersExport(){playersExportModal.style.display="none"}
+playersExportBtn.addEventListener("click",()=>{playersExportStatus.textContent="";playersExportModal.style.display="flex"});
+document.getElementById("playersExportClose").addEventListener("click",closePlayersExport);
+document.getElementById("playersExportBackdrop").addEventListener("click",closePlayersExport);
+document.getElementById("downloadPlayersExcel").addEventListener("click",async()=>{const btn=document.getElementById("downloadPlayersExcel");btn.disabled=true;playersExportStatus.textContent="Cargando jugadores...";try{const {data,error}=await supabaseClient.from("players").select("name,rank").order("name",{ascending:true});if(error)throw error;const seen=new Set(),rows=[];for(const r of (data||[])){const name=String(r.name??"").trim();const key=name.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();if(!name||seen.has(key))continue;seen.add(key);rows.push({"#":rows.length+1,"NOMBRE":name,"RANGO":r.rank??""})}if(!rows.length)throw new Error("No hay jugadores para exportar.");const today=new Date();const date=today.toLocaleDateString("es-ES",{day:"2-digit",month:"2-digit",year:"numeric"});rows.forEach(r=>r["FECHA"] = date);const ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Jugadores");const stamp=today.toISOString().slice(0,10);XLSX.writeFile(wb,`HOLa_lista_jugadores_${stamp}.xlsx`);playersExportStatus.textContent=`Lista generada con ${rows.length} jugadores.`}catch(err){console.error(err);playersExportStatus.textContent=err.message||"No se pudo generar la lista."}finally{btn.disabled=false}});
 
 </script>
 </body>
