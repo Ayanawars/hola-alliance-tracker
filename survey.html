@@ -3374,8 +3374,8 @@ main, .main-content, .content {
     validateMember(true);
     // Notify the avatar module so an existing saved avatar is loaded for this player.
     document.dispatchEvent(new CustomEvent("hola-player-selected", { detail: { name } }));
-    playerInput.focus();
-    playerInput.setSelectionRange(playerInput.value.length, playerInput.value.length);
+    // Cierra el teclado del móvil al seleccionar un jugador.
+    playerInput.blur();
   }
 
   playerInput.addEventListener("input", () => {
