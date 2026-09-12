@@ -114,6 +114,10 @@ body{margin:0;min-height:100vh;background-image:linear-gradient(rgba(1,8,18,.62)
 .profile-avatar-new img{width:100%;height:100%;object-fit:cover;display:block}
 .profile-identity-new{min-width:0}
 .profile-name-row-new{display:flex;align-items:center;gap:8px;min-width:0;margin-bottom:8px}
+.profile-community-new{display:flex;align-items:center;gap:6px;margin:-2px 0 9px;color:#9fb0c4;font-size:13px;font-weight:700;letter-spacing:.6px;line-height:1.25}
+.profile-community-new .community-label{color:#c9d4df;text-transform:uppercase}
+.profile-community-new .community-value{color:#f1f5f9}
+@media(max-width:600px){.profile-community-new{font-size:12px;margin:-2px 0 9px}}
 .profile-name-new{font-size:23px;line-height:1.08;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .profile-flag-new{font-size:23px;line-height:1;flex:0 0 auto}
 .profile-status-new{display:flex;align-items:center;gap:8px;color:#b8c8d8;font-size:14px;font-weight:700}
@@ -1789,6 +1793,11 @@ body {
 
 
 
+<style id="regional-flags-members-fix">
+.regional-flag{width:22px;height:15px;object-fit:cover;display:inline-block;vertical-align:-2px;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.16);margin-left:4px}
+.profile-flag-new .regional-flag{width:30px;height:20px;margin-left:6px;vertical-align:middle}
+.country-flag-emoji{font-size:14px;line-height:1}
+</style>
 </head>
 <body>
 <header class="hola-simple-header">
@@ -2196,7 +2205,37 @@ function countryToFlag(value){
  };
  return map[k]||v;
 }
-const flag=m=>countryToFlag(m.survey?.flag||"");
+const REGION_FLAGS={
+ "cataluna":{name:"Cataluña, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="60" fill="#f7d117"/><g fill="#c60b1e"><rect y="0" width="90" height="6"/><rect y="12" width="90" height="6"/><rect y="24" width="90" height="6"/><rect y="36" width="90" height="6"/><rect y="48" width="90" height="6"/></g></svg>`},
+ "pais vasco":{name:"País Vasco, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="60" fill="#d20a2e"/><path d="M0 0L90 60M90 0L0 60" stroke="#fff" stroke-width="16"/><path d="M0 0L90 60M90 0L0 60" stroke="#009b48" stroke-width="7"/></svg>`},
+ "galicia":{name:"Galicia, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="60" fill="#fff"/><path d="M-8 10L25 60H48L7 0H-8Z" fill="#75aadb"/></svg>`},
+ "andalucia":{name:"Andalucía, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="20" fill="#009b4d"/><rect y="20" width="90" height="20" fill="#fff"/><rect y="40" width="90" height="20" fill="#009b4d"/></svg>`},
+ "asturias":{name:"Asturias, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="60" fill="#0056a6"/><path d="M45 10v40M25 20l40 20M65 20L25 40" stroke="#ffd400" stroke-width="5"/></svg>`},
+ "cantabria":{name:"Cantabria, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="30" fill="#e30613"/><rect y="30" width="90" height="30" fill="#fff"/></svg>`},
+ "castilla y leon":{name:"Castilla y León, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="45" height="30" fill="#c60b1e"/><rect x="45" width="45" height="30" fill="#fff"/><rect y="30" width="45" height="30" fill="#fff"/><rect x="45" y="30" width="45" height="30" fill="#c60b1e"/></svg>`},
+ "castilla-la mancha":{name:"Castilla-La Mancha, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="30" height="60" fill="#c60b1e"/><rect x="30" width="60" height="60" fill="#fff"/></svg>`},
+ "canarias":{name:"Canarias, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="30" height="60" fill="#fff"/><rect x="30" width="30" height="60" fill="#ffd100"/><rect x="60" width="30" height="60" fill="#d91e18"/></svg>`},
+ "extremadura":{name:"Extremadura, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="20" fill="#009b4d"/><rect y="20" width="90" height="20" fill="#fff"/><rect y="40" width="90" height="20" fill="#000"/></svg>`},
+ "la rioja":{name:"La Rioja, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="15" fill="#e30613"/><rect y="15" width="90" height="15" fill="#ffd100"/><rect y="30" width="90" height="15" fill="#0056a6"/><rect y="45" width="90" height="15" fill="#fff"/></svg>`},
+ "comunidad de madrid":{name:"Comunidad de Madrid, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="60" fill="#e30613"/><g fill="#fff"><circle cx="18" cy="15" r="2"/><circle cx="35" cy="15" r="2"/><circle cx="52" cy="15" r="2"/><circle cx="69" cy="15" r="2"/><circle cx="26" cy="30" r="2"/><circle cx="44" cy="30" r="2"/><circle cx="62" cy="30" r="2"/><circle cx="18" cy="45" r="2"/><circle cx="35" cy="45" r="2"/><circle cx="52" cy="45" r="2"/><circle cx="69" cy="45" r="2"/></g></svg>`},
+ "region de murcia":{name:"Región de Murcia, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="60" fill="#d20a2e"/><rect width="45" height="60" fill="#c60b1e"/><g fill="#ffd100"><circle cx="14" cy="18" r="3"/><circle cx="24" cy="18" r="3"/><circle cx="14" cy="30" r="3"/><circle cx="24" cy="30" r="3"/><circle cx="14" cy="42" r="3"/><circle cx="24" cy="42" r="3"/></g></svg>`},
+ "navarra":{name:"Navarra, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="60" fill="#d20a2e"/><circle cx="45" cy="30" r="12" fill="#ffd100"/><path d="M45 15v30M30 30h30" stroke="#fff" stroke-width="3"/></svg>`},
+ "comunidad valenciana":{name:"Comunidad Valenciana, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="60" fill="#ffd100"/><g fill="#c60b1e"><rect y="0" width="90" height="5"/><rect y="10" width="90" height="5"/><rect y="20" width="90" height="5"/><rect y="30" width="90" height="5"/><rect y="40" width="90" height="5"/><rect y="50" width="90" height="5"/></g><rect width="18" height="60" fill="#174b9c"/></svg>`},
+ "aragon":{name:"Aragón, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="60" fill="#ffd100"/><g fill="#d20a2e"><rect y="0" width="90" height="7"/><rect y="13" width="90" height="7"/><rect y="26" width="90" height="7"/><rect y="39" width="90" height="7"/><rect y="52" width="90" height="7"/></g></svg>`},
+ "illes balears":{name:"Illes Balears, España",svg:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60"><rect width="90" height="60" fill="#ffd100"/><g fill="#c60b1e"><rect y="0" width="90" height="6"/><rect y="12" width="90" height="6"/><rect y="24" width="90" height="6"/><rect y="36" width="90" height="6"/><rect y="48" width="90" height="6"/></g><rect width="30" height="30" fill="#9b1b30"/><path d="M15 5v20M5 15h20" stroke="#fff" stroke-width="4"/></svg>`}
+};
+function normalizeRegion(v){return String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").replace(/\s*,\s*espana$/i,"").replace(/\s*-\s*espana$/i,"").trim();}
+function regionInfo(value){
+ const k=normalizeRegion(value).replace("castilla la mancha","castilla-la mancha");
+ return REGION_FLAGS[k]||null;
+}
+function flagDisplay(value){
+ const info=regionInfo(value);
+ if(info){const src='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(info.svg);return {html:`<img class="regional-flag" src="${src}" alt="${esc(info.name)}" title="${esc(info.name)}">`,name:info.name};}
+ const f=countryToFlag(value); return {html:f?`<span class="country-flag-emoji">${esc(f)}</span>`:"",name:""};
+}
+const flag=m=>flagDisplay(m.survey?.flag||"").html;
+const flagName=m=>flagDisplay(m.survey?.flag||"").name;
 const getHQ=m=>m.survey?.hq_level ?? m.survey?.hqLevel ?? m.hq_level ?? m.hq ?? "—";
 
 // Fecha en la que se completó la encuesta. Se prueban varios nombres de campo
@@ -2226,7 +2265,7 @@ function row(m){
  return `<article class="member" data-name="${esc(norm(m.name))}" data-rank="${m.rank}">
    <span class="rank member-number">${m.memberNo||""}</span>
    <span class="avatar">${img?`<img src="${esc(img)}" alt="">`:"👤"}</span>
-   <div><div class="member-name">${esc(m.name)} ${flag(m)?`<span style="font-size:14px">${esc(flag(m))}</span>`:""}</div>
+   <div><div class="member-name">${esc(m.name)} ${flag(m)}</div>
    <div class="member-meta">${surveyDone(m)?`<span class="check">✓</span><span>${window.HOLaLang().completed}${formatSurveyDate(m)?` · ${formatSurveyDate(m)}`:""}</span>`:`<span>${window.HOLaLang().none}</span>`}</div></div>
    <strong class="thp">${esc(fmtPower(getSurveyPower(m)))}</strong>
    <span class="hq">HQ ${esc(getHQ(m))}</span>
@@ -2260,8 +2299,9 @@ function showProfile(m){
        <div class="profile-avatar-new">${img?`<img src="${esc(img)}" alt="">`:"👤"}</div>
        <div class="profile-identity-new">
          <div class="profile-name-row-new">
-           <span class="profile-name-new">${esc(m.name)}</span>${flag(m)?`<span class="profile-flag-new">${esc(flag(m))}</span>`:""}
+           <span class="profile-name-new">${esc(m.name)}</span>${flag(m)?`<span class="profile-flag-new">${flag(m)}</span>`:""}
          </div>
+         ${flagName(m)?`<div class="profile-community-new"><span class="community-label">Comunidad</span><span>·</span><span class="community-value">${esc(flagName(m))}</span></div>`:""}
          <div class="profile-status-new ${completed?'is-done':'is-empty'}">
            <span class="profile-status-check-new">${completed?'✓':'!'}</span>
            <span>${completed?window.HOLaLang().completed:window.HOLaLang().none}</span>
@@ -2367,7 +2407,8 @@ load();
     const s2p=survey.squad2_power||survey.squad2Power||"", s2t=survey.squad2_type||survey.squad2Type||"";
     const s3p=survey.squad3_power||survey.squad3Power||"", s3t=survey.squad3_type||survey.squad3Type||"";
     const flagOptions=["🇪🇸","🇺🇦","🇬🇧","🇺🇸","🇩🇪","🇫🇷","🇮🇹","🇵🇹","🇵🇱","🇷🇴","🇧🇷","🇲🇽","🇦🇷","🇨🇴","🇨🇦","🇹🇷","🇮🇳","🇯🇵","🇰🇷","🇦🇺","🇳🇱","🇧🇪","🇸🇪","🇳🇴","🇩🇰","🇫🇮","🇨🇭","🇦🇹","🇬🇷","🇨🇿","🇸🇰","🇭🇺","🇧🇬","🇭🇷","🇷🇸","🇷🇺","🇪🇬","🇿🇦","🇸🇦","🇦🇪","🇨🇳","🇮🇩","🇵🇭"];
-    const flagSelect='<option value="">Selecciona bandera</option>'+flagOptions.map(f=>`<option value="${f}" ${f===flag?'selected':''}>${f}</option>`).join('');
+    const regionOptions=Object.entries(REGION_FLAGS).map(([k,v])=>`<option value="${esc(v.name)}" ${normalizeRegion(flag)===k?'selected':''}>${esc(v.name)}</option>`).join('');
+    const flagSelect='<option value="">Selecciona bandera</option>'+flagOptions.map(f=>`<option value="${f}" ${f===flag?'selected':''}>${f}</option>`).join('')+regionOptions;
     const typeOptions=(value)=>'<option value="">Tipo</option>'+["Tank","Aircraft","Missile","Mixed"].map(v=>`<option value="${v}" ${v===value?'selected':''}>${v}</option>`).join('');
     form.innerHTML=`${!isNew?`<div class="editor-player-banner"><div class="editor-player-avatar">${avatar?`<img src="${esc(avatar)}" style="width:100%;height:100%;object-fit:cover" alt="">`:"👤"}</div><div><b>${esc(name)}</b><span>Ficha completa del miembro de HOLa</span></div><div class="editor-status">ACTIVO</div></div>`:`<div class="editor-player-banner"><div class="editor-player-avatar">＋</div><div><b>NUEVO MIEMBRO</b><span>Completa manualmente la misma ficha que en la encuesta.</span></div></div>`}
     <div class="edit-section">
